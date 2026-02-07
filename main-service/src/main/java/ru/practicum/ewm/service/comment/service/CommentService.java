@@ -4,12 +4,12 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.service.comment.repository.CommentRepository;
 import ru.practicum.ewm.service.comment.dto.CommentFullDto;
 import ru.practicum.ewm.service.comment.dto.CommentShortDto;
 import ru.practicum.ewm.service.comment.dto.NewCommentDto;
-import ru.practicum.ewm.service.comment.model.Comment;
 import ru.practicum.ewm.service.comment.mapper.CommentMapper;
+import ru.practicum.ewm.service.comment.model.Comment;
+import ru.practicum.ewm.service.comment.repository.CommentRepository;
 import ru.practicum.ewm.service.event.model.Event;
 import ru.practicum.ewm.service.event.model.EventState;
 import ru.practicum.ewm.service.event.repository.EventRepository;
@@ -21,7 +21,6 @@ import ru.practicum.ewm.service.user.model.User;
 import ru.practicum.ewm.service.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 

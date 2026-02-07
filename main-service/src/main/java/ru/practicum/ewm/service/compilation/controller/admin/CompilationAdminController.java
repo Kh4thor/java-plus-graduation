@@ -36,7 +36,7 @@ public class CompilationAdminController {
     @PatchMapping("/{compId}")
     public CompilationDto update(
             @PathVariable @Positive Long compId,
-            @Valid @RequestBody(required = false) UpdateCompilationRequest dto ) {
+            @Valid @RequestBody(required = false) UpdateCompilationRequest dto) {
         // Пропускаем PATCH без тела
         if (dto == null) {
             log.info("АДМИН API: PATCH /admin/compilations/{} получено пустое тело — применяем пустой DTO", compId);
