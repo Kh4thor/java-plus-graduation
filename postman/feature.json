@@ -1,0 +1,1072 @@
+{
+	"info": {
+		"_postman_id": "d033cd97-5018-4c02-ac64-861c135f7e31",
+		"name": "Comments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46199837",
+		"_collection_link": "https://danila-779663.postman.co/workspace/Danila's-Workspace~5b58dfd7-c90b-4965-8b59-c60e7d22d9ee/collection/46199837-d033cd97-5018-4c02-ac64-861c135f7e31?action=share&source=collection_link&creator=46199837"
+	},
+	"item": [
+		{
+			"name": "Добавление категории",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"categoryName\", pm.variables.replaceIn(\"{{$randomUUID}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201\", function() {\r",
+							"    pm.response.to.have.status(201); // код ответа должен быть равен 201 CREATED\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"categoryId\", body.id); // сохраняем id категории в переменную коллекции categoryId\r",
+							"\r",
+							"pm.test(\"Имя совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.name).to.eql(pm.collectionVariables.get(\"categoryName\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{categoryName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/admin/categories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление пользователя - инициатора",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201\", function() {\r",
+							"    pm.response.to.have.status(201); // код ответа должен быть равен 201 CREATED\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"userId\", body.id); // сохраняем id пользователя в переменную коллекции userId\r",
+							"\r",
+							"pm.test(\"Имя совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.name).to.eql(pm.collectionVariables.get(\"userName\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.email).to.eql(pm.collectionVariables.get(\"userEmail\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"userName\", pm.variables.replaceIn(\"{{$randomFullName}}\"));\r",
+							"pm.collectionVariables.set(\"userEmail\", pm.variables.replaceIn(\"{{$randomEmail}}\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{userName}}\",\r\n  \"email\": \"{{userEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/admin/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление события",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201\", function() {\r",
+							"    pm.response.to.have.status(201); // код ответа должен быть равен 201 CREATED\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"eventId\", body.id); // сохраняем id события в переменную коллекции eventId"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"annotation\": \"Some annotation with length more than 20\",\r\n  \"category\": {{categoryId}},\r\n  \"description\": \"Some description with length more than 20\",\r\n  \"location\": {\r\n    \"lat\": 55.7558,\r\n    \"lon\": 37.6173\r\n  },\r\n  \"paid\": false,\r\n  \"participantLimit\": 100,\r\n  \"requestModeration\": false,\r\n  \"eventDate\": \"2026-12-01 18:30:00\",\r\n  \"title\": \"Some title\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление пользователя - участника",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201\", function() {\r",
+							"    pm.response.to.have.status(201); // код ответа должен быть равен 201 CREATED\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"userId\", body.id); // сохраняем id пользователя в переменную коллекции userId\r",
+							"\r",
+							"pm.test(\"Имя участника совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.name).to.eql(pm.collectionVariables.get(\"userName\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email участника совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.email).to.eql(pm.collectionVariables.get(\"userEmail\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"userName\", pm.variables.replaceIn(\"{{$randomFullName}}\"));\r",
+							"pm.collectionVariables.set(\"userEmail\", pm.variables.replaceIn(\"{{$randomEmail}}\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{userName}}\",\r\n  \"email\": \"{{userEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/admin/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Пользователь не может оставить комментарий если событие не опубликовано",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"comment\", pm.variables.replaceIn(\"{{$randomWord}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 400\", function() {\r",
+							"    pm.response.to.have.status(400); // код ответа должен быть равен 400\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"text\": \"{{comment}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Публикация события",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200 OK\r",
+							"});\r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Имя совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.state).to.eql(\"PUBLISHED\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"stateAction\": \"PUBLISH_EVENT\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/admin/events/{{eventId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"events",
+						"{{eventId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Пользователь не может оставить комментарий если не принимает участие",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"comment\", pm.variables.replaceIn(\"{{$randomWord}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 400\", function() {\r",
+							"    pm.response.to.have.status(400); // код ответа должен быть равен 400\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"text\": \"{{comment}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление запроса",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{userName}}\",\r\n  \"email\": \"{{userEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/requests?eventId={{eventId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"requests"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Создание комментария",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"comment\", pm.variables.replaceIn(\"{{$randomWord}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201\", function() {\r",
+							"    pm.response.to.have.status(201); // код ответа должен быть равен 201\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"commentId\", body.id); // сохраняем id комментария в переменную коллекции commentId\r",
+							"\r",
+							"pm.test(\"Текст совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.text).to.eql(pm.collectionVariables.get(\"comment\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"text\": \"{{comment}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Изменение комментария",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"comment\", pm.variables.replaceIn(\"{{$randomWord}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"text\", body.text); // сохраняем id категории в переменную коллекции categoryId\r",
+							"\r",
+							"pm.test(\"Текст совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.text).to.eql(pm.collectionVariables.get(\"comment\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"text\": \"{{comment}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments/{{commentId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments",
+						"{{commentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Просмотр комментариев неавторизованными пользователями",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body).is.an('array'); // проверяем, что тело ответа является массивом \r",
+							"    pm.expect(body.length).to.eql(1); // в массиве одно значение\r",
+							"    pm.expect(body[0].id).to.eql(pm.collectionVariables.get(\"commentId\"));\r",
+							"    pm.expect(body[0].text).to.eql(pm.collectionVariables.get(\"text\"));\r",
+							"    pm.expect(body[0].commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Просмотр комментария авторизованным пользователем",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body).is.an('array'); // проверяем, что тело ответа является массивом \r",
+							"    pm.expect(body.length).to.eql(1); // в массиве одно значение\r",
+							"    pm.expect(body[0].id).to.eql(pm.collectionVariables.get(\"commentId\"));\r",
+							"    pm.expect(body[0].text).to.eql(pm.collectionVariables.get(\"text\"));\r",
+							"    pm.expect(body[0].commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление комментария",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body.id).to.eql(pm.collectionVariables.get(\"commentId\"));\r",
+							"    pm.expect(body.text).to.eql(pm.collectionVariables.get(\"text\"));\r",
+							"    pm.expect(body.commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments/{{commentId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments",
+						"{{commentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Просмотр комментариев после удаления",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body).is.an('array'); // проверяем, что тело ответа является массивом \r",
+							"    pm.expect(body.length).to.eql(0); // массив пустой\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Создание комментария для теста эндпоинтов админа",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Сохраняем случайные данные в переменные коллекции\r",
+							"pm.collectionVariables.set(\"comment\", pm.variables.replaceIn(\"{{$randomWord}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201\", function() {\r",
+							"    pm.response.to.have.status(201); // код ответа должен быть равен 201\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"pm.collectionVariables.set(\"comment2Id\", body.id); // сохраняем id комментария в переменную коллекции commentId\r",
+							"pm.collectionVariables.set(\"text2\", body.text); // сохраняем id категории в переменную коллекции categoryId\r",
+							"\r",
+							"pm.test(\"Текст совпадает с отправленным\", function () {\r",
+							"    pm.expect(body.text).to.eql(pm.collectionVariables.get(\"comment\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"text\": \"{{comment}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/{{userId}}/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{userId}}",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Просмотр комментариев админом",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body).is.an('array'); // проверяем, что тело ответа является массивом \r",
+							"    pm.expect(body.length).to.eql(2); // в массиве два значения\r",
+							"    pm.expect(body[0].id).to.eql(pm.collectionVariables.get(\"commentId\"));\r",
+							"    pm.expect(body[0].text).to.eql(pm.collectionVariables.get(\"text\"));\r",
+							"    pm.expect(body[0].commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(body[0].deleted).to.eql(true);\r",
+							"\r",
+							"    pm.expect(body[1].id).to.eql(pm.collectionVariables.get(\"comment2Id\"));\r",
+							"    pm.expect(body[1].text).to.eql(pm.collectionVariables.get(\"text2\"));\r",
+							"    pm.expect(body[1].commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(body[1].deleted).to.eql(false);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/admin/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление комментария админом",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body.id).to.eql(pm.collectionVariables.get(\"comment2Id\"));\r",
+							"    pm.expect(body.text).to.eql(pm.collectionVariables.get(\"text2\"));\r",
+							"    pm.expect(body.commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(body.deleted).to.eql(true);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/admin/events/{{eventId}}/comments/{{comment2Id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"events",
+						"{{eventId}}",
+						"comments",
+						"{{comment2Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Просмотр комментариев админом после удаления",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200\", function() {\r",
+							"    pm.response.to.have.status(200); // код ответа должен быть равен 200\r",
+							"}); \r",
+							"\r",
+							"const body = pm.response.json(); // сохраняем тело ответа в переменной body\r",
+							"\r",
+							"pm.test(\"Возвращаются корректные данные\", function () {\r",
+							"    pm.expect(body).is.an('array'); // проверяем, что тело ответа является массивом \r",
+							"    pm.expect(body.length).to.eql(2); // в массиве два значения\r",
+							"    pm.expect(body[0].id).to.eql(pm.collectionVariables.get(\"commentId\"));\r",
+							"    pm.expect(body[0].text).to.eql(pm.collectionVariables.get(\"text\"));\r",
+							"    pm.expect(body[0].commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(body[0].deleted).to.eql(true);\r",
+							"\r",
+							"    pm.expect(body[1].id).to.eql(pm.collectionVariables.get(\"comment2Id\"));\r",
+							"    pm.expect(body[1].text).to.eql(pm.collectionVariables.get(\"text2\"));\r",
+							"    pm.expect(body[1].commentator.id).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(body[1].deleted).to.eql(true);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/admin/events/{{eventId}}/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"events",
+						"{{eventId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"pm.test(\"Ответ должен содержать данные в формате json\", function() {\r",
+					"    pm.response.to.be.withBody; // ответ должен содержать тело\r",
+					"    pm.response.to.be.json; // и тело ответа должно быть в формате JSON\r",
+					"}); "
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userName",
+			"value": ""
+		},
+		{
+			"key": "userEmail",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "categoryName",
+			"value": ""
+		},
+		{
+			"key": "categoryId",
+			"value": ""
+		},
+		{
+			"key": "eventId",
+			"value": ""
+		},
+		{
+			"key": "comment",
+			"value": ""
+		},
+		{
+			"key": "commentId",
+			"value": ""
+		},
+		{
+			"key": "text",
+			"value": ""
+		},
+		{
+			"key": "comment2Id",
+			"value": ""
+		},
+		{
+			"key": "text2",
+			"value": ""
+		}
+	]
+}
