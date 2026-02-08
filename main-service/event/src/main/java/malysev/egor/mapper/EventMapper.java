@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.mapper;
+package malysev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
 import malyshev.egor.ewm.service.category.model.Category;

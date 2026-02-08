@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.controller.admin;
+package malysev.egor.controller.admin;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

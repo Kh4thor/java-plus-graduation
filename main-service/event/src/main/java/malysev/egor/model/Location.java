@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.model;
+package malysev.egor.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;

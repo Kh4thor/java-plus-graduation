@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.service;
+package malysev.egor.service;
 
 import malyshev.egor.ewm.service.event.dto.*;
 import org.springframework.data.domain.Pageable;

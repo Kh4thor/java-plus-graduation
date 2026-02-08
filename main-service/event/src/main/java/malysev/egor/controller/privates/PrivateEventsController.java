@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.controller.privates;
+package malysev.egor.controller.privates;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

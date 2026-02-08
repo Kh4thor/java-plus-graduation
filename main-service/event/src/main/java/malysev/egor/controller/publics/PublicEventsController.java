@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.controller.publics;
+package malysev.egor.controller.publics;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;

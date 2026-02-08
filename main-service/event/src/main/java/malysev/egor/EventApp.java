@@ -1,11 +1,11 @@
-package malyshev.egor;
+package malysev.egor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CompilationApp {
+public class EventApp {
     public static void main(String[] args) {
-        SpringApplication.run(CompilationApp.class, args);
+        SpringApplication.run(EventApp.class, args);
     }
 }

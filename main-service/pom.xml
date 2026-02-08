@@ -18,6 +18,7 @@
     <modules>
         <module>category</module>
         <module>comment</module>
+        <module>event</module>
     </modules>
 
     <dependencies>

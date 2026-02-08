@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.event.service;
+package malysev.egor.service;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.ewm.service.category.repository.CategoryRepository;
