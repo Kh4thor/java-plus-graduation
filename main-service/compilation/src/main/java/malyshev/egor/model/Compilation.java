@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.model;
+package malyshev.egor.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.service;
+package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

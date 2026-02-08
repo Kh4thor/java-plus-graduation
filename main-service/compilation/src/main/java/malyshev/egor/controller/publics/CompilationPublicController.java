@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.controller.publics;
+package malyshev.egor.controller.publics;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;

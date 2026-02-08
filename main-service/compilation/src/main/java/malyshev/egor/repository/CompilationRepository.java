@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.repository;
+package malyshev.egor.repository;
 
 import malyshev.egor.ewm.service.compilation.model.Compilation;
 import org.springframework.data.domain.Pageable;

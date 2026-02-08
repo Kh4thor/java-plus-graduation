@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.exception;
+package malyshev.egor.exception;
 
 public class CompilationNotFoundException extends RuntimeException {
     public CompilationNotFoundException(Long id) {

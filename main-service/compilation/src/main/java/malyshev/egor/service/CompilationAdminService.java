@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.service;
+package malyshev.egor.service;
 
 import malyshev.egor.ewm.service.compilation.dto.CompilationDto;
 import malyshev.egor.ewm.service.compilation.dto.NewCompilationDto;

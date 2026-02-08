@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.dto;
+package malyshev.egor.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.controller.admin;
+package malyshev.egor.controller.admin;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

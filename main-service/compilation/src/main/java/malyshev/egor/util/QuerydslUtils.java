@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.compilation.util;
+package malyshev.egor.util;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
