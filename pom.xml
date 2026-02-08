@@ -32,7 +32,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <!-- Управляемые версии -->
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
         <lombok.version>1.18.30</lombok.version>
         <querydsl.version>5.1.0</querydsl.version>
         <!-- MapStruct -->
