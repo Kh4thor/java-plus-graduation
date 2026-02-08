@@ -1,0 +1,11 @@
+package malyshev.egor.ewm.stats.service;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class StatService {
+    public static void main(String[] args) {
+        SpringApplication.run(StatService.class, args);
+    }
+}
