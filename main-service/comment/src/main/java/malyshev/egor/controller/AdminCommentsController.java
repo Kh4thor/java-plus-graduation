@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.comment.controller;
+package malyshev.egor.controller;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.ewm.service.comment.dto.CommentFullDto;

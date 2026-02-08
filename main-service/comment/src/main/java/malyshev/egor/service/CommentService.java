@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.comment.service;
+package malyshev.egor.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

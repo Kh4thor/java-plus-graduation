@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.comment.repository;
+package malyshev.egor.repository;
 
 import malyshev.egor.ewm.service.comment.model.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
