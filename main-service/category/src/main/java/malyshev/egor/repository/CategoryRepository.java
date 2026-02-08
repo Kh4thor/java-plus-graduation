@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.category.repository;
+package malyshev.egor.repository;
 
 import malyshev.egor.ewm.service.category.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

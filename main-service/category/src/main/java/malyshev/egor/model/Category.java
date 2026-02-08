@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.category.model;
+package malyshev.egor.model;
 
 import jakarta.persistence.*;
 import lombok.*;

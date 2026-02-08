@@ -12,8 +12,12 @@
     </parent>
 
     <artifactId>main-service</artifactId>
+    <packaging>pom</packaging>
     <name>main-service</name>
     <description>Main Service Module</description>
+    <modules>
+        <module>category</module>
+    </modules>
 
     <dependencies>
         <!-- Spring Boot Starters -->

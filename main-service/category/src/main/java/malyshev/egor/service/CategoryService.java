@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.category.service;
+package malyshev.egor.service;
 
 import malyshev.egor.ewm.service.category.dto.CategoryDto;
 import malyshev.egor.ewm.service.category.dto.NewCategoryDto;
