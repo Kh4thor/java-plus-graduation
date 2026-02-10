@@ -1,4 +1,4 @@
-package malysev.egor.dto;
+package malyshev.egor.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;

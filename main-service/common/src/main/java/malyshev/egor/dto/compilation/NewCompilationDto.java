@@ -1,4 +1,4 @@
-package malyshev.egor.dto;
+package malyshev.egor.dto.compilation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

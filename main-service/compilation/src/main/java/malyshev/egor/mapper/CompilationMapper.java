@@ -1,11 +1,10 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.ewm.service.compilation.dto.CompilationDto;
-import malyshev.egor.ewm.service.compilation.dto.NewCompilationDto;
-import malyshev.egor.ewm.service.compilation.dto.UpdateCompilationRequest;
-import malyshev.egor.ewm.service.compilation.model.Compilation;
-import malyshev.egor.ewm.service.event.dto.EventShortDto;
+import malyshev.egor.dto.CompilationDto;
+import malyshev.egor.dto.NewCompilationDto;
+import malyshev.egor.dto.UpdateCompilationRequest;
+import malyshev.egor.model.Compilation;
 
 import java.util.HashSet;
 import java.util.List;

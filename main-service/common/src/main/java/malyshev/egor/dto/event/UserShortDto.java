@@ -1,4 +1,4 @@
-package malysev.egor.dto;
+package malyshev.egor.dto.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

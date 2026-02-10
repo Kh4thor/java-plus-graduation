@@ -1,4 +1,4 @@
-package malysev.egor.dto;
+package malyshev.egor.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LocationDto {
-    private double lat;
-    private double lon;
+public class UserDto {
+    private Long id;
+    private String name;
+    private String email;
 }

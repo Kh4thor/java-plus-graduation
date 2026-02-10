@@ -1,4 +1,4 @@
-package malyshev.egor.dto;
+package malyshev.egor.dto.comment;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

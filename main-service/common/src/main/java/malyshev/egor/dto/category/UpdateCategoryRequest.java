@@ -1,4 +1,4 @@
-package malyshev.egor.dto;
+package malyshev.egor.dto.category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NewCategoryDto {
+public class UpdateCategoryRequest {
     @NotBlank
     @Size(min = 1, max = 50)
     private String name;

@@ -1,4 +1,4 @@
-package malyshev.egor.dto;
+package malyshev.egor.dto.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryDto {
-    private Long id;
-    private String name;
+public class LocationDto {
+    private double lat;
+    private double lon;
 }

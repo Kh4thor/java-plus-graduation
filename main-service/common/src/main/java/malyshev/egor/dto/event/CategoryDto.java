@@ -1,4 +1,4 @@
-package malyshev.egor.dto;
+package malyshev.egor.dto.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class CategoryDto {
     private Long id;
     private String name;
-    private String email;
 }
