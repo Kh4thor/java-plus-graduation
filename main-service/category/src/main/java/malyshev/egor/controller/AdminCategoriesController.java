@@ -2,10 +2,10 @@ package malyshev.egor.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.category.dto.CategoryDto;
-import malyshev.egor.ewm.service.category.dto.NewCategoryDto;
-import malyshev.egor.ewm.service.category.dto.UpdateCategoryRequest;
-import malyshev.egor.ewm.service.category.service.CategoryService;
+import malyshev.egor.dto.category.CategoryDto;
+import malyshev.egor.dto.category.NewCategoryDto;
+import malyshev.egor.dto.category.UpdateCategoryRequest;
+import malyshev.egor.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

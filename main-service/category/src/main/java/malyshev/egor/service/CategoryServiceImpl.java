@@ -1,13 +1,13 @@
 package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.category.dto.CategoryDto;
-import malyshev.egor.ewm.service.category.dto.NewCategoryDto;
-import malyshev.egor.ewm.service.category.dto.UpdateCategoryRequest;
-import malyshev.egor.ewm.service.category.mapper.CategoryMapper;
-import malyshev.egor.ewm.service.category.model.Category;
-import malyshev.egor.ewm.service.category.repository.CategoryRepository;
-import malyshev.egor.ewm.service.exception.NotFoundException;
+import malyshev.egor.dto.category.CategoryDto;
+import malyshev.egor.dto.category.NewCategoryDto;
+import malyshev.egor.dto.category.UpdateCategoryRequest;
+import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.mapper.CategoryMapper;
+import malyshev.egor.model.Category;
+import malyshev.egor.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

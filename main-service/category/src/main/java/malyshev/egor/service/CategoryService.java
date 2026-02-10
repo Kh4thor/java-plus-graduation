@@ -1,8 +1,8 @@
 package malyshev.egor.service;
 
-import malyshev.egor.ewm.service.category.dto.CategoryDto;
-import malyshev.egor.ewm.service.category.dto.NewCategoryDto;
-import malyshev.egor.ewm.service.category.dto.UpdateCategoryRequest;
+import malyshev.egor.dto.category.CategoryDto;
+import malyshev.egor.dto.category.NewCategoryDto;
+import malyshev.egor.dto.category.UpdateCategoryRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
