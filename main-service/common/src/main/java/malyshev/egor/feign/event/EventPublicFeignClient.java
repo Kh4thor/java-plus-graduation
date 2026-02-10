@@ -32,6 +32,5 @@ public interface EventPublicFeignClient {
 
 
     @GetMapping("/{id}")
-    EventFullDto getById(@PathVariable("id") Long id,
-                         HttpServletRequest request) throws FeignException;
+    EventFullDto getById(@PathVariable("id") Long id) throws FeignException;
 }
