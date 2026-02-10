@@ -1,5 +1,6 @@
 package malyshev.egor.feign.request;
 
+import feign.FeignException;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
@@ -16,11 +17,11 @@ import java.util.List;
 public interface EventRequestPrivateFeignClient {
 
     @GetMapping
-    public List<ParticipationRequestDto> list(@PathVariable long userId,
-                                              @PathVariable long eventId);
+    List<ParticipationRequestDto> list(@PathVariable long userId,
+                                       @PathVariable long eventId) throws FeignException;
 
     @PatchMapping
-    public EventRequestStatusUpdateResult update(@PathVariable long userId,
-                                                 @PathVariable long eventId,
-                                                 @RequestBody EventRequestStatusUpdateRequest body);
+    EventRequestStatusUpdateResult update(@PathVariable long userId,
+                                          @PathVariable long eventId,
+                                          @RequestBody EventRequestStatusUpdateRequest body) throws FeignException;
 }

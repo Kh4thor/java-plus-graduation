@@ -16,13 +16,13 @@ public interface CategoryAdminFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto add(@Valid @RequestBody NewCategoryDto dto) throws FeignException;
+    CategoryDto add(@Valid @RequestBody NewCategoryDto dto) throws FeignException;
 
     @PatchMapping("/{catId}")
-    public CategoryDto update(@PathVariable long catId,
-                              @Valid @RequestBody UpdateCategoryRequest dto) throws FeignException;
+    CategoryDto update(@PathVariable long catId,
+                       @Valid @RequestBody UpdateCategoryRequest dto) throws FeignException;
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long catId) throws FeignException;
+    void delete(@PathVariable long catId) throws FeignException;
 }

@@ -18,11 +18,11 @@ import java.util.List;
 public interface CompilationPublicFeignClient {
 
     @GetMapping
-    public List<CompilationDto> getCompilations(
+    List<CompilationDto> getCompilations(
             @RequestParam(required = false) Boolean pinned,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Positive int size) throws FeignException;
 
     @GetMapping("/{compId}")
-    public CompilationDto getById(@PathVariable @Positive Long compId) throws FeignException;
+    CompilationDto getById(@PathVariable @Positive Long compId) throws FeignException;
 }

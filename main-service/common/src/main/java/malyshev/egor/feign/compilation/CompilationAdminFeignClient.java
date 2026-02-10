@@ -19,14 +19,14 @@ public interface CompilationAdminFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto create(@Valid @RequestBody NewCompilationDto dto) throws FeignException;
+    CompilationDto create(@Valid @RequestBody NewCompilationDto dto) throws FeignException;
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive Long compId) throws FeignException;
+    void delete(@PathVariable @Positive Long compId) throws FeignException;
 
     @PatchMapping("/{compId}")
-    public CompilationDto update(
+    CompilationDto update(
             @PathVariable @Positive Long compId,
             @Valid @RequestBody(required = false) UpdateCompilationRequest dto) throws FeignException;
 }
