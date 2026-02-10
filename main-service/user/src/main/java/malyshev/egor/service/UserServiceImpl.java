@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.user.service;
+package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.ewm.service.exception.NotFoundException;

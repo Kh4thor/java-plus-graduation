@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.user.mapper;
+package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
 import malyshev.egor.ewm.service.user.dto.UserDto;

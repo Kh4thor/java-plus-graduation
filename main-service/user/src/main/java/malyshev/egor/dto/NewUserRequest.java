@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.user.dto;
+package malyshev.egor.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
