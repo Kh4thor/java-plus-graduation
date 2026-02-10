@@ -12,4 +12,15 @@ public final class CategoryMapper {
                 .name(c.getName())
                 .build();
     }
+
+    public static Category toCategory(CategoryDto categoryDto) {
+        if (categoryDto == null) {
+            return null;
+        }
+
+        return Category.builder()
+                .id(categoryDto.getId())
+                .name(categoryDto.getName())
+                .build();
+    }
 }

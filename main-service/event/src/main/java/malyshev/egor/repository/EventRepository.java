@@ -1,4 +1,4 @@
-package malysev.egor.repository;
+package malyshev.egor.repository;
 
 import malyshev.egor.model.event.Event;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,12 +1,12 @@
 package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.exception.NotFoundException;
-import malyshev.egor.ewm.service.user.dto.NewUserRequest;
-import malyshev.egor.ewm.service.user.dto.UserDto;
-import malyshev.egor.ewm.service.user.mapper.UserMapper;
-import malyshev.egor.ewm.service.user.model.User;
-import malyshev.egor.ewm.service.user.repository.UserRepository;
+import malyshev.egor.dto.user.NewUserRequest;
+import malyshev.egor.dto.user.UserDto;
+import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.mapper.UserMapper;
+import malyshev.egor.model.user.User;
+import malyshev.egor.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

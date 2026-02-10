@@ -1,7 +1,7 @@
 package malyshev.egor.service;
 
-import malyshev.egor.ewm.service.user.dto.NewUserRequest;
-import malyshev.egor.ewm.service.user.dto.UserDto;
+import malyshev.egor.dto.user.NewUserRequest;
+import malyshev.egor.dto.user.UserDto;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

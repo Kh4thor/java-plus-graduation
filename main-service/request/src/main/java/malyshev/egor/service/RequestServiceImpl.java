@@ -2,11 +2,17 @@ package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import malyshev.egor.InteractionEntityGetter;
+import malyshev.egor.dto.request.EventRequestStatus;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.feign.user.UserAdminFeignClient;
 import malyshev.egor.mapper.RequestMapper;
+import malyshev.egor.mapper.UserMapper;
+import malyshev.egor.model.event.Event;
 import malyshev.egor.model.event.EventState;
 import malyshev.egor.model.request.ParticipationRequest;
 import malyshev.egor.model.request.RequestStatus;
@@ -27,6 +33,9 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
+    private final InteractionEntityGetter  interactionEntityGetter;
+
+
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
@@ -49,11 +58,7 @@ public class RequestServiceImpl implements RequestService {
 
         validateRequest(userId, event);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.warn("User {} not found", userId);
-                    return new NotFoundException("User with id=" + userId + " was not found");
-                });
+        User user = getUser(userId);
 
         ParticipationRequest req = new ParticipationRequest();
         req.setRequester(user);
@@ -132,14 +137,14 @@ public class RequestServiceImpl implements RequestService {
         }
 
         var action = body.getStatus();
-        if (action != CONFIRMED && action != REJECTED) {
+        if (action != EventRequestStatus.CONFIRMED && action != EventRequestStatus.REJECTED) {
             throw new IllegalArgumentException("status must be CONFIRMED or REJECTED");
         }
 
         int limit = event.getParticipantLimit();
         long alreadyConfirmed = requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
 
-        if (action == CONFIRMED && limit > 0 && alreadyConfirmed >= limit) {
+        if (action == EventRequestStatus.CONFIRMED && limit > 0 && alreadyConfirmed >= limit) {
             throw new IllegalStateException("The participant limit has been reached");
         }
 
@@ -151,14 +156,14 @@ public class RequestServiceImpl implements RequestService {
                 .toList();
 
         List<ParticipationRequestDto> confirmed = new ArrayList<>();
-        List<ParticipationRequestDto> rejected  = new ArrayList<>();
+        List<ParticipationRequestDto> rejected = new ArrayList<>();
 
         for (var r : toUpdate) {
             if (r.getStatus() != RequestStatus.PENDING) {
                 throw new IllegalStateException("Можно изменять только заявки в статусе PENDING");
             }
 
-            if (action == REJECTED) {
+            if (action == EventRequestStatus.REJECTED) {
                 r.setStatus(RequestStatus.REJECTED);
                 rejected.add(RequestMapper.toRequestDto(r));
             } else { // CONFIRMED

@@ -2,7 +2,7 @@ package malyshev.egor.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malysev.egor.service.EventService;
+import malyshev.egor.service.EventService;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import org.springframework.data.domain.PageRequest;

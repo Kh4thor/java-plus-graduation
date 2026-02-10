@@ -1,8 +1,8 @@
-package malysev.egor.controller.privates;
+package malyshev.egor.controller.privates;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malysev.egor.service.EventService;
+import malyshev.egor.service.EventService;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.NewEventDto;

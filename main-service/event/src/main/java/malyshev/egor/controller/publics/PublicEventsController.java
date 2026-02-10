@@ -1,10 +1,10 @@
-package malysev.egor.controller.publics;
+package malyshev.egor.controller.publics;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import malysev.egor.service.EventService;
+import malyshev.egor.service.EventService;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import org.springframework.data.domain.PageRequest;
