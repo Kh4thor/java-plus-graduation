@@ -1,8 +1,9 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.ewm.service.user.dto.UserDto;
-import malyshev.egor.ewm.service.user.model.User;
+import malyshev.egor.dto.event.UserShortDto;
+import malyshev.egor.dto.user.UserDto;
+import malyshev.egor.model.user.User;
 
 @UtilityClass
 public final class UserMapper {
@@ -11,6 +12,13 @@ public final class UserMapper {
                 .id(u.getId())
                 .name(u.getName())
                 .email(u.getEmail())
+                .build();
+    }
+
+    public static UserShortDto toUserShort(User u) {
+        return UserShortDto.builder()
+                .id(u.getId())
+                .name(u.getName())
                 .build();
     }
 }

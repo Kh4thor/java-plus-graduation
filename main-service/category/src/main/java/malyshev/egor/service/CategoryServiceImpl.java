@@ -6,7 +6,7 @@ import malyshev.egor.dto.category.NewCategoryDto;
 import malyshev.egor.dto.category.UpdateCategoryRequest;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.CategoryMapper;
-import malyshev.egor.model.Category;
+import malyshev.egor.model.category.Category;
 import malyshev.egor.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

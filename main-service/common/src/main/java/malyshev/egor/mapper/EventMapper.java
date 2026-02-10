@@ -44,18 +44,4 @@ public final class EventMapper {
                 .views(views)
                 .build();
     }
-
-    public static UserShortDto toUserShort(User u) {
-        return UserShortDto.builder()
-                .id(u.getId())
-                .name(u.getName())
-                .build();
-    }
-
-    public static CategoryDto toCategoryDto(Category c) {
-        return CategoryDto.builder()
-                .id(c.getId())
-                .name(c.getName())
-                .build();
-    }
 }
