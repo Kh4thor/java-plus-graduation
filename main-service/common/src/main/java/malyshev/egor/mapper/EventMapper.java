@@ -1,14 +1,24 @@
 package malyshev.egor.mapper;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
 import lombok.experimental.UtilityClass;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
 import malyshev.egor.model.event.Event;
+import malyshev.egor.model.event.EventState;
+
+import java.time.LocalDateTime;
+
+import static jakarta.persistence.EnumType.STRING;
 
 @UtilityClass
 public final class EventMapper {
     public static EventShortDto toShortDto(Event e, long confirmed, long views) {
+        if (e == null) {
+            return null;
+        }
         return EventShortDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
@@ -22,6 +32,9 @@ public final class EventMapper {
     }
 
     public static EventFullDto toFullDto(Event e, long confirmed, long views) {
+        if (e == null) {
+            return null;
+        }
         return EventFullDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
@@ -41,4 +54,29 @@ public final class EventMapper {
                 .views(views)
                 .build();
     }
+
+    public static Event toEvent(EventFullDto eventFullDto) {
+        if (eventFullDto == null) {
+            return null;
+        }
+
+        return Event.builder()
+                .id(eventFullDto.getId())
+                .annotation(eventFullDto.getAnnotation())
+                .category(CategoryMapper.toCategory(eventFullDto.getCategory()))
+                .initiator(UserMapper.toUser(eventFullDto.getInitiator()))
+                .description(eventFullDto.getDescription())
+                .location(eventFullDto.getLocation())
+                .paid(eventFullDto.isPaid())
+                .participantLimit(eventFullDto.getParticipantLimit())
+                .requestModeration(eventFullDto.isRequestModeration())
+                .eventDate(eventFullDto.getEventDate())
+                .createdOn(eventFullDto.getCreatedOn())
+                .publishedOn(eventFullDto.getPublishedOn())
+                .state(eventFullDto.getState())
+                .title(eventFullDto.getTitle())
+                .build();
+    }
+
+
 }
