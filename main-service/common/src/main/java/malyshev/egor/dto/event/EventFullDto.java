@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.user.UserShortDto;
+import malyshev.egor.model.event.EventState;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +38,7 @@ public class EventFullDto {
     private LocalDateTime publishedOn;
 
     private boolean requestModeration;
-    private String state;
+    private EventState state;
     private String title;
     private Long views;
 }

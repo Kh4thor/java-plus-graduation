@@ -1,9 +1,7 @@
 package malyshev.egor.model.request;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import malyshev.egor.model.event.Event;
 import malyshev.egor.model.user.User;
 
@@ -12,8 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "requests")
 @NoArgsConstructor
+@AllArgsConstructor
 public class ParticipationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

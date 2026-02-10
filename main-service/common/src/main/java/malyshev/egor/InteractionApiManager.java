@@ -1,5 +1,6 @@
 package malyshev.egor;
 
+import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
@@ -19,11 +20,12 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class InteractionEntityGetter {
+public class InteractionApiManager {
 
     private final UserAdminFeignClient userAdminFeignClient;
     private final EventAdminFeignClient eventAdminFeignClient;
     private final CategoryPublicFeignClient categoryPublicFeignClient;
+
     private final int search_from = 0;
     private final int search_size = 10;
 
@@ -55,13 +57,19 @@ public class InteractionEntityGetter {
                         String.format("Event with id=%d not found", eventId)
                 ));
 
-        return EventMapper.toEvent
+        User initiator = getUserById(userId);
 
-
+        if (eventFullDto.getInitiator() != null && !initiator.getId().equals(eventFullDto.getInitiator().getId())) {
+            throw new ValidationException("User with id=" + eventFullDto.getInitiator().getId() +
+                    " is not initiator of event with id=" + eventId);
+        }
+        return EventMapper.toEvent(eventFullDto, initiator.getEmail());
     }
 
     CategoryDto getCategoryDById(Long categoryId) {
         return categoryPublicFeignClient.get(categoryId);
     }
+
+
 
 }

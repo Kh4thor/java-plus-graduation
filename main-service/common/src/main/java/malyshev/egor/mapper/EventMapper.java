@@ -1,13 +1,12 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
-import malyshev.egor.dto.user.UserShortDto;
 import malyshev.egor.model.category.Category;
 import malyshev.egor.model.event.Event;
+import malyshev.egor.model.event.Location;
 import malyshev.egor.model.user.User;
 
 @UtilityClass
@@ -46,7 +45,7 @@ public final class EventMapper {
                 .participantLimit(e.getParticipantLimit())
                 .publishedOn(e.getPublishedOn())
                 .requestModeration(e.isRequestModeration())
-                .state(e.getState().name())
+                .state(e.getState())
                 .title(e.getTitle())
                 .views(views)
                 .build();
@@ -57,11 +56,9 @@ public final class EventMapper {
             return null;
         }
 
-        CategoryDto categoryDto = eventFullDto.getCategory();
-        Category category = CategoryMapper.toCategory(categoryDto);
-
-        UserShortDto initiatorDto = eventFullDto.getInitiator();
-        User initiator = UserMapper.toUser(initiatorDto, userEmail);
+        Category category = CategoryMapper.toCategory(eventFullDto.getCategory());
+        User initiator = UserMapper.toUser(eventFullDto.getInitiator(), userEmail);
+        Location location = LocationMapper.toLocation(eventFullDto.getLocation());
 
         return Event.builder()
                 .id(eventFullDto.getId())
@@ -69,7 +66,7 @@ public final class EventMapper {
                 .category(category)
                 .initiator(initiator)
                 .description(eventFullDto.getDescription())
-                .location(eventFullDto.getLocation())
+                .location(location)
                 .paid(eventFullDto.isPaid())
                 .participantLimit(eventFullDto.getParticipantLimit())
                 .requestModeration(eventFullDto.isRequestModeration())

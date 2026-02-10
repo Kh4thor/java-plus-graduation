@@ -1,6 +1,7 @@
 package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
+import malyshev.egor.InteractionEntityManager;
 import malyshev.egor.repository.EventRepository;
 import malyshev.egor.dto.event.*;
 import malyshev.egor.exception.NotFoundException;
@@ -30,10 +31,8 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
-    private final RequestRepository requestRepository;
     private final StatsClient statsClient;
+    InteractionEntityManager
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -211,7 +210,15 @@ public class EventServiceImpl implements EventService {
         LocalDateTime end = parseStrict(rangeEnd);
         validateRangeOrThrow(start, end);
 
-        var all = eventRepository.findAll().stream().filter(e -> users == null || users.contains(e.getInitiator().getId())).filter(e -> states == null || states.contains(e.getState().name())).filter(e -> categories == null || categories.contains(e.getCategory().getId())).filter(e -> start == null || !e.getEventDate().isBefore(start)).filter(e -> end == null || !e.getEventDate().isAfter(end)).sorted(Comparator.comparing(Event::getEventDate)).toList();
+        // говняное решение
+        var all = eventRepository.findAll().stream()
+                .filter(e -> users == null || users.contains(e.getInitiator().getId()))
+                .filter(e -> states == null || states.contains(e.getState().name()))
+                .filter(e -> categories == null || categories.contains(e.getCategory().getId()))
+                .filter(e -> start == null || !e.getEventDate().isBefore(start))
+                .filter(e -> end == null || !e.getEventDate().isAfter(end))
+                .sorted(Comparator.comparing(Event::getEventDate))
+                .toList();
 
         int from = (int) pageable.getOffset();
         int size = pageable.getPageSize();

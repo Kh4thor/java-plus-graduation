@@ -3,6 +3,7 @@ package malyshev.egor.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.InteractionEntityGetter;
+import malyshev.egor.InteractionEntityManager;
 import malyshev.egor.dto.request.EventRequestStatus;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
@@ -33,7 +34,7 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
-    private final InteractionEntityGetter interactionEntityGetter;
+    private final InteractionEntityManager interactionEntityGetter;
 
 
     private final EventRepository eventRepository;
@@ -49,34 +50,31 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto createRequest(long userId, long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> {
-                    log.warn("Event {} not found", eventId);
-                    return new NotFoundException("Event with id=" + eventId + " was not found");
-                });
 
+        Event event = interactionEntityGetter.getEventByUserIdAndEventId(userId, eventId);
         validateRequest(userId, event);
-
         User user = interactionEntityGetter.getUserById(userId);
-
-        ParticipationRequest req = new ParticipationRequest();
-        req.setRequester(user);
-        req.setEvent(event);
-        req.setCreated(LocalDateTime.now());
+        ParticipationRequest request = ParticipationRequest.builder()
+                .requester(user)
+                .event(event)
+                .created(LocalDateTime.now())
+                .build();
 
         // Автоподтверждение: либо модерация отключена, либо лимит = 0 (без ограничений)
         boolean unlimited = event.getParticipantLimit() == 0;
         boolean autoConfirm = !event.isRequestModeration() || unlimited;
 
         if (autoConfirm) {
-            req.setStatus(RequestStatus.CONFIRMED);
+            request.setStatus(RequestStatus.CONFIRMED);
             // счётчик подтверждений считаем по таблице запросов (через репозиторий), Event не трогаем
         } else {
-            req.setStatus(RequestStatus.PENDING);
+            request.setStatus(RequestStatus.PENDING);
         }
 
-        req = requestRepository.save(req);
-        return RequestMapper.toRequestDto(req);
+        interactionEntityGetter
+
+        request = requestRepository.save(request);
+        return RequestMapper.toRequestDto(request);
     }
 
     @Override

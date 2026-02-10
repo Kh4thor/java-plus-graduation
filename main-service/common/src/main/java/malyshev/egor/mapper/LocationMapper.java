@@ -1,6 +1,5 @@
 package malyshev.egor.mapper;
 
-import lombok.experimental.UtilityClass;
 import malyshev.egor.dto.event.LocationDto;
 import malyshev.egor.model.event.Location;
 
