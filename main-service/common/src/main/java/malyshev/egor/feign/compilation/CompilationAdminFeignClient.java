@@ -1,5 +1,6 @@
 package malyshev.egor.feign.compilation;
 
+import feign.FeignException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import malyshev.egor.dto.compilation.CompilationDto;
@@ -18,14 +19,14 @@ public interface CompilationAdminFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto create(@Valid @RequestBody NewCompilationDto dto);
+    public CompilationDto create(@Valid @RequestBody NewCompilationDto dto) throws FeignException;
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive Long compId);
+    public void delete(@PathVariable @Positive Long compId) throws FeignException;
 
     @PatchMapping("/{compId}")
     public CompilationDto update(
             @PathVariable @Positive Long compId,
-            @Valid @RequestBody(required = false) UpdateCompilationRequest dto);
+            @Valid @RequestBody(required = false) UpdateCompilationRequest dto) throws FeignException;
 }

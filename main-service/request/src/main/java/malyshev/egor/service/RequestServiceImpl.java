@@ -33,11 +33,10 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
-    private final InteractionEntityGetter  interactionEntityGetter;
+    private final InteractionEntityGetter interactionEntityGetter;
 
 
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
 
     @Override
     public List<ParticipationRequestDto> getUserRequests(long userId) {
@@ -58,7 +57,7 @@ public class RequestServiceImpl implements RequestService {
 
         validateRequest(userId, event);
 
-        User user = getUser(userId);
+        User user = interactionEntityGetter.getUserById(userId);
 
         ParticipationRequest req = new ParticipationRequest();
         req.setRequester(user);
