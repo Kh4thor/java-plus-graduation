@@ -1,10 +1,10 @@
 package malyshev.egor.controller.privates;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest;
-import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateResult;
-import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;
-import malyshev.egor.ewm.service.request.service.RequestService;
+import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
+import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
+import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.service.RequestService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

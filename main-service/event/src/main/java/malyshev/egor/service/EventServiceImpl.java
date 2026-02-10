@@ -3,6 +3,7 @@ package malyshev.egor.service;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.InteractionEntityManager;
+import malyshev.egor.model.category.Category;
 import malyshev.egor.repository.EventRepository;
 import malyshev.egor.dto.event.*;
 import malyshev.egor.exception.NotFoundException;
@@ -169,7 +170,7 @@ public class EventServiceImpl implements EventService {
         }
 
         if (dto.getCategory() != null) {
-            var c = categoryRepository.findById(dto.getCategory()).orElseThrow(() -> new NotFoundException("Category with id=" + dto.getCategory() + " was not found"));
+            Category c = interactionApiManager.getCategoryById(dto.getCategory());
             e.setCategory(c);
         }
 

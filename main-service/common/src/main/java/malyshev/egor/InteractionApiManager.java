@@ -9,8 +9,10 @@ import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.feign.category.CategoryPublicFeignClient;
 import malyshev.egor.feign.event.EventAdminFeignClient;
 import malyshev.egor.feign.user.UserAdminFeignClient;
+import malyshev.egor.mapper.CategoryMapper;
 import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.mapper.UserMapper;
+import malyshev.egor.model.category.Category;
 import malyshev.egor.model.event.Event;
 import malyshev.egor.model.user.User;
 import org.springframework.stereotype.Service;
@@ -65,4 +67,11 @@ public class InteractionApiManager {
         }
         return EventMapper.toEvent(eventFullDto, initiator.getEmail());
     }
+
+    public Category getCategoryById(Long categoryId) {
+        CategoryDto categoryDto = categoryPublicFeignClient.get(categoryId);
+        return CategoryMapper.toCategory(categoryDto);
+    }
+
+
 }

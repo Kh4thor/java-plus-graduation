@@ -31,7 +31,6 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final InteractionApiManager interactionApiManager;
 
-
     @Override
     public List<ParticipationRequestDto> getUserRequests(long userId) {
         return requestRepository.findAllByRequesterId(userId).stream()
