@@ -1,10 +1,10 @@
-package malysev.egor.controller.admin;
+package malyshev.egor.controller.event;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.event.dto.EventFullDto;
-import malyshev.egor.ewm.service.event.dto.UpdateEventAdminRequest;
-import malyshev.egor.ewm.service.event.service.EventService;
+import malysev.egor.service.EventService;
+import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

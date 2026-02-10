@@ -94,6 +94,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
 
 
+
         return eventRepository.findAllById(eventIds).stream()
                 .map(e -> {
                     long confirmed = requestRepository

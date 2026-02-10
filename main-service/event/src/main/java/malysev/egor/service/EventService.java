@@ -1,6 +1,6 @@
 package malysev.egor.service;
 
-import malyshev.egor.ewm.service.event.dto.*;
+import malyshev.egor.dto.event.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
