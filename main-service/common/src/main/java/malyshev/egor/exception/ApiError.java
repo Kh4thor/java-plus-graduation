@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.exception;
+package malyshev.egor.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

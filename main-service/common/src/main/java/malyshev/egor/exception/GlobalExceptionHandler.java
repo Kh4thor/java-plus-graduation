@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.exception;
+package malyshev.egor.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;

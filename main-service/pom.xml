@@ -21,6 +21,7 @@
         <module>event</module>
         <module>request</module>
         <module>user</module>
+        <module>common</module>
     </modules>
 
     <dependencies>

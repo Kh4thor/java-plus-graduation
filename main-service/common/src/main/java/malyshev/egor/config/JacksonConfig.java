@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.config;
+package malyshev.egor.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

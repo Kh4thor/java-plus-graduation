@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.config;
+package malyshev.egor.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
