@@ -2,7 +2,7 @@ package malyshev.egor.dto.compilation;
 
 import lombok.Builder;
 import lombok.Data;
-import malyshev.egor.ewm.service.event.dto.EventShortDto;
+import malyshev.egor.dto.event.EventShortDto;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package malyshev.egor.repository;
 
-import malyshev.egor.ewm.service.compilation.model.Compilation;
+import malyshev.egor.model.Compilation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

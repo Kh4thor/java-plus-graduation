@@ -1,9 +1,9 @@
 package malyshev.egor.service;
 
 
-import malyshev.egor.dto.CompilationDto;
-import malyshev.egor.dto.NewCompilationDto;
-import malyshev.egor.dto.UpdateCompilationRequest;
+import malyshev.egor.dto.compilation.CompilationDto;
+import malyshev.egor.dto.compilation.NewCompilationDto;
+import malyshev.egor.dto.compilation.UpdateCompilationRequest;
 
 /**
  * Админский сервис подборок.

@@ -1,9 +1,10 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.dto.CompilationDto;
-import malyshev.egor.dto.NewCompilationDto;
-import malyshev.egor.dto.UpdateCompilationRequest;
+import malyshev.egor.dto.compilation.CompilationDto;
+import malyshev.egor.dto.compilation.NewCompilationDto;
+import malyshev.egor.dto.compilation.UpdateCompilationRequest;
+import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.model.Compilation;
 
 import java.util.HashSet;
