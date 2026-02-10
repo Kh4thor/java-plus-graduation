@@ -1,8 +1,8 @@
 package malyshev.egor.controller;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.comment.dto.CommentFullDto;
-import malyshev.egor.ewm.service.comment.service.CommentService;
+import malyshev.egor.dto.comment.CommentFullDto;
+import malyshev.egor.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

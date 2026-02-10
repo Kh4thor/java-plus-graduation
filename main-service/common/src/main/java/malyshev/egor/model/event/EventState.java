@@ -1,4 +1,4 @@
-package malysev.egor.model;
+package malyshev.egor.model.event;
 
 public enum EventState {
     PENDING,
