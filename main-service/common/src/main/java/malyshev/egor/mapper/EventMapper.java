@@ -1,17 +1,14 @@
 package malyshev.egor.mapper;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Enumerated;
 import lombok.experimental.UtilityClass;
+import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
+import malyshev.egor.dto.user.UserShortDto;
+import malyshev.egor.model.category.Category;
 import malyshev.egor.model.event.Event;
-import malyshev.egor.model.event.EventState;
-
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.EnumType.STRING;
+import malyshev.egor.model.user.User;
 
 @UtilityClass
 public final class EventMapper {
@@ -55,16 +52,22 @@ public final class EventMapper {
                 .build();
     }
 
-    public static Event toEvent(EventFullDto eventFullDto) {
+    public static Event toEvent(EventFullDto eventFullDto, String userEmail) {
         if (eventFullDto == null) {
             return null;
         }
 
+        CategoryDto categoryDto = eventFullDto.getCategory();
+        Category category = CategoryMapper.toCategory(categoryDto);
+
+        UserShortDto initiatorDto = eventFullDto.getInitiator();
+        User initiator = UserMapper.toUser(initiatorDto, userEmail);
+
         return Event.builder()
                 .id(eventFullDto.getId())
                 .annotation(eventFullDto.getAnnotation())
-                .category(CategoryMapper.toCategory(eventFullDto.getCategory()))
-                .initiator(UserMapper.toUser(eventFullDto.getInitiator()))
+                .category(category)
+                .initiator(initiator)
                 .description(eventFullDto.getDescription())
                 .location(eventFullDto.getLocation())
                 .paid(eventFullDto.isPaid())

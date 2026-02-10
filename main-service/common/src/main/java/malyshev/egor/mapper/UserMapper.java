@@ -1,7 +1,7 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.dto.event.UserShortDto;
+import malyshev.egor.dto.user.UserShortDto;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.model.user.User;
 

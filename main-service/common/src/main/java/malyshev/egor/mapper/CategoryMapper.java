@@ -7,6 +7,9 @@ import malyshev.egor.model.category.Category;
 @UtilityClass
 public final class CategoryMapper {
     public static CategoryDto toDto(Category c) {
+        if (c == null) {
+            return null;
+        }
         return CategoryDto.builder()
                 .id(c.getId())
                 .name(c.getName())
@@ -17,7 +20,6 @@ public final class CategoryMapper {
         if (categoryDto == null) {
             return null;
         }
-
         return Category.builder()
                 .id(categoryDto.getId())
                 .name(categoryDto.getName())
