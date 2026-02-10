@@ -1,8 +1,8 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;
-import malyshev.egor.ewm.service.request.model.ParticipationRequest;
+import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.model.request.ParticipationRequest;
 
 @UtilityClass
 public class RequestMapper {

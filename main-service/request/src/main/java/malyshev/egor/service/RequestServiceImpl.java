@@ -2,19 +2,16 @@ package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.ewm.service.event.model.Event;
-import malyshev.egor.ewm.service.event.model.EventState;
-import malyshev.egor.ewm.service.event.repository.EventRepository;
-import malyshev.egor.ewm.service.exception.NotFoundException;
-import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest;
-import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateResult;
-import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;
-import malyshev.egor.ewm.service.request.mapper.RequestMapper;
-import malyshev.egor.ewm.service.request.model.ParticipationRequest;
-import malyshev.egor.ewm.service.request.model.RequestStatus;
-import malyshev.egor.ewm.service.request.repository.RequestRepository;
-import malyshev.egor.ewm.service.user.model.User;
-import malyshev.egor.ewm.service.user.repository.UserRepository;
+import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
+import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
+import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.mapper.RequestMapper;
+import malyshev.egor.model.event.EventState;
+import malyshev.egor.model.request.ParticipationRequest;
+import malyshev.egor.model.request.RequestStatus;
+import malyshev.egor.model.user.User;
+import malyshev.egor.repository.RequestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +19,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest.Status.CONFIRMED;
-import static malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest.Status.REJECTED;
 
 @Slf4j
 @RequiredArgsConstructor

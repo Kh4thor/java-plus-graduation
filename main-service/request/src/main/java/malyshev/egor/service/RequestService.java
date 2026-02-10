@@ -1,8 +1,9 @@
 package malyshev.egor.service;
 
-import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest;
-import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateResult;
-import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;
+
+import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
+import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
+import malyshev.egor.dto.request.ParticipationRequestDto;
 
 import java.util.List;
 
