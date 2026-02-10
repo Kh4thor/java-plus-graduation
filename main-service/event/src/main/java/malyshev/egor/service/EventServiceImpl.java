@@ -1,6 +1,7 @@
 package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
+import malyshev.egor.InteractionApiManager;
 import malyshev.egor.InteractionEntityManager;
 import malyshev.egor.repository.EventRepository;
 import malyshev.egor.dto.event.*;
@@ -32,7 +33,7 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
-    InteractionEntityManager
+    private final InteractionApiManager interactionApiManager;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -47,23 +48,30 @@ public class EventServiceImpl implements EventService {
         validateRangeOrThrow(start, end);                // 400 если end < start
 
         // только опубликованные
-        Specification<Event> spec = (root, q, cb) -> cb.equal(root.get("state"), EventState.PUBLISHED);
+        Specification<Event> spec = (root, q, cb)
+                -> cb.equal(root.get("state"), EventState.PUBLISHED);
 
         if (text != null && !text.isBlank()) {
             String pattern = "%" + text.toLowerCase() + "%";
-            spec = spec.and((root, q, cb) -> cb.or(cb.like(cb.lower(root.get("annotation")), pattern), cb.like(cb.lower(root.get("description")), pattern)));
+            spec = spec.and((root, q, cb)
+                    -> cb.or(cb.like(cb.lower(root.get("annotation")), pattern),
+                    cb.like(cb.lower(root.get("description")), pattern)));
         }
         if (paid != null) {
-            spec = spec.and((root, q, cb) -> cb.equal(root.get("paid"), paid));
+            spec = spec.and((root, q, cb)
+                    -> cb.equal(root.get("paid"), paid));
         }
         if (categories != null && !categories.isEmpty()) {
-            spec = spec.and((root, q, cb) -> root.get("category").get("id").in(categories));
+            spec = spec.and((root, q, cb)
+                    -> root.get("category").get("id").in(categories));
         }
         if (start != null) {
-            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("eventDate"), start));
+            spec = spec.and((root, q, cb)
+                    -> cb.greaterThanOrEqualTo(root.get("eventDate"), start));
         }
         if (end != null) {
-            spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("eventDate"), end));
+            spec = spec.and((root, q, cb)
+                    -> cb.lessThanOrEqualTo(root.get("eventDate"), end));
         }
 
         // фиксируем просмотр

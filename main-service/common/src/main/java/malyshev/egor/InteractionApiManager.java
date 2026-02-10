@@ -65,11 +65,4 @@ public class InteractionApiManager {
         }
         return EventMapper.toEvent(eventFullDto, initiator.getEmail());
     }
-
-    CategoryDto getCategoryDById(Long categoryId) {
-        return categoryPublicFeignClient.get(categoryId);
-    }
-
-
-
 }

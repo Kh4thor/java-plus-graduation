@@ -2,17 +2,13 @@ package malyshev.egor.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.InteractionEntityGetter;
-import malyshev.egor.InteractionEntityManager;
+import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.request.EventRequestStatus;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
-import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.exception.NotFoundException;
-import malyshev.egor.feign.user.UserAdminFeignClient;
 import malyshev.egor.mapper.RequestMapper;
-import malyshev.egor.mapper.UserMapper;
 import malyshev.egor.model.event.Event;
 import malyshev.egor.model.event.EventState;
 import malyshev.egor.model.request.ParticipationRequest;
@@ -26,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -34,14 +29,11 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
-    private final InteractionEntityManager interactionEntityGetter;
+    private final InteractionApiManager interactionApiManager;
 
-
-    private final EventRepository eventRepository;
 
     @Override
     public List<ParticipationRequestDto> getUserRequests(long userId) {
-        assertUserExists(userId);
         return requestRepository.findAllByRequesterId(userId).stream()
                 .map(RequestMapper::toRequestDto)
                 .toList();
@@ -51,9 +43,9 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public ParticipationRequestDto createRequest(long userId, long eventId) {
 
-        Event event = interactionEntityGetter.getEventByUserIdAndEventId(userId, eventId);
+        Event event = interactionApiManager.getEventByUserIdAndEventId(userId, eventId);
         validateRequest(userId, event);
-        User user = interactionEntityGetter.getUserById(userId);
+        User user = interactionApiManager.getUserById(userId);
         ParticipationRequest request = ParticipationRequest.builder()
                 .requester(user)
                 .event(event)
@@ -71,8 +63,6 @@ public class RequestServiceImpl implements RequestService {
             request.setStatus(RequestStatus.PENDING);
         }
 
-        interactionEntityGetter
-
         request = requestRepository.save(request);
         return RequestMapper.toRequestDto(request);
     }
@@ -80,7 +70,6 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto cancelRequest(long userId, long requestId) {
-        assertUserExists(userId);
 
         ParticipationRequest req = requestRepository.findById(requestId)
                 .orElseThrow(() -> {
@@ -104,14 +93,11 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие " + eventId + " не найдено"));
-
+        Event event = interactionApiManager.getEventByUserIdAndEventId(userId, eventId);
         if (!event.getInitiator().getId().equals(userId)) {
             // 409
             throw new IllegalStateException("Пользователь не является инициатором события");
         }
-
         return requestRepository.findAllByEventId(eventId).stream()
                 .map(RequestMapper::toRequestDto)
                 .toList();
@@ -120,9 +106,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public EventRequestStatusUpdateResult updateEventRequests(long userId, long eventId, EventRequestStatusUpdateRequest body) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие " + eventId + " не найдено"));
-
+        Event event = interactionApiManager.getEventByUserIdAndEventId(userId, eventId);
         if (!event.getInitiator().getId().equals(userId)) {
             throw new IllegalStateException("Пользователь не является инициатором события");
         }
@@ -209,12 +193,6 @@ public class RequestServiceImpl implements RequestService {
                 log.warn("Participant limit reached for event={}", event.getId());
                 throw new IllegalStateException("The participant limit has been reached");
             }
-        }
-    }
-
-    private void assertUserExists(long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User with id=" + userId + " was not found");
         }
     }
 }
