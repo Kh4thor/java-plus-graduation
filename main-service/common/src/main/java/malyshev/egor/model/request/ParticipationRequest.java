@@ -1,11 +1,11 @@
-package malyshev.egor.model;
+package malyshev.egor.model.request;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import malyshev.egor.ewm.service.event.model.Event;
-import malyshev.egor.ewm.service.user.model.User;
+import malyshev.egor.model.event.Event;
+import malyshev.egor.model.user.User;
 
 import java.time.LocalDateTime;
 

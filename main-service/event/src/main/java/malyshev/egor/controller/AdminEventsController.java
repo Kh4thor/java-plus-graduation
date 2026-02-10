@@ -1,4 +1,4 @@
-package malyshev.egor.controller.event;
+package malyshev.egor.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

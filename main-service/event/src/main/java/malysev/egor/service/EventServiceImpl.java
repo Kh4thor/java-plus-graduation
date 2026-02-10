@@ -1,17 +1,13 @@
 package malysev.egor.service;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.category.repository.CategoryRepository;
-import malyshev.egor.ewm.service.event.dto.*;
-import malyshev.egor.ewm.service.event.mapper.EventMapper;
-import malyshev.egor.ewm.service.event.model.Event;
-import malyshev.egor.ewm.service.event.model.EventState;
-import malyshev.egor.ewm.service.event.model.Location;
-import malyshev.egor.ewm.service.event.repository.EventRepository;
-import malyshev.egor.ewm.service.exception.NotFoundException;
-import malyshev.egor.ewm.service.request.model.RequestStatus;
-import malyshev.egor.ewm.service.request.repository.RequestRepository;
-import malyshev.egor.ewm.service.user.repository.UserRepository;
+import malysev.egor.repository.EventRepository;
+import malyshev.egor.dto.event.*;
+import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.mapper.EventMapper;
+import malyshev.egor.model.event.Event;
+import malyshev.egor.model.event.EventState;
+import malyshev.egor.model.request.RequestStatus;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +22,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
 
-import static malyshev.egor.ewm.service.event.model.EventState.PUBLISHED;
 
 @Service
 @RequiredArgsConstructor

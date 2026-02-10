@@ -1,4 +1,4 @@
-package malyshev.egor.feign;
+package malyshev.egor.feign.user;
 
 import feign.FeignException;
 import jakarta.validation.Valid;
