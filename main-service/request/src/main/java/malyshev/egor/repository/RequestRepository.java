@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.repository;
+package malyshev.egor.repository;
 
 import malyshev.egor.ewm.service.request.model.ParticipationRequest;
 import malyshev.egor.ewm.service.request.model.RequestStatus;

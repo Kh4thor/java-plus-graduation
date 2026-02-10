@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.service;
+package malyshev.egor.service;
 
 import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest;
 import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateResult;

@@ -19,6 +19,7 @@
         <module>category</module>
         <module>comment</module>
         <module>event</module>
+        <module>request</module>
     </modules>
 
     <dependencies>

@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.dto;
+package malyshev.egor.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

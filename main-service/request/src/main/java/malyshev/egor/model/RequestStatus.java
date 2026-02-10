@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.model;
+package malyshev.egor.model;
 
 public enum RequestStatus {
     PENDING,

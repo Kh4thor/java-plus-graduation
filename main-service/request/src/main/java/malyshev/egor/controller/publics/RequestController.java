@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.controller.publics;
+package malyshev.egor.controller.publics;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;

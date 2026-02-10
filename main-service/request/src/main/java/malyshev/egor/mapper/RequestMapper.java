@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.mapper;
+package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
 import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;

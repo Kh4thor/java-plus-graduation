@@ -1,4 +1,4 @@
-package malyshev.egor.ewm.service.request.controller.privates;
+package malyshev.egor.controller.privates;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.ewm.service.request.dto.EventRequestStatusUpdateRequest;
