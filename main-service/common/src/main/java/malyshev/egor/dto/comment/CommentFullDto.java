@@ -2,7 +2,7 @@ package malyshev.egor.dto.comment;
 
 import lombok.Builder;
 import lombok.Data;
-import malyshev.egor.ewm.service.event.dto.UserShortDto;
+import malyshev.egor.dto.event.UserShortDto;
 
 import java.time.LocalDateTime;
 

@@ -2,9 +2,9 @@ package malyshev.egor.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.comment.dto.CommentShortDto;
-import malyshev.egor.ewm.service.comment.dto.NewCommentDto;
-import malyshev.egor.ewm.service.comment.service.CommentService;
+import malyshev.egor.dto.comment.CommentShortDto;
+import malyshev.egor.dto.comment.NewCommentDto;
+import malyshev.egor.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
 package malyshev.egor.repository;
 
-import malyshev.egor.ewm.service.comment.model.Comment;
+import malyshev.egor.model.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,10 +1,9 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.ewm.service.comment.dto.CommentFullDto;
-import malyshev.egor.ewm.service.comment.dto.CommentShortDto;
-import malyshev.egor.ewm.service.comment.model.Comment;
-import malyshev.egor.ewm.service.event.mapper.EventMapper;
+import malyshev.egor.dto.comment.CommentFullDto;
+import malyshev.egor.dto.comment.CommentShortDto;
+import malyshev.egor.model.Comment;
 
 @UtilityClass
 public class CommentMapper {
