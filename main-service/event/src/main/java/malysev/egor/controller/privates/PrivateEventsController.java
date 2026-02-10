@@ -2,11 +2,11 @@ package malysev.egor.controller.privates;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.event.dto.EventFullDto;
-import malyshev.egor.ewm.service.event.dto.EventShortDto;
-import malyshev.egor.ewm.service.event.dto.NewEventDto;
-import malyshev.egor.ewm.service.event.dto.UpdateEventUserRequest;
-import malyshev.egor.ewm.service.event.service.EventService;
+import malysev.egor.service.EventService;
+import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventShortDto;
+import malyshev.egor.dto.event.NewEventDto;
+import malyshev.egor.dto.event.UpdateEventUserRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
