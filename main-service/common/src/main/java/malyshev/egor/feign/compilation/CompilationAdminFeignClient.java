@@ -1,4 +1,4 @@
-package malyshev.egor.feign.compilation.admin;
+package malyshev.egor.feign.compilation;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -10,9 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
 @FeignClient(name = "compilation-service",
-        contextId = "compilationAdminClient",
+        contextId = "compilationAdminApiClient",
         path = "/admin/compilations")
 @Validated
 public interface CompilationAdminFeignClient {

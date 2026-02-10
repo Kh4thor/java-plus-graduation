@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "user-service", path = "/admin/users")
-public interface UserFeignClient {
+@FeignClient(name = "user-service",
+        contextId = "userAdminApiClient",
+        path = "/admin/users")
+public interface UserAdminFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -1,6 +1,5 @@
 package malyshev.egor.service;
 
-
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.compilation.NewCompilationDto;
 import malyshev.egor.dto.compilation.UpdateCompilationRequest;
