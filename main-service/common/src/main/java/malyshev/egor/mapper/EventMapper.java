@@ -1,13 +1,10 @@
 package malyshev.egor.mapper;
 
 import lombok.experimental.UtilityClass;
-import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
-import malyshev.egor.dto.event.UserShortDto;
 import malyshev.egor.model.event.Event;
-import malyshev.egor.model.user.User;
 
 @UtilityClass
 public final class EventMapper {
@@ -15,10 +12,10 @@ public final class EventMapper {
         return EventShortDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
-                .category(EventMapper.toCategoryDto(e.getCategory()))
+                .category(CategoryMapper.toDto(e.getCategory()))
                 .confirmedRequests(confirmed)
                 .eventDate(e.getEventDate())
-                .initiator(EventMapper.toUserShort(e.getInitiator()))
+                .initiator(UserMapper.toUserShort(e.getInitiator()))
                 .paid(e.isPaid())
                 .title(e.getTitle()).views(views)
                 .build();
@@ -28,12 +25,12 @@ public final class EventMapper {
         return EventFullDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
-                .category(EventMapper.toCategoryDto(e.getCategory()))
+                .category(CategoryMapper.toDto(e.getCategory()))
                 .confirmedRequests(confirmed)
                 .createdOn(e.getCreatedOn())
                 .description(e.getDescription())
                 .eventDate(e.getEventDate())
-                .initiator(EventMapper.toUserShort(e.getInitiator()))
+                .initiator(UserMapper.toUserShort(e.getInitiator()))
                 .location(new LocationDto(e.getLocation().getLat(), e.getLocation().getLon()))
                 .paid(e.isPaid())
                 .participantLimit(e.getParticipantLimit())

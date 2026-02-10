@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import malyshev.egor.dto.category.CategoryDto;
 
 import java.time.LocalDateTime;
 

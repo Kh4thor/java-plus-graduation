@@ -2,8 +2,8 @@ package malyshev.egor.model.event;
 
 import jakarta.persistence.*;
 import lombok.*;
-import malyshev.egor.ewm.service.category.model.Category;
-import malyshev.egor.ewm.service.user.model.User;
+import malyshev.egor.model.category.Category;
+import malyshev.egor.model.user.User;
 
 import java.time.LocalDateTime;
 

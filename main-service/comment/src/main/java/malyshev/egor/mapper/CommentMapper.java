@@ -27,7 +27,8 @@ public class CommentMapper {
         return CommentFullDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .commentator(comment.getCommentator() == null ? null : EventMapper.toUserShort(comment.getCommentator()))
+                .commentator(comment.getCommentator() == null ?
+                        null : UserMapper.toUserShort(comment.getCommentator()))
                 .publishedOn(comment.getPublishedOn())
                 .deleted(comment.isDeleted())
                 .build();
