@@ -2,11 +2,12 @@ package malyshev.egor.controller.privates;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.service.EventService;
+import malyshev.egor.service.EventPublicService;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.NewEventDto;
 import malyshev.egor.dto.event.UpdateEventUserRequest;
+import malyshev.egor.service.privates.EventPrivateService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("/users/{userId}/events")
 public class PrivateEventsController {
 
-    private final EventService service;
+    private final EventPrivateService service;
 
     @GetMapping
     public List<EventShortDto> getUserEvents(@PathVariable Long userId,
@@ -40,7 +41,7 @@ public class PrivateEventsController {
                 dto
         );
     }
-
+    // PRIVATE
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(@PathVariable Long userId,
                                      @PathVariable Long eventId) {

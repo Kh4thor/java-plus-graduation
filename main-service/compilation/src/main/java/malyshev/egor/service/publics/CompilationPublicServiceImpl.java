@@ -1,17 +1,15 @@
-package malyshev.egor.service;
+package malyshev.egor.service.publics;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.ewm.service.compilation.dto.CompilationDto;
-import malyshev.egor.ewm.service.compilation.exception.CompilationNotFoundException;
-import malyshev.egor.ewm.service.compilation.mapper.CompilationMapper;
-import malyshev.egor.ewm.service.compilation.model.Compilation;
-import malyshev.egor.ewm.service.compilation.repository.CompilationRepository;
-import malyshev.egor.ewm.service.event.dto.EventShortDto;
-import malyshev.egor.ewm.service.event.mapper.EventMapper;
-import malyshev.egor.ewm.service.event.repository.EventRepository;
-import malyshev.egor.ewm.service.request.model.RequestStatus;
-import malyshev.egor.ewm.service.request.repository.RequestRepository;
+import malyshev.egor.dto.compilation.CompilationDto;
+import malyshev.egor.dto.event.EventShortDto;
+import malyshev.egor.exception.CompilationNotFoundException;
+import malyshev.egor.mapper.CompilationMapper;
+import malyshev.egor.mapper.EventMapper;
+import malyshev.egor.model.Compilation;
+import malyshev.egor.model.request.RequestStatus;
+import malyshev.egor.repository.CompilationRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

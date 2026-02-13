@@ -1,4 +1,4 @@
-package malyshev.egor.service;
+package malyshev.egor.service.admins;
 
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.compilation.NewCompilationDto;

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.dto.compilation.CompilationDto;
-import malyshev.egor.service.CompilationPublicService;
+import malyshev.egor.service.publics.CompilationPublicService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
