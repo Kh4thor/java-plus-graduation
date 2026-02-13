@@ -1,4 +1,4 @@
-package malyshev.egor.controller.admin;
+package malyshev.egor.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.compilation.NewCompilationDto;
 import malyshev.egor.dto.compilation.UpdateCompilationRequest;
-import malyshev.egor.service.admins.CompilationAdminService;
+import malyshev.egor.service.admins.AdminCompilationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CompilationAdminController {
 
-    private final CompilationAdminService service;
+    private final AdminCompilationService adminCompilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto create(@Valid @RequestBody NewCompilationDto dto) {
         log.info("АДМИН API: создание подборки title={}", dto.getTitle());
-        return service.create(dto);
+        return adminCompilationService.create(dto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @Positive Long compId) {
         log.info("АДМИН API: удаление подборки id={}", compId);
-        service.delete(compId);
+        adminCompilationService.delete(compId);
     }
 
     @PatchMapping("/{compId}")
@@ -51,7 +51,7 @@ public class CompilationAdminController {
                 dto.getPinned(),
                 dto.getTitle());
 
-        CompilationDto resp = service.update(compId, dto);
+        CompilationDto resp = adminCompilationService.update(compId, dto);
 
         log.info("АДМИН API: результат PATCH: id={}, количество событий={}, pinned={}, title={}",
                 resp.getId(),

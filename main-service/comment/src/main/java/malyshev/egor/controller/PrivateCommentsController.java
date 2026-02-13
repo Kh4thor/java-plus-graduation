@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.comment.CommentShortDto;
 import malyshev.egor.dto.comment.NewCommentDto;
-import malyshev.egor.service.CommentService;
+import malyshev.egor.service.privates.PrivateCommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/users/{userId}/events/{eventId}/comments")
 public class PrivateCommentsController {
 
-    private final CommentService commentService;
+    private final PrivateCommentService privateCommentService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -25,7 +25,7 @@ public class PrivateCommentsController {
             @PathVariable Long userId,
             @PathVariable Long eventId,
             @RequestBody @Valid NewCommentDto dto) {
-        return commentService.createComment(dto, userId, eventId);
+        return privateCommentService.createComment(dto, userId, eventId);
     }
 
     @PatchMapping("/{commentId}")
@@ -35,7 +35,7 @@ public class PrivateCommentsController {
             @PathVariable Long eventId,
             @PathVariable Long commentId,
             @RequestBody @Valid NewCommentDto dto) {
-        return commentService.patchComment(dto, userId, eventId, commentId);
+        return privateCommentService.patchComment(dto, userId, eventId, commentId);
     }
 
     @DeleteMapping("/{commentId}")
@@ -45,7 +45,7 @@ public class PrivateCommentsController {
             @PathVariable Long eventId,
             @PathVariable Long commentId
     ) {
-        return commentService.deleteCommentByPrivate(userId, eventId, commentId);
+        return privateCommentService.deleteCommentByPrivate(userId, eventId, commentId);
     }
 
     @GetMapping
@@ -53,6 +53,6 @@ public class PrivateCommentsController {
             @PathVariable Long userId,
             @PathVariable Long eventId
     ) {
-        return commentService.getAllCommentsByEventPrivate(userId, eventId);
+        return privateCommentService.getAllCommentsByEventPrivate(userId, eventId);
     }
 }

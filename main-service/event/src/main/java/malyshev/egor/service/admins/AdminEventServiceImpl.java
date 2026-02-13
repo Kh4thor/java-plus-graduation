@@ -5,18 +5,13 @@ import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.*;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
-import malyshev.egor.mapper.LocationMapper;
 import malyshev.egor.model.category.Category;
 import malyshev.egor.model.event.Event;
 import malyshev.egor.model.event.EventState;
 import malyshev.egor.model.event.Location;
 import malyshev.egor.model.request.RequestStatus;
-import malyshev.egor.model.user.User;
 import malyshev.egor.repository.EventRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.stats.client.StatsClient;
@@ -30,7 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EventAdminServiceImpl implements EventAdminService {
+public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;

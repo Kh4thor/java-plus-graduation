@@ -2,7 +2,7 @@ package malyshev.egor.controller;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.comment.CommentShortDto;
-import malyshev.egor.service.CommentService;
+import malyshev.egor.service.publics.PublicCommentService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +17,12 @@ import java.util.List;
 @RequestMapping("/events/{eventId}/comments")
 public class PublicCommentController {
 
-    private final CommentService commentService;
+    private final PublicCommentService publicCommentService;
 
     @GetMapping
     public List<CommentShortDto> getAllCommentsByEvent(
             @PathVariable Long eventId
     ) {
-        return commentService.getAllCommentsByEventPublic(eventId);
+        return publicCommentService.getAllCommentsByEventPublic(eventId);
     }
 }

@@ -24,7 +24,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-public class CompilationAdminServiceImpl implements CompilationAdminService {
+public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     private final CompilationRepository repository;
     private final EventRepository eventRepository;

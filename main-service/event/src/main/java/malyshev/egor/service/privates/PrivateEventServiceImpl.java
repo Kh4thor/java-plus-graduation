@@ -13,10 +13,7 @@ import malyshev.egor.model.event.Location;
 import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.model.user.User;
 import malyshev.egor.repository.EventRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.stats.client.StatsClient;
@@ -30,7 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EventPrivateServiceImpl implements EventPrivateService {
+public class PrivateEventServiceImpl implements PrivateEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;

@@ -1,11 +1,11 @@
-package malyshev.egor.controller.publics;
+package malyshev.egor.controller;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.dto.compilation.CompilationDto;
-import malyshev.egor.service.publics.CompilationPublicService;
+import malyshev.egor.service.publics.PublicCompilationService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,18 +18,18 @@ import java.util.List;
 @Validated
 public class CompilationPublicController {
 
-    private final CompilationPublicService service;  // ← интерфейс
+    private final PublicCompilationService publicCompilationService;  // ← интерфейс
 
     @GetMapping
     public List<CompilationDto> getCompilations(
             @RequestParam(required = false) Boolean pinned,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Positive int size) {
-        return service.getCompilations(pinned, from, size);
+        return publicCompilationService.getCompilations(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
     public CompilationDto getById(@PathVariable @Positive Long compId) {
-        return service.getById(compId);
+        return publicCompilationService.getById(compId);
     }
 }

@@ -1,11 +1,10 @@
-package malyshev.egor.controller.admins;
+package malyshev.egor.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.service.EventPublicService;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
-import malyshev.egor.service.admins.EventAdminService;
+import malyshev.egor.service.admins.AdminEventService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequestMapping("/admin/events")
 public class AdminEventsController {
 
-    private final EventAdminService service;
+    private final AdminEventService adminEventService;
 
     @GetMapping
     public List<EventFullDto> search(@RequestParam(value = "users", required = false) List<Long> users,
@@ -28,7 +27,7 @@ public class AdminEventsController {
                                      @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                      @RequestParam(value = "from", defaultValue = "0") int from,
                                      @RequestParam(value = "size", defaultValue = "10") int size) {
-        return service.adminSearch(
+        return adminEventService.adminSearch(
                 users,
                 states,
                 categories,
@@ -41,7 +40,7 @@ public class AdminEventsController {
     @PatchMapping("/{eventId}")
     public EventFullDto update(@PathVariable Long eventId,
                                @Valid @RequestBody UpdateEventAdminRequest dto) {
-        return service.adminUpdate(
+        return adminEventService.adminUpdate(
                 eventId,
                 dto
         );

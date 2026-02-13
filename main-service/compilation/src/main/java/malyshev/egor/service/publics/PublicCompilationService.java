@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Публичный сервис подборок.
  */
-public interface CompilationPublicService {
+public interface PublicCompilationService {
 
     List<CompilationDto> getCompilations(Boolean pinned, int from, int size);
 

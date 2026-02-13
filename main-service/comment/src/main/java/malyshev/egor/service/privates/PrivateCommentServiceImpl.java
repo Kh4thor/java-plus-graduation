@@ -1,9 +1,8 @@
-package malyshev.egor.service;
+package malyshev.egor.service.privates;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import malyshev.egor.dto.comment.CommentFullDto;
 import malyshev.egor.dto.comment.CommentShortDto;
 import malyshev.egor.dto.comment.NewCommentDto;
 import malyshev.egor.exception.NotFoundException;
@@ -23,7 +22,7 @@ import java.util.Objects;
 
 @Service
 @AllArgsConstructor
-public class CommentService {
+public class PrivateCommentServiceImpl implements PrivateCommentService {
 
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -32,6 +31,7 @@ public class CommentService {
 
     // PRIVATE
     @Transactional
+    @Override
     public CommentShortDto createComment(NewCommentDto dto, Long userId, Long eventId) {
         User commentator = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(
@@ -74,6 +74,7 @@ public class CommentService {
 
     // PRIVATE
     @Transactional
+    @Override
     public CommentShortDto patchComment(@Valid NewCommentDto dto, Long userId, Long eventId, Long commentId) {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
                 () -> new NotFoundException("Unable to patch comment. Comment id=" + commentId + "not found")
@@ -111,6 +112,7 @@ public class CommentService {
 
     // PRIVATE
     @Transactional
+    @Override
     public CommentShortDto deleteCommentByPrivate(Long userId, Long eventId, Long commentId) {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
                 () -> new NotFoundException("Unable to delete comment. Comment id=" + commentId + "not found")
@@ -145,44 +147,16 @@ public class CommentService {
         return CommentMapper.toShortDto(comment);
     }
 
-    // ADMIN
-    @Transactional
-    public CommentFullDto deleteCommentByAdmin(Long eventId, Long commentId) {
-        Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
-                () -> new NotFoundException("Unable to delete comment. Comment id=" + commentId + "not found")
-        );
-        comment.setDeleted(true);
-        comment = commentRepository.save(comment);
-        return CommentMapper.toFullDto(comment);
-    }
-
 
     // PRIVATE
     @Transactional
+    @Override
     public List<CommentShortDto> getAllCommentsByEventPrivate(Long userId, Long eventId) {
         List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
 
         return commentList.stream()
                 .map(CommentMapper::toShortDto)
                 .filter(c -> c.getCommentator().getId().equals(userId))
-                .toList();
-    }
-
-    // PUBLIC
-    @Transactional
-    public List<CommentShortDto> getAllCommentsByEventPublic(Long eventId) {
-        List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
-
-        return commentList.stream()
-                .map(CommentMapper::toShortDto)
-                .toList();
-    }
-
-    // ADMIN
-    @Transactional
-    public List<CommentFullDto> getAllCommentsByEventAdmin(Long eventId) {
-        return commentRepository.findByEventId(eventId).stream()
-                .map(CommentMapper::toFullDto)
                 .toList();
     }
 }

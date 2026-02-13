@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "category-service",
-        contextId = "categoryAdminApiClient",
+        contextId = "adminCategoryApiClient",
         path = "/admin/categories")
 public interface CategoryAdminFeignClient {
 

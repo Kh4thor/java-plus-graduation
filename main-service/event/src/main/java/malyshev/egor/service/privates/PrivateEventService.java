@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface EventPrivateService {
+public interface PrivateEventService {
 
     // PRIVATE
     List<EventShortDto> getUserEvents(Long userId, Pageable pageable);

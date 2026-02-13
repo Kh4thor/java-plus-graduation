@@ -1,10 +1,10 @@
-package malyshev.egor.controller.privates;
+package malyshev.egor.controller;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
-import malyshev.egor.service.privates.RequestPrivateService;
+import malyshev.egor.service.privates.PrivateRequestService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,18 +14,18 @@ import java.util.List;
 @RequestMapping("/users/{userId}/events/{eventId}/requests")
 public class RequestPrivateController {
 
-    private final RequestPrivateService requestService;
+    private final PrivateRequestService privateRequestService;
 
     @GetMapping
     public List<ParticipationRequestDto> list(@PathVariable long userId,
                                               @PathVariable long eventId) {
-        return requestService.getEventRequests(userId, eventId);
+        return privateRequestService.getEventRequests(userId, eventId);
     }
 
     @PatchMapping
     public EventRequestStatusUpdateResult update(@PathVariable long userId,
                                                  @PathVariable long eventId,
                                                  @RequestBody EventRequestStatusUpdateRequest body) {
-        return requestService.updateEventRequests(userId, eventId, body);
+        return privateRequestService.updateEventRequests(userId, eventId, body);
     }
 }

@@ -7,7 +7,7 @@ import malyshev.egor.dto.request.ParticipationRequestDto;
 
 import java.util.List;
 
-public interface RequestPrivateService {
+public interface PrivateRequestService {
 
     // PRIVATE
     List<ParticipationRequestDto> getEventRequests(long userId, long eventId);

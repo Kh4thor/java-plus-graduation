@@ -22,7 +22,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-public class CompilationPublicServiceImpl implements CompilationPublicService {
+public class PublicCompilationServiceImpl implements PublicCompilationService {
 
     private final CompilationRepository repository;
     private final EventRepository eventRepository;

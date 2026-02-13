@@ -3,9 +3,6 @@ package malyshev.egor.service.publics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.InteractionApiManager;
-import malyshev.egor.dto.request.EventRequestStatus;
-import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
-import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.RequestMapper;
@@ -19,14 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class RequestPublicServiceImpl implements RequestPublicService {
+public class PublicRequestServiceImpl implements PublicRequestService {
 
     private final RequestRepository requestRepository;
     private final InteractionApiManager interactionApiManager;

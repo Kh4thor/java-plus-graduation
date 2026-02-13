@@ -7,7 +7,7 @@ import malyshev.egor.dto.compilation.UpdateCompilationRequest;
 /**
  * Админский сервис подборок.
  */
-public interface CompilationAdminService {
+public interface AdminCompilationService {
 
     CompilationDto create(NewCompilationDto dto);
 

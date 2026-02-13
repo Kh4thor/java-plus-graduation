@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface UserService {
+public interface AdminUserService {
 
     UserDto add(NewUserRequest req);
 

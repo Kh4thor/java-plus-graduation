@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class RequestPrivateServiceImpl implements RequestPrivateService {
+public class PrivateRequestServiceImpl implements PrivateRequestService {
 
     private final RequestRepository requestRepository;
     private final InteractionApiManager interactionApiManager;
