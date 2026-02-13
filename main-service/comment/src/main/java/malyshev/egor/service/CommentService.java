@@ -6,8 +6,14 @@ import lombok.AllArgsConstructor;
 import malyshev.egor.dto.comment.CommentFullDto;
 import malyshev.egor.dto.comment.CommentShortDto;
 import malyshev.egor.dto.comment.NewCommentDto;
+import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.CommentMapper;
 import malyshev.egor.model.Comment;
+import malyshev.egor.model.event.Event;
+import malyshev.egor.model.event.EventState;
+import malyshev.egor.model.request.ParticipationRequest;
+import malyshev.egor.model.request.RequestStatus;
+import malyshev.egor.model.user.User;
 import malyshev.egor.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +30,7 @@ public class CommentService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
 
+    // PRIVATE
     @Transactional
     public CommentShortDto createComment(NewCommentDto dto, Long userId, Long eventId) {
         User commentator = userRepository.findById(userId).orElseThrow(
@@ -65,6 +72,7 @@ public class CommentService {
         return CommentMapper.toShortDto(cretedComment);
     }
 
+    // PRIVATE
     @Transactional
     public CommentShortDto patchComment(@Valid NewCommentDto dto, Long userId, Long eventId, Long commentId) {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
@@ -101,6 +109,7 @@ public class CommentService {
         return CommentMapper.toShortDto(comment);
     }
 
+    // PRIVATE
     @Transactional
     public CommentShortDto deleteCommentByPrivate(Long userId, Long eventId, Long commentId) {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
@@ -136,6 +145,7 @@ public class CommentService {
         return CommentMapper.toShortDto(comment);
     }
 
+    // ADMIN
     @Transactional
     public CommentFullDto deleteCommentByAdmin(Long eventId, Long commentId) {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
@@ -146,6 +156,19 @@ public class CommentService {
         return CommentMapper.toFullDto(comment);
     }
 
+
+    // PRIVATE
+    @Transactional
+    public List<CommentShortDto> getAllCommentsByEventPrivate(Long userId, Long eventId) {
+        List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
+
+        return commentList.stream()
+                .map(CommentMapper::toShortDto)
+                .filter(c -> c.getCommentator().getId().equals(userId))
+                .toList();
+    }
+
+    // PUBLIC
     @Transactional
     public List<CommentShortDto> getAllCommentsByEventPublic(Long eventId) {
         List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
@@ -155,6 +178,7 @@ public class CommentService {
                 .toList();
     }
 
+    // ADMIN
     @Transactional
     public List<CommentFullDto> getAllCommentsByEventAdmin(Long eventId) {
         return commentRepository.findByEventId(eventId).stream()

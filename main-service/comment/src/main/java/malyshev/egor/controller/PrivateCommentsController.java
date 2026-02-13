@@ -50,8 +50,9 @@ public class PrivateCommentsController {
 
     @GetMapping
     public List<CommentShortDto> getAllCommentsByEvent(
+            @PathVariable Long userId,
             @PathVariable Long eventId
     ) {
-        return commentService.getAllCommentsByEventPublic(eventId);
+        return commentService.getAllCommentsByEventPrivate(userId, eventId);
     }
 }
