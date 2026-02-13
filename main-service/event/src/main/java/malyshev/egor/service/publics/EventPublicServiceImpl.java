@@ -1,36 +1,39 @@
-package malyshev.egor.service;
+package malyshev.egor.service.publics;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
+import malyshev.egor.dto.event.*;
+import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.mapper.LocationMapper;
 import malyshev.egor.model.category.Category;
-import malyshev.egor.model.user.User;
-import malyshev.egor.repository.EventRepository;
-import malyshev.egor.dto.event.*;
-import malyshev.egor.exception.NotFoundException;
-import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.model.event.Event;
 import malyshev.egor.model.event.EventState;
 import malyshev.egor.model.event.Location;
 import malyshev.egor.model.request.RequestStatus;
+import malyshev.egor.model.user.User;
+import malyshev.egor.repository.EventRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.stats.client.StatsClient;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Comparator;
 import java.util.List;
+
+import malyshev.egor.dto.event.*;
+import malyshev.egor.exception.NotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EventServiceImpl implements EventService {
+public class EventPublicServiceImpl implements malyshev.egor.service.EventPublicService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
@@ -40,6 +43,7 @@ public class EventServiceImpl implements EventService {
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter F_T = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
+    // PUBLIC
     @Override
     @Transactional
     public List<EventShortDto> publicSearch(String text, List<Long> categories, Boolean paid,
@@ -107,6 +111,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    // PUBLIC
     @Override
     @Transactional
     public EventFullDto publicGet(Long eventId, String uri, String ip) {
@@ -122,6 +127,7 @@ public class EventServiceImpl implements EventService {
                 statsClient.viewsForEvent(e.getId()));
     }
 
+    // PRIVATE
     @Override
     public List<EventShortDto> getUserEvents(Long userId, Pageable pageable) {
 
@@ -142,6 +148,7 @@ public class EventServiceImpl implements EventService {
                 .toList();
     }
 
+    // PRIVATE
     @Override
     @Transactional
     public EventFullDto addEvent(Long userId, NewEventDto dto) {
@@ -192,6 +199,7 @@ public class EventServiceImpl implements EventService {
                 statsClient.viewsForEvent(e.getId()));
     }
 
+    // PRIVATE
     @Override
     @Transactional
     public EventFullDto updateEventUser(Long userId, Long eventId, UpdateEventUserRequest dto) {

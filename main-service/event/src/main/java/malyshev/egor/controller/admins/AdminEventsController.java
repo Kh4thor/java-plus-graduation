@@ -1,10 +1,11 @@
-package malyshev.egor.controller;
+package malyshev.egor.controller.admins;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.service.EventService;
+import malyshev.egor.service.EventPublicService;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
+import malyshev.egor.service.admins.EventAdminService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/admin/events")
 public class AdminEventsController {
 
-    private final EventService service;
+    private final EventAdminService service;
 
     @GetMapping
     public List<EventFullDto> search(@RequestParam(value = "users", required = false) List<Long> users,
