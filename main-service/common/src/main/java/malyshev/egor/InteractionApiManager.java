@@ -38,6 +38,7 @@ public class InteractionApiManager {
     private final int search_from = 0;
     private final int search_size = 10;
 
+    // admin method
     public User getUserById(Long userId) {
         List<Long> userIds = List.of(userId);
         List<UserDto> usersList = userAdminFeignClient.list(userIds, search_from, search_size);
@@ -48,17 +49,11 @@ public class InteractionApiManager {
         return UserMapper.toUser(userDto);
     }
 
+
+    // public method
     public Event getEventByUserIdAndEventId(Long userId, Long eventId) {
-
-
         EventFullDto eventFullDto = eventPublicFeignClient.getById(eventId);
         User initiator = getUserById(userId);
-
-
-
-
-
-
         if (eventFullDto.getInitiator() != null && !initiator.getId().equals(eventFullDto.getInitiator().getId())) {
             throw new ValidationException("User with id=" + eventFullDto.getInitiator().getId() +
                     " is not initiator of event with id=" + eventId);
@@ -66,11 +61,13 @@ public class InteractionApiManager {
         return EventMapper.toEvent(eventFullDto, initiator.getEmail());
     }
 
+    // public method
     public Category getCategoryById(Long categoryId) {
         CategoryDto categoryDto = categoryPublicFeignClient.get(categoryId);
         return CategoryMapper.toCategory(categoryDto);
     }
 
+    // admin method
     public int countByEventIdAndStatus(Long eventId, RequestStatus requestStatus) {
         List<String> states = List.of(requestStatus.name());
 

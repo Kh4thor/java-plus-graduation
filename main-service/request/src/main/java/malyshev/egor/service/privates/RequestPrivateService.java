@@ -1,4 +1,4 @@
-package malyshev.egor.service;
+package malyshev.egor.service.privates;
 
 
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
@@ -7,14 +7,11 @@ import malyshev.egor.dto.request.ParticipationRequestDto;
 
 import java.util.List;
 
-public interface RequestService {
-    List<ParticipationRequestDto> getUserRequests(long userId);
+public interface RequestPrivateService {
 
-    ParticipationRequestDto createRequest(long userId, long eventId);
-
-    ParticipationRequestDto cancelRequest(long userId, long requestId);
-
+    // PRIVATE
     List<ParticipationRequestDto> getEventRequests(long userId, long eventId);
 
+    // PRIVATE
     EventRequestStatusUpdateResult updateEventRequests(long userId, long eventId, EventRequestStatusUpdateRequest body);
 }

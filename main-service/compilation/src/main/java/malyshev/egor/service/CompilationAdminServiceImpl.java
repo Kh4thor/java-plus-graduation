@@ -93,8 +93,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         if (eventIds == null || eventIds.isEmpty()) return List.of();
 
 
-
-
         return eventRepository.findAllById(eventIds).stream()
                 .map(e -> {
                     long confirmed = requestRepository

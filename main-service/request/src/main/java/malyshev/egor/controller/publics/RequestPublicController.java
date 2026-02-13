@@ -1,8 +1,9 @@
 package malyshev.egor.controller.publics;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.ewm.service.request.dto.ParticipationRequestDto;
-import malyshev.egor.ewm.service.request.service.RequestService;
+import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.service.privates.RequestPrivateService;
+import malyshev.egor.service.publics.RequestPublicService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users/{userId}/requests")
 @RequiredArgsConstructor
-public class RequestController {
-    private final RequestService requestService;
+public class RequestPublicController {
+    private final RequestPublicService requestService;
 
     @GetMapping
     public List<ParticipationRequestDto> get(@PathVariable long userId) {

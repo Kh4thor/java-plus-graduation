@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
-import malyshev.egor.service.RequestService;
+import malyshev.egor.service.privates.RequestPrivateService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/events/{eventId}/requests")
-public class PrivateEventRequestsController {
+public class RequestPrivateController {
 
-    private final RequestService requestService;
+    private final RequestPrivateService requestService;
 
     @GetMapping
     public List<ParticipationRequestDto> list(@PathVariable long userId,
