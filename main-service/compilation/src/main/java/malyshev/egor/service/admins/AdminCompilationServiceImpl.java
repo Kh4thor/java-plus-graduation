@@ -16,6 +16,7 @@ import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.repository.CompilationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.ewm.stats.client.StatsClient;
 import malyshev.egor.InteractionApiManager;
 
@@ -29,6 +30,7 @@ import java.util.Set;
 public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     private final CompilationRepository repository;
+    private final InteractionApiManager interactionApiManager;
 
     // добавили зависимости
     private final StatsClient statsClient;
@@ -90,13 +92,21 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         Set<Long> eventIds = compilation.getEvents();
         if (eventIds == null || eventIds.isEmpty()) return List.of();
 
-        return eventRepository.findAllById(eventIds).stream()
+        return interactionApiManager.adminFindAllById(eventIds).stream()
                 .map(e -> {
-                    long confirmed = requestRepository
-                            .countByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED);
+                    long confirmed = interactionApiManager
+                            .adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED);
                     long views = statsClient.viewsForEvent(e.getId());
                     return EventMapper.toShortDto(e, confirmed, views);
                 })
                 .toList();
     }
+
+    search(@RequestParam(value = "users", required = false) List<Long> users,
+           @RequestParam(value = "states", required = false) List<String> states,
+           @RequestParam(value = "categories", required = false) List<Long> categories,
+           @RequestParam(value = "rangeStart", required = false) String rangeStart,
+           @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+           @RequestParam(value = "from", defaultValue = "0") int from,
+           @RequestParam(value = "size", defaultValue = "10") int size) {
 }

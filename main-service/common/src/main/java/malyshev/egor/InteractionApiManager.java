@@ -6,6 +6,7 @@ import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.request.ParticipationRequestDto;
 import malyshev.egor.dto.user.UserDto;
+import malyshev.egor.dto.user.UserShortDto;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.feign.category.PublicCategoryFeignClient;
 import malyshev.egor.feign.event.AdminEventFeignClient;
@@ -23,7 +24,12 @@ import malyshev.egor.model.user.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -103,5 +109,42 @@ public class InteractionApiManager {
                 .requester(requester)
                 .status(status)
                 .build();
+    }
+
+    public List<Event> adminFindAllById(Set<Long> eventIdsSet) {
+
+        List<Long> eventIdsToSearch = eventIdsSet.stream().toList();
+        List<EventFullDto> eventFullDtos = adminEventFeignClient.search(
+                eventIdsToSearch,
+                null,
+                null,
+                null,
+                null,
+                search_from,
+                search_from);
+
+        // поиск списка инициаторов событий
+        List<Long> userIds = eventFullDtos.stream()
+                .map(EventFullDto::getInitiator)
+                .map(UserShortDto::getId)
+                .toList();
+
+        // список инициаторов событий
+        List<UserDto> userDtos = adminUserFeignClient.list(userIds, search_from, search_size);
+
+        // <initiatorId, UserDto> словарь инициаторов событий
+        Map<Long, UserDto> userShoprtMap = userDtos.stream()
+                .collect(Collectors.toMap(UserDto::getId, Function.identity()));
+
+        List<Event> events = new ArrayList<>();
+        for (EventFullDto eventFullDto : eventFullDtos) {
+            Long initiatorId = eventFullDto.getInitiator() == null
+                    ? null
+                    : eventFullDto.getInitiator().getId();
+            UserDto initiator = userShoprtMap.get(initiatorId);
+            Event event = EventMapper.toEvent(eventFullDto, initiator.getEmail());
+            events.add(event);
+        }
+        return events;
     }
 }

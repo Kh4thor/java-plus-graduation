@@ -126,7 +126,6 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         return CommentMapper.toShortDto(comment);
     }
 
-
     // PRIVATE
     @Transactional
     @Override

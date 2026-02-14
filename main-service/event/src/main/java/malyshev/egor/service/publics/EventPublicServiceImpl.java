@@ -32,7 +32,7 @@ import java.util.Comparator;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EventPublicServiceImpl implements malyshev.egor.service.EventPublicService {
+public class EventPublicServiceImpl implements EventPublicService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
