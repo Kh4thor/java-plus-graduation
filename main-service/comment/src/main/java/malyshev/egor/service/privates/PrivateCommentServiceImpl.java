@@ -26,7 +26,7 @@ import java.util.Objects;
 public class PrivateCommentServiceImpl implements PrivateCommentService {
 
     private final CommentRepository commentRepository;
-    private final InteractionApiManager  interactionApiManager;
+    private final InteractionApiManager interactionApiManager;
 
     // PRIVATE
     @Transactional
@@ -34,13 +34,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     public CommentShortDto createComment(NewCommentDto dto, Long userId, Long eventId) {
         User commentator = interactionApiManager.adminGetUserById(userId);
         Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
-        ParticipationRequest participationRequest = interactionApiManager.findByRequesterIdAndEventId(userId, eventId);
-
-        ParticipationRequest request = requestRepository.findByRequesterIdAndEventId(userId, eventId).orElseThrow(
-                () -> new IllegalArgumentException(
-                        "Unable to create comment. Request with userId=" + userId + " and eventId=" + eventId +
-                                " was not found")
-        );
+        ParticipationRequest request = interactionApiManager.adminFindByRequesterIdAndEventId(userId, eventId);
 
         // у пользователя не одобрена заявка на событие
         if (request.getStatus() != RequestStatus.CONFIRMED) {
@@ -72,11 +66,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
                 () -> new NotFoundException("Unable to patch comment. Comment id=" + commentId + "not found")
         );
-
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException(
-                        "Unable to patch comment. Event with id=" + eventId + " was not found")
-        );
+        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
 
         //событие не опубликовано
         if (event.getState() != EventState.PUBLISHED) {
@@ -110,11 +100,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
                 () -> new NotFoundException("Unable to delete comment. Comment id=" + commentId + "not found")
         );
-
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException(
-                        "Unable to patch comment. Event with id=" + eventId + " was not found")
-        );
+        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
 
         // пользователь не является автором комментария
         User commentator = comment.getCommentator();

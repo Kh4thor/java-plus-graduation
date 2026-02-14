@@ -53,10 +53,10 @@ public class InteractionApiManager {
     public Event adminGetEventByUserIdAndEventId(Long userId, Long eventId) {
         EventFullDto eventFullDto = publicEventFeignClient.getById(eventId);
         User initiator = adminGetUserById(userId);
-        if (eventFullDto.getInitiator() != null && !initiator.getId().equals(eventFullDto.getInitiator().getId())) {
-            throw new ValidationException("User with id=" + eventFullDto.getInitiator().getId() +
-                    " is not initiator of event with id=" + eventId);
-        }
+//        if (eventFullDto.getInitiator() != null && !initiator.getId().equals(eventFullDto.getInitiator().getId())) {
+//            throw new ValidationException("User with id=" + eventFullDto.getInitiator().getId() +
+//                    " is not initiator of event with id=" + eventId);
+//        }
         return EventMapper.toEvent(eventFullDto, initiator.getEmail());
     }
 
