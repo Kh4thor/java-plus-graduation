@@ -12,10 +12,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "compilation-service",
-        contextId = "compilationAdminApiClient",
+        contextId = "adminCompilationApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/admin/compilations")
 @Validated
-public interface CompilationAdminFeignClient {
+public interface AdminCompilationFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

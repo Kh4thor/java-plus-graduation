@@ -3,6 +3,7 @@ package malyshev.egor.service.privates;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.comment.CommentShortDto;
 import malyshev.egor.dto.comment.NewCommentDto;
 import malyshev.egor.exception.NotFoundException;
@@ -24,24 +25,16 @@ import java.util.Objects;
 @AllArgsConstructor
 public class PrivateCommentServiceImpl implements PrivateCommentService {
 
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final EventRepository eventRepository;
-    private final RequestRepository requestRepository;
+    private final InteractionApiManager  interactionApiManager;
 
     // PRIVATE
     @Transactional
     @Override
     public CommentShortDto createComment(NewCommentDto dto, Long userId, Long eventId) {
-        User commentator = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException(
-                        "Unable to create comment. User with id=" + userId + " was not found")
-        );
-
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException(
-                        "Unable to create comment. Event with id=" + eventId + " was not found")
-        );
+        User commentator = interactionApiManager.adminGetUserById(userId);
+        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
+        ParticipationRequest participationRequest = interactionApiManager.findByRequesterIdAndEventId(userId, eventId);
 
         ParticipationRequest request = requestRepository.findByRequesterIdAndEventId(userId, eventId).orElseThrow(
                 () -> new IllegalArgumentException(

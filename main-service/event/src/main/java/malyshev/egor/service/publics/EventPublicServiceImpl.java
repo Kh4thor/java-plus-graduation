@@ -24,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import malyshev.egor.dto.event.*;
 import malyshev.egor.exception.NotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -131,7 +130,7 @@ public class EventPublicServiceImpl implements malyshev.egor.service.EventPublic
     @Override
     public List<EventShortDto> getUserEvents(Long userId, Pageable pageable) {
 
-        User user = interactionApiManager.getUserById(userId);
+        User user = interactionApiManager.adminGetUserById(userId);
 
         var events = eventRepository.findAllByInitiator_Id(userId).stream()
                 .sorted(Comparator.comparing(Event::getCreatedOn).reversed())
@@ -153,8 +152,8 @@ public class EventPublicServiceImpl implements malyshev.egor.service.EventPublic
     @Transactional
     public EventFullDto addEvent(Long userId, NewEventDto dto) {
 
-        User initiator = interactionApiManager.getUserById(userId);
-        Category category = interactionApiManager.getCategoryById(dto.getCategory());
+        User initiator = interactionApiManager.adminGetUserById(userId);
+        Category category = interactionApiManager.publicGetCategoryById(dto.getCategory());
         Location location = LocationMapper.toLocation(dto.getLocation());
 
         // дата минимум +2 часа от «сейчас»
@@ -220,7 +219,7 @@ public class EventPublicServiceImpl implements malyshev.egor.service.EventPublic
         }
 
         if (dto.getCategory() != null) {
-            Category c = interactionApiManager.getCategoryById(dto.getCategory());
+            Category c = interactionApiManager.publicGetCategoryById(dto.getCategory());
             e.setCategory(c);
         }
 
@@ -292,7 +291,7 @@ public class EventPublicServiceImpl implements malyshev.egor.service.EventPublic
         return all.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toFullDto(e, interactionApiManager.countByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
+                .map(e -> EventMapper.toFullDto(e, interactionApiManager.adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
 
@@ -307,7 +306,7 @@ public class EventPublicServiceImpl implements malyshev.egor.service.EventPublic
         }
 
         if (dto.getCategory() != null) {
-            Category c = interactionApiManager.getCategoryById(dto.getCategory());
+            Category c = interactionApiManager.publicGetCategoryById(dto.getCategory());
             e.setCategory(c);
         }
 
@@ -387,7 +386,7 @@ public class EventPublicServiceImpl implements malyshev.egor.service.EventPublic
     }
 
     private int countConfirmedRequests(Long eventId) {
-        return interactionApiManager.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        return interactionApiManager.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 
     private EventFullDto getEventFullDto(Event e) {

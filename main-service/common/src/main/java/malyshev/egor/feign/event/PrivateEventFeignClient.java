@@ -15,9 +15,10 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "event-service",
-        contextId = "eventPrivateApiClient",
+        contextId = "privateEventApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/users/{userId}/events")
-public interface EventPrivateFeignClient {
+public interface PrivateEventFeignClient {
 
     @GetMapping
     List<EventShortDto> getUserEvents(@PathVariable Long userId,

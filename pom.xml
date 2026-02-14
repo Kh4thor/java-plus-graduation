@@ -22,7 +22,6 @@
         <module>main-service</module>
         <module>stats</module>
         <module>infra</module>
-        <module>main-service/compilation</module>
     </modules>
 
     <properties>

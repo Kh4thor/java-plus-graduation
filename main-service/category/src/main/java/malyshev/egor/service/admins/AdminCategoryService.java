@@ -1,20 +1,17 @@
-package malyshev.egor.service;
+package malyshev.egor.service.admins;
 
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.category.NewCategoryDto;
 import malyshev.egor.dto.category.UpdateCategoryRequest;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+public interface AdminCategoryService {
 
-public interface CategoryService {
+    // ADMIN
     CategoryDto add(NewCategoryDto dto);
 
+    // ADMIN
     CategoryDto update(long id, UpdateCategoryRequest dto);
 
+    // ADMIN
     void delete(long id);
-
-    List<CategoryDto> list(Pageable pageable);
-
-    CategoryDto get(long id);
 }

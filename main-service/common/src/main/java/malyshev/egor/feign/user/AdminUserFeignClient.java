@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(name = "user-service",
-        contextId = "userAdminApiClient",
+        contextId = "adminUserApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/admin/users")
-public interface UserAdminFeignClient {
+public interface AdminUserFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

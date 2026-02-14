@@ -2,7 +2,6 @@ package malyshev.egor.feign.event;
 
 import feign.FeignException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,9 +12,10 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "event-service",
-        contextId = "eventAdminApiClient",
+        contextId = "adminEventApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/admin/events")
-public interface EventAdminFeignClient {
+public interface AdminEventFeignClient {
 
     @GetMapping
     List<EventFullDto> search(@RequestParam(value = "users", required = false) List<Long> users,

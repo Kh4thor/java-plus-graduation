@@ -2,6 +2,7 @@ package malyshev.egor.service.admins;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.compilation.NewCompilationDto;
 import malyshev.egor.dto.compilation.UpdateCompilationRequest;
@@ -16,6 +17,7 @@ import malyshev.egor.repository.CompilationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.stats.client.StatsClient;
+import malyshev.egor.InteractionApiManager;
 
 import java.util.List;
 import java.util.Set;
@@ -27,12 +29,8 @@ import java.util.Set;
 public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     private final CompilationRepository repository;
-    private final EventRepository eventRepository;
-    private final UserFeignClient userApi;
-
 
     // добавили зависимости
-    private final RequestRepository requestRepository;
     private final StatsClient statsClient;
 
     @Transactional
@@ -91,7 +89,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     private List<EventShortDto> loadEventShortDtos(Compilation compilation) {
         Set<Long> eventIds = compilation.getEvents();
         if (eventIds == null || eventIds.isEmpty()) return List.of();
-
 
         return eventRepository.findAllById(eventIds).stream()
                 .map(e -> {

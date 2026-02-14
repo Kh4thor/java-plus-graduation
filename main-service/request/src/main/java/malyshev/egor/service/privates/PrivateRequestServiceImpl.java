@@ -30,7 +30,8 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
-        Event event = interactionApiManager.getEventByUserIdAndEventId(userId, eventId);
+
+        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
         if (!event.getInitiator().getId().equals(userId)) {
             // 409
             throw new IllegalStateException("Пользователь не является инициатором события");
@@ -40,14 +41,13 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .toList();
     }
 
-
     //PRIVATE
     @Override
     @Transactional
     public EventRequestStatusUpdateResult updateEventRequests(long userId,
                                                               long eventId,
                                                               EventRequestStatusUpdateRequest body) {
-        Event event = interactionApiManager.getEventByUserIdAndEventId(userId, eventId);
+        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
         if (!event.getInitiator().getId().equals(userId)) {
             throw new IllegalStateException("Пользователь не является инициатором события");
         }

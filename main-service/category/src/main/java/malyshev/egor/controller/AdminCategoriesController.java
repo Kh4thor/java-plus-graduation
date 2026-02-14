@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.category.NewCategoryDto;
 import malyshev.egor.dto.category.UpdateCategoryRequest;
-import malyshev.egor.service.CategoryService;
+import malyshev.egor.service.admins.AdminCategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +14,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/categories")
 public class AdminCategoriesController {
 
-    private final CategoryService service;
+    private final AdminCategoryService adminCategoryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto add(@Valid @RequestBody NewCategoryDto dto) {
-        return service.add(dto);
+        return adminCategoryService.add(dto);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto update(@PathVariable long catId,
                               @Valid @RequestBody UpdateCategoryRequest dto) {
-        return service.update(catId, dto);
+        return adminCategoryService.update(catId, dto);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long catId) {
-        service.delete(catId);
+        adminCategoryService.delete(catId);
     }
 }

@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "category-service",
         contextId = "adminCategoryApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/admin/categories")
-public interface CategoryAdminFeignClient {
+public interface AdminCategoryFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

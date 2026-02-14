@@ -21,13 +21,13 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AdminUserServiceImpl implements AdminUserService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public UserDto add(NewUserRequest req) {
         return UserMapper.toDto(
-                repo.save(User.builder()
+                userRepository.save(User.builder()
                         .name(req.getName())
                         .email(req.getEmail())
                         .build()
@@ -45,12 +45,12 @@ public class AdminUserServiceImpl implements AdminUserService {
                     pageable.getPageSize(),
                     Sort.by(Sort.Direction.ASC, "id"));
 
-            return repo.findAll(p).getContent().stream()
+            return userRepository.findAll(p).getContent().stream()
                     .map(UserMapper::toDto)
                     .toList();
         } else {
             // findAllById порядок НЕ гарантирует — сортируем и только потом пагинируем
-            List<User> users = repo.findAllById(ids);
+            List<User> users = userRepository.findAllById(ids);
             users.sort(Comparator.comparing(User::getId));
 
             int from = (int) pageable.getOffset();
@@ -67,9 +67,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     public void delete(long userId) {
-        if (!repo.existsById(userId)) {
+        if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found");
         }
-        repo.deleteById(userId);
+        userRepository.deleteById(userId);
     }
 }

@@ -12,7 +12,8 @@ import java.util.List;
 
 @FeignClient(
         name = "compilation-service",
-        contextId = "compilationPublicApiClient",
+        contextId = "publicCompilationApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/compilations")
 @Validated
 public interface CompilationPublicFeignClient {

@@ -40,9 +40,9 @@ public class PublicRequestServiceImpl implements PublicRequestService {
     @Transactional
     public ParticipationRequestDto createRequest(long userId, long eventId) {
 
-        Event event = interactionApiManager.getEventByUserIdAndEventId(userId, eventId);
+        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
         validateRequest(userId, event);
-        User user = interactionApiManager.getUserById(userId);
+        User user = interactionApiManager.adminGetUserById(userId);
         ParticipationRequest request = ParticipationRequest.builder()
                 .requester(user)
                 .event(event)

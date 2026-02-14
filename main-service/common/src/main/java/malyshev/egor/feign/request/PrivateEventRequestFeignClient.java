@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Validated
-@RequestMapping("/users/{userId}/events/{eventId}/requests")
 @FeignClient(name = "request-service",
-        contextId = "eventRequestPrivateApiClient")
-public interface EventRequestPrivateFeignClient {
+        contextId = "privateRequestEventApiClient",
+        url = "${gateway.url:http://localhost:8080}",
+        path = "/users/{userId}/events/{eventId}/requests")
+public interface PrivateEventRequestFeignClient {
 
     @GetMapping
     List<ParticipationRequestDto> list(@PathVariable long userId,

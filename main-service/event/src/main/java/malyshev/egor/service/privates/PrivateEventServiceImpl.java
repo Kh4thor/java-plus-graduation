@@ -41,7 +41,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Override
     public List<EventShortDto> getUserEvents(Long userId, Pageable pageable) {
 
-        User user = interactionApiManager.getUserById(userId);
+        User user = interactionApiManager.adminGetUserById(userId);
 
         var events = eventRepository.findAllByInitiator_Id(userId).stream()
                 .sorted(Comparator.comparing(Event::getCreatedOn).reversed())
@@ -62,8 +62,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional
     public EventFullDto addEvent(Long userId, NewEventDto dto) {
 
-        User initiator = interactionApiManager.getUserById(userId);
-        Category category = interactionApiManager.getCategoryById(dto.getCategory());
+        User initiator = interactionApiManager.adminGetUserById(userId);
+        Category category = interactionApiManager.publicGetCategoryById(dto.getCategory());
         Location location = LocationMapper.toLocation(dto.getLocation());
 
         // дата минимум +2 часа от «сейчас»
@@ -128,7 +128,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         if (dto.getCategory() != null) {
-            Category c = interactionApiManager.getCategoryById(dto.getCategory());
+            Category c = interactionApiManager.publicGetCategoryById(dto.getCategory());
             e.setCategory(c);
         }
 
@@ -186,7 +186,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private int countConfirmedRequests(Long eventId) {
-        return interactionApiManager.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        return interactionApiManager.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 
     private EventFullDto getEventFullDto(Event e) {

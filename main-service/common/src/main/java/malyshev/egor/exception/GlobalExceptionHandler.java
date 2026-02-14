@@ -2,8 +2,6 @@ package malyshev.egor.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
-import malyshev.egor.ewm.service.compilation.exception.CompilationNotFoundException;
-import malyshev.egor.ewm.service.compilation.exception.TitleAlreadyExistsException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

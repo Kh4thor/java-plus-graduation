@@ -64,7 +64,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         return all.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toFullDto(e, interactionApiManager.countByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
+                .map(e -> EventMapper.toFullDto(e, interactionApiManager.adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
 
@@ -79,7 +79,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
 
         if (dto.getCategory() != null) {
-            Category c = interactionApiManager.getCategoryById(dto.getCategory());
+            Category c = interactionApiManager.publicGetCategoryById(dto.getCategory());
             e.setCategory(c);
         }
 
@@ -159,7 +159,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     private int countConfirmedRequests(Long eventId) {
-        return interactionApiManager.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        return interactionApiManager.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 
     private EventFullDto getEventFullDto(Event e) {

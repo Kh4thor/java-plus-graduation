@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
-public class CompilationAdminController {
+public class AdminCompilationController {
 
     private final AdminCompilationService adminCompilationService;
 

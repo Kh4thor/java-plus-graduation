@@ -10,9 +10,10 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "category-service",
-        contextId = "categoryPublicApiClient",
+        contextId = "publicCategoryApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/categories")
-public interface CategoryPublicFeignClient {
+public interface PublicCategoryFeignClient {
 
     @GetMapping
     List<CategoryDto> list(@RequestParam(defaultValue = "0") int from,

@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class CompilationPublicController {
+public class PublicCompilationController {
 
     private final PublicCompilationService publicCompilationService;  // ← интерфейс
 

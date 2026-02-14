@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users/{userId}/requests")
 @RequiredArgsConstructor
-public class RequestPublicController {
+public class PublicRequestController {
     private final PublicRequestService publicRequestService;
 
     @GetMapping

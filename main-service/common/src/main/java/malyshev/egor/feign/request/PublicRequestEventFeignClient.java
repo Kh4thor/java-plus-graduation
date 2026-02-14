@@ -11,9 +11,10 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "request-service",
-        contextId = "requestEventPublicApiClient",
+        contextId = "publicRequestEventApiClient",
+        url = "${gateway.url:http://localhost:8080}",
         path = "/users/{userId}/requests")
-public interface RequestEventPublicFeignClient {
+public interface PublicRequestEventFeignClient {
 
     @GetMapping
     List<ParticipationRequestDto> get(@PathVariable long userId);
