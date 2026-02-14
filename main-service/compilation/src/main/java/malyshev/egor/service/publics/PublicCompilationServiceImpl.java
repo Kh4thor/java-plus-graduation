@@ -2,6 +2,7 @@ package malyshev.egor.service.publics;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.exception.CompilationNotFoundException;
@@ -25,10 +26,9 @@ import java.util.Set;
 public class PublicCompilationServiceImpl implements PublicCompilationService {
 
     private final CompilationRepository repository;
-    private final EventRepository eventRepository;
+    private final InteractionApiManager interactionApiManager;
 
     // добавили зависимости для счётчиков
-    private final RequestRepository requestRepository;
     private final StatsClient statsClient;
 
     @Override
@@ -58,10 +58,10 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         if (eventIds == null || eventIds.isEmpty()) {
             return CompilationMapper.toDto(compilation, List.of());
         }
-        List<EventShortDto> events = eventRepository.findAllById(eventIds).stream()
+        List<EventShortDto> events = interactionApiManager.adminFindAllById(eventIds).stream()
                 .map(e -> {
-                    long confirmed = requestRepository
-                            .countByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED);
+                    long confirmed = interactionApiManager
+                            .adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED);
                     long views = statsClient.viewsForEvent(e.getId());
                     return EventMapper.toShortDto(e, confirmed, views);
                 })
