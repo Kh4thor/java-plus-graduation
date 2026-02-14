@@ -1,6 +1,5 @@
 package malyshev.egor;
 
-import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
@@ -112,7 +111,6 @@ public class InteractionApiManager {
     }
 
     public List<Event> adminFindAllById(Set<Long> eventIdsSet) {
-
         List<Long> eventIdsToSearch = eventIdsSet.stream().toList();
         List<EventFullDto> eventFullDtos = adminEventFeignClient.search(
                 eventIdsToSearch,

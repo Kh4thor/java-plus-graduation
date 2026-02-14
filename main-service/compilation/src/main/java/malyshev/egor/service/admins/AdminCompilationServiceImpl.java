@@ -16,7 +16,6 @@ import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.repository.CompilationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.ewm.stats.client.StatsClient;
 import malyshev.egor.InteractionApiManager;
 
@@ -101,12 +100,4 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
                 })
                 .toList();
     }
-
-    search(@RequestParam(value = "users", required = false) List<Long> users,
-           @RequestParam(value = "states", required = false) List<String> states,
-           @RequestParam(value = "categories", required = false) List<Long> categories,
-           @RequestParam(value = "rangeStart", required = false) String rangeStart,
-           @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
-           @RequestParam(value = "from", defaultValue = "0") int from,
-           @RequestParam(value = "size", defaultValue = "10") int size) {
 }
