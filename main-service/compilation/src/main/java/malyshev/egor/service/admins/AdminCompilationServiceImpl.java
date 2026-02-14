@@ -17,7 +17,6 @@ import malyshev.egor.repository.CompilationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.stats.client.StatsClient;
-import malyshev.egor.InteractionApiManager;
 
 import java.util.List;
 import java.util.Set;
