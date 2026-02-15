@@ -40,13 +40,13 @@ public class InteractionApiManager {
     private final PublicEventFeignClient publicEventFeignClient;
     private final PrivateEventRequestFeignClient eventRequestPrivateFeignClient;
 
-    private final int search_from = 0;
-    private final int search_size = 10;
+    private final int searchFrom = 0;
+    private final int searchSize = 10;
 
     // admin method
     public User adminGetUserById(Long userId) {
         List<Long> userIds = List.of(userId);
-        List<UserDto> usersList = adminUserFeignClient.list(userIds, search_from, search_size);
+        List<UserDto> usersList = adminUserFeignClient.list(userIds, searchFrom, searchSize);
         UserDto userDto = usersList.stream()
                 .findFirst()
                 .orElseThrow(() ->
@@ -81,8 +81,8 @@ public class InteractionApiManager {
                 null,
                 null,
                 null,
-                search_from,
-                search_size);
+                searchFrom,
+                searchSize);
 
         return (int) eventFullDtoList.stream()
                 .filter(event -> event.getId().equals(eventId))
@@ -118,8 +118,8 @@ public class InteractionApiManager {
                 null,
                 null,
                 null,
-                search_from,
-                search_from);
+                searchFrom,
+                searchFrom);
 
         // поиск списка инициаторов событий
         List<Long> userIds = eventFullDtos.stream()
@@ -128,7 +128,7 @@ public class InteractionApiManager {
                 .toList();
 
         // список инициаторов событий
-        List<UserDto> userDtos = adminUserFeignClient.list(userIds, search_from, search_size);
+        List<UserDto> userDtos = adminUserFeignClient.list(userIds, searchFrom, searchSize);
 
         // <initiatorId, UserDto> словарь инициаторов событий
         Map<Long, UserDto> userShoprtMap = userDtos.stream()

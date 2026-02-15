@@ -1,12 +1,11 @@
 package malyshev.egor.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
-import malyshev.egor.service.publics.EventPublicService;
+import malyshev.egor.service.publics.PublicEventService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +19,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
-public class PublicEventsController {
+public class PublicEventController {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private final EventPublicService service;
+    private final PublicEventService service;
 
     @GetMapping
     public List<EventShortDto> get(@RequestParam(value = "text", required = false) String text,
@@ -36,7 +35,8 @@ public class PublicEventsController {
                                    @RequestParam(value = "sort", required = false) String sort,
                                    @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
                                    @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                   HttpServletRequest request) {
+                                   @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+                                   @RequestHeader(value = "X-Request-URI", required = false) String requestUri) {
 
         LocalDateTime start = null;
         LocalDateTime end = null;
@@ -65,18 +65,20 @@ public class PublicEventsController {
                 onlyAvailable,
                 sort,
                 PageRequest.of(from / size, size),
-                request.getRequestURI(),
-                request.getRemoteAddr()
+                requestUri,
+                clientIp
         );
     }
 
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable("id") Long id,
-                                HttpServletRequest request) {
+                                @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+                                @RequestHeader(value = "X-Request-URI", required = false) String requestUri
+    ) {
         return service.publicGet(
                 id,
-                request.getRequestURI(),
-                request.getRemoteAddr()
+                requestUri,
+                clientIp
         );
     }
 }

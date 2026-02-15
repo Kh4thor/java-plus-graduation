@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface EventPublicService {
+public interface PublicEventService {
 
     // PUBLIC
     List<EventShortDto> publicSearch(String text,
@@ -42,6 +42,7 @@ public interface EventPublicService {
                                    String rangeStart,
                                    String rangeEnd,
                                    Pageable pageable);
+
     // ADMIN
     EventFullDto adminUpdate(Long eventId, UpdateEventAdminRequest dto);
 }

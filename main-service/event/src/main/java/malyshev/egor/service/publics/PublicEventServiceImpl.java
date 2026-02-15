@@ -32,7 +32,7 @@ import java.util.Comparator;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EventPublicServiceImpl implements EventPublicService {
+public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;

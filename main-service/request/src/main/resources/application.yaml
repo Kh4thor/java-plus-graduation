@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: request #имя сервиса
+  config:
+    import: configserver:http://localhost:8888 # сервер конфигураций
+  cloud:
+    config:
+      fail-fast: true # текущий сервис падает, если конфигурационный сервер недоступен
+    retry:
+      useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
+      max-interval: 6000 #максимально возможный интер

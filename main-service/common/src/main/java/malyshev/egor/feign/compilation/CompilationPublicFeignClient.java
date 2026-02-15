@@ -1,6 +1,5 @@
 package malyshev.egor.feign.compilation;
 
-import feign.FeignException;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import malyshev.egor.dto.compilation.CompilationDto;
@@ -22,8 +21,8 @@ public interface CompilationPublicFeignClient {
     List<CompilationDto> getCompilations(
             @RequestParam(required = false) Boolean pinned,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @Positive int size) throws FeignException;
+            @RequestParam(defaultValue = "10") @Positive int size);
 
     @GetMapping("/{compId}")
-    CompilationDto getById(@PathVariable @Positive Long compId) throws FeignException;
+    CompilationDto getById(@PathVariable @Positive Long compId);
 }

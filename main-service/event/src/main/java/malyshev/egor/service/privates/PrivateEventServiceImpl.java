@@ -57,6 +57,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                         statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
+
     // PRIVATE
     @Override
     @Transactional
@@ -107,6 +108,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 countConfirmedRequests(e.getId()),
                 statsClient.viewsForEvent(e.getId()));
     }
+
     // PRIVATE
     @Override
     @Transactional

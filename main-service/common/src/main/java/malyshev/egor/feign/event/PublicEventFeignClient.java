@@ -1,7 +1,5 @@
 package malyshev.egor.feign.event;
 
-import feign.FeignException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import malyshev.egor.dto.event.EventFullDto;
@@ -29,9 +27,9 @@ public interface PublicEventFeignClient {
                             @RequestParam(value = "sort", required = false) String sort,
                             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
                             @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                            HttpServletRequest request) throws FeignException;
-
+                            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+                            @RequestHeader(value = "X-Request-URI", required = false) String requestUri);
 
     @GetMapping("/{id}")
-    EventFullDto getById(@PathVariable("id") Long id) throws FeignException;
+    EventFullDto getById(@PathVariable("id") Long id);
 }

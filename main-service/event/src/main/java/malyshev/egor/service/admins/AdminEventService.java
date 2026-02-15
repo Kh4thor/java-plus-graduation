@@ -14,6 +14,7 @@ public interface AdminEventService {
                                    String rangeStart,
                                    String rangeEnd,
                                    Pageable pageable);
+
     // ADMIN
     EventFullDto adminUpdate(Long eventId, UpdateEventAdminRequest dto);
 }

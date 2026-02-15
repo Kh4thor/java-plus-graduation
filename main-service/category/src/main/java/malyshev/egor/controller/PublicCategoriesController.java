@@ -2,7 +2,6 @@ package malyshev.egor.controller;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
-import malyshev.egor.service.admins.AdminCategoryService;
 import malyshev.egor.service.publics.PublicCategoryService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;

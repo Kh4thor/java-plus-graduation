@@ -1,6 +1,5 @@
 package malyshev.egor.feign.category;
 
-import feign.FeignException;
 import malyshev.egor.dto.category.CategoryDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
@@ -17,8 +16,8 @@ public interface PublicCategoryFeignClient {
 
     @GetMapping
     List<CategoryDto> list(@RequestParam(defaultValue = "0") int from,
-                           @RequestParam(defaultValue = "10") int size) throws FeignException;
+                           @RequestParam(defaultValue = "10") int size);
 
     @GetMapping("/{catId}")
-    CategoryDto get(@PathVariable long catId) throws FeignException;
+    CategoryDto get(@PathVariable long catId);
 }

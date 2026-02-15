@@ -46,13 +46,11 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <scope>provided</scope> <!-- ДОБАВЛЕНО: scope provided -->
         </dependency>
 
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-            <scope>provided</scope> <!-- ДОБАВЛЕНО: scope provided -->
         </dependency>
 
         <!-- Database -->
@@ -150,9 +148,6 @@
                         </path>
                     </annotationProcessorPaths>
                     <!-- ДОБАВЛЕНО: compiler args -->
-                    <compilerArgs>
-                        <arg>-proc:only</arg> <!-- Только обработка аннотаций для диагностики -->
-                    </compilerArgs>
                 </configuration>
             </plugin>
 

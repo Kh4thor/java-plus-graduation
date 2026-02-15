@@ -40,6 +40,7 @@ public class PrivateEventsController {
                 dto
         );
     }
+
     // PRIVATE
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(@PathVariable Long userId,

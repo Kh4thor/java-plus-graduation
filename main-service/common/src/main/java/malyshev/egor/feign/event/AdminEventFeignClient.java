@@ -1,6 +1,5 @@
 package malyshev.egor.feign.event;
 
-import feign.FeignException;
 import jakarta.validation.Valid;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
@@ -24,9 +23,9 @@ public interface AdminEventFeignClient {
                               @RequestParam(value = "rangeStart", required = false) String rangeStart,
                               @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                               @RequestParam(value = "from", defaultValue = "0") int from,
-                              @RequestParam(value = "size", defaultValue = "10") int size) throws FeignException;
+                              @RequestParam(value = "size", defaultValue = "10") int size);
 
     @PatchMapping("/{eventId}")
     EventFullDto update(@PathVariable Long eventId,
-                        @Valid @RequestBody UpdateEventAdminRequest dto) throws FeignException;
+                        @Valid @RequestBody UpdateEventAdminRequest dto);
 }

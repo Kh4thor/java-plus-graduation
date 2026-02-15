@@ -1,6 +1,5 @@
 package malyshev.egor.feign.category;
 
-import feign.FeignException;
 import jakarta.validation.Valid;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.category.NewCategoryDto;
@@ -17,13 +16,13 @@ public interface AdminCategoryFeignClient {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    CategoryDto add(@Valid @RequestBody NewCategoryDto dto) throws FeignException;
+    CategoryDto add(@Valid @RequestBody NewCategoryDto dto);
 
     @PatchMapping("/{catId}")
     CategoryDto update(@PathVariable long catId,
-                       @Valid @RequestBody UpdateCategoryRequest dto) throws FeignException;
+                       @Valid @RequestBody UpdateCategoryRequest dto);
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void delete(@PathVariable long catId) throws FeignException;
+    void delete(@PathVariable long catId);
 }

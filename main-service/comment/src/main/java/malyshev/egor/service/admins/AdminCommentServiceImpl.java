@@ -2,7 +2,6 @@ package malyshev.egor.service.admins;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.comment.CommentFullDto;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.CommentMapper;

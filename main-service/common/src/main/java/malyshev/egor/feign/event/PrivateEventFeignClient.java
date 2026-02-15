@@ -1,6 +1,5 @@
 package malyshev.egor.feign.event;
 
-import feign.FeignException;
 import jakarta.validation.Valid;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
@@ -23,13 +22,12 @@ public interface PrivateEventFeignClient {
     @GetMapping
     List<EventShortDto> getUserEvents(@PathVariable Long userId,
                                       @RequestParam(value = "from", defaultValue = "0") int from,
-                                      @RequestParam(value = "size", defaultValue = "10") int size)
-            throws FeignException;
+                                      @RequestParam(value = "size", defaultValue = "10") int size);
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     EventFullDto addEvent(@PathVariable Long userId,
-                          @Valid @RequestBody NewEventDto dto) throws FeignException;
+                          @Valid @RequestBody NewEventDto dto);
 
     @GetMapping("/{eventId}")
     EventFullDto getUserEvent(@PathVariable Long userId,
@@ -38,5 +36,5 @@ public interface PrivateEventFeignClient {
     @PatchMapping("/{eventId}")
     EventFullDto updateEventUser(@PathVariable Long userId,
                                  @PathVariable Long eventId,
-                                 @Valid @RequestBody UpdateEventUserRequest dto) throws FeignException;
+                                 @Valid @RequestBody UpdateEventUserRequest dto);
 }
