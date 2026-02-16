@@ -5,6 +5,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 import malyshev.egor.dto.compilation.CompilationDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 

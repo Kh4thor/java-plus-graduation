@@ -3,7 +3,6 @@ package malyshev.egor;
 import lombok.AllArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
-import malyshev.egor.dto.request.ParticipationRequestDto;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.dto.user.UserShortDto;
 import malyshev.egor.exception.NotFoundException;
@@ -22,7 +21,6 @@ import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.model.user.User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,24 +88,25 @@ public class InteractionApiManager {
     }
 
     public ParticipationRequest adminFindByRequesterIdAndEventId(Long userId, Long eventId) {
-        List<ParticipationRequestDto> requests = privateRequestFeignClient.list(userId, eventId);
-        if (requests.isEmpty()) {
-            throw new NotFoundException("Request with id=" + eventId + " was not found");
-        }
-        ParticipationRequestDto requestDto = requests.getFirst();
-        Event event = adminGetEventByUserIdAndEventId(userId, eventId);
-        User requester = adminGetUserById(userId);
-        RequestStatus status = requestDto.getStatus();
-        Long requestId = requestDto.getId();
-        LocalDateTime created = requestDto.getCreated();
-
-        return ParticipationRequest.builder()
-                .id(requestId)
-                .created(created)
-                .event(event)
-                .requester(requester)
-                .status(status)
-                .build();
+//        List<ParticipationRequestDto> requests = privateRequestFeignClient.list(userId, eventId);
+//        if (requests.isEmpty()) {
+//            throw new NotFoundException("Request with id=" + eventId + " was not found");
+//        }
+//        ParticipationRequestDto requestDto = requests.getFirst();
+//        Event event = adminGetEventByUserIdAndEventId(userId, eventId);
+//        User requester = adminGetUserById(userId);
+//        RequestStatus status = requestDto.getStatus();
+//        Long requestId = requestDto.getId();
+//        LocalDateTime created = requestDto.getCreated();
+//
+//        return ParticipationRequest.builder()
+//                .id(requestId)
+//                .created(created)
+//                .event(event)
+//                .requester(requester)
+//                .status(status)
+//                .build();
+        return null;
     }
 
     public List<Event> adminFindAllById(Set<Long> eventIdsSet) {

@@ -22,7 +22,8 @@ eureka:
 server:
   port: 0
 
-logging:
-  level:
-    feign: TRACE
-    org.springframework.cloud.openfeign: TRACE
+feign:
+  client:
+    config:
+      private-request-client:  # это contextId из @FeignClient
+        loggerLevel: full
