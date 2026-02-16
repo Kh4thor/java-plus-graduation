@@ -8,4 +8,10 @@ spring:
       fail-fast: true # текущий сервис падает, если конфигурационный сервер недоступен
     retry:
       useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
-      max-interval: 6000 #максимально возможный интер
+      max-interval: 6000 #максимально возможный интевал
+
+logging:
+  level:
+    malyshev.egor.feign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    feign: DEBUG

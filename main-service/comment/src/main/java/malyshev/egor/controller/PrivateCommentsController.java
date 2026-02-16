@@ -22,8 +22,8 @@ public class PrivateCommentsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CommentShortDto createComment(
-            @PathVariable Long userId,
-            @PathVariable Long eventId,
+            @PathVariable(name = "userId") Long userId,
+            @PathVariable(name = "eventId") Long eventId,
             @RequestBody @Valid NewCommentDto dto) {
         return privateCommentService.createComment(dto, userId, eventId);
     }
@@ -31,9 +31,9 @@ public class PrivateCommentsController {
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentShortDto patchComment(
-            @PathVariable Long userId,
-            @PathVariable Long eventId,
-            @PathVariable Long commentId,
+            @PathVariable(name = "userId") Long userId,
+            @PathVariable(name = "eventId") Long eventId,
+            @PathVariable(name = "commentId") Long commentId,
             @RequestBody @Valid NewCommentDto dto) {
         return privateCommentService.patchComment(dto, userId, eventId, commentId);
     }

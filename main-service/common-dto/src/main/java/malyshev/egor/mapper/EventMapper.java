@@ -77,6 +77,4 @@ public final class EventMapper {
                 .title(eventFullDto.getTitle())
                 .build();
     }
-
-
 }

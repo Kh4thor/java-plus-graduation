@@ -4,16 +4,15 @@ import malyshev.egor.dto.request.ParticipationRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Validated
 @FeignClient(name = "request-service",
-        contextId = "publicRequestEventApiClient",
+        contextId = "publicRequestApiClient",
         url = "${gateway.url:http://localhost:8080}",
         path = "/users/{userId}/requests")
-public interface PublicRequestEventFeignClient {
+public interface PublicRequestFeignClient {
 
     @GetMapping
     List<ParticipationRequestDto> get(@PathVariable long userId);

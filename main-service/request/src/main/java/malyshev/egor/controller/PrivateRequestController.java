@@ -17,14 +17,14 @@ public class PrivateRequestController {
     private final PrivateRequestService privateRequestService;
 
     @GetMapping
-    public List<ParticipationRequestDto> list(@PathVariable long userId,
-                                              @PathVariable long eventId) {
+    public List<ParticipationRequestDto> list(@PathVariable Long userId,
+                                              @PathVariable Long eventId) {
         return privateRequestService.getEventRequests(userId, eventId);
     }
 
     @PatchMapping
-    public EventRequestStatusUpdateResult update(@PathVariable long userId,
-                                                 @PathVariable long eventId,
+    public EventRequestStatusUpdateResult update(@PathVariable Long userId,
+                                                 @PathVariable Long eventId,
                                                  @RequestBody EventRequestStatusUpdateRequest body) {
         return privateRequestService.updateEventRequests(userId, eventId, body);
     }

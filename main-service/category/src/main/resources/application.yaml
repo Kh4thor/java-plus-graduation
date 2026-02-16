@@ -9,3 +9,9 @@ spring:
     retry:
       useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
       max-interval: 6000 #максимально возможный интервал, после которого fail
+
+logging:
+  level:
+    feign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+

@@ -10,7 +10,7 @@ import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.feign.category.PublicCategoryFeignClient;
 import malyshev.egor.feign.event.AdminEventFeignClient;
 import malyshev.egor.feign.event.PublicEventFeignClient;
-import malyshev.egor.feign.request.PrivateEventRequestFeignClient;
+import malyshev.egor.feign.request.PrivateRequestFeignClient;
 import malyshev.egor.feign.user.AdminUserFeignClient;
 import malyshev.egor.mapper.CategoryMapper;
 import malyshev.egor.mapper.EventMapper;
@@ -36,9 +36,9 @@ public class InteractionApiManager {
 
     private final AdminUserFeignClient adminUserFeignClient;
     private final AdminEventFeignClient adminEventFeignClient;
-    private final PublicCategoryFeignClient publicCategoryFeignClient;
     private final PublicEventFeignClient publicEventFeignClient;
-    private final PrivateEventRequestFeignClient eventRequestPrivateFeignClient;
+    private final PublicCategoryFeignClient publicCategoryFeignClient;
+    private final PrivateRequestFeignClient privateRequestFeignClient;
 
     private final int searchFrom = 0;
     private final int searchSize = 10;
@@ -90,7 +90,7 @@ public class InteractionApiManager {
     }
 
     public ParticipationRequest adminFindByRequesterIdAndEventId(Long userId, Long eventId) {
-        List<ParticipationRequestDto> requests = eventRequestPrivateFeignClient.list(userId, eventId);
+        List<ParticipationRequestDto> requests = privateRequestFeignClient.list(userId, eventId);
         if (requests.isEmpty()) {
             throw new NotFoundException("Request with id=" + eventId + " was not found");
         }

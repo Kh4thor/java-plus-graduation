@@ -9,3 +9,11 @@ spring:
     retry:
       useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
       max-interval: 6000 #максимально возможный интер
+
+logging:
+  level:
+    feign: TRACE
+    feign.Contract: DEBUG
+    org.springframework.cloud.openfeign: TRACE
+    org.springframework.cloud.openfeign.support: DEBUG
+    org.springframework.cloud.openfeign.FeignClientFactoryBean: DEBUG

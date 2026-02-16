@@ -21,3 +21,8 @@ eureka:
 
 server:
   port: 0
+
+logging:
+  level:
+    feign: TRACE
+    org.springframework.cloud.openfeign: TRACE

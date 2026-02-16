@@ -17,11 +17,12 @@
     <description>Main Service Module</description>
     <modules>
         <module>category</module>
-        <module>comment</module>
         <module>event</module>
         <module>request</module>
         <module>user</module>
-        <module>common</module>
+        <module>comment</module>
+        <module>common-dto</module>
+        <module>common-api</module>
         <module>compilation</module>
     </modules>
 
