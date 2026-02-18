@@ -25,5 +25,5 @@ server:
 feign:
   client:
     config:
-      private-request-client:  # это contextId из @FeignClient
+      private-request-service:  # это contextId из @FeignClient
         loggerLevel: full

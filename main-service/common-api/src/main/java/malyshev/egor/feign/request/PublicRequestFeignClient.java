@@ -10,7 +10,7 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "request-service",
-        contextId = "publicRequestApiClient",
+        contextId = "public-request-service",
         url = "${gateway.url:http://localhost:8080}",
         path = "/users/{userId}/requests")
 public interface PublicRequestFeignClient {

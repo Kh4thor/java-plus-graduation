@@ -11,7 +11,7 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "category-service",
-        contextId = "publicCategoryApiClient",
+        contextId = "public-category-service",
         url = "${gateway.url:http://localhost:8080}",
         path = "/categories")
 public interface PublicCategoryFeignClient {

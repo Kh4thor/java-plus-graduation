@@ -14,7 +14,7 @@ import java.util.List;
 
 @Validated
 @FeignClient(name = "event-service",
-        contextId = "privateEventApiClient",
+        contextId = "private-event-service",
         url = "${gateway.url:http://localhost:8080}",
         path = "/users/{userId}/events")
 public interface PrivateEventFeignClient {

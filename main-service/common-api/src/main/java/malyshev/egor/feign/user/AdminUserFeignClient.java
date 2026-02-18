@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(name = "user-service",
-        contextId = "adminUserApiClient",
+        contextId = "admin-request-service",
         url = "${gateway.url:http://localhost:8080}",
         path = "/admin/users")
 public interface AdminUserFeignClient {

@@ -4,10 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class EventRequestStatusUpdateRequest {
     private List<Long> requestIds;  // какие заявки трогаем
     private EventRequestStatus status;

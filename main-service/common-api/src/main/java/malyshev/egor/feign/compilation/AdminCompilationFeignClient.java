@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "compilation-service",
-        contextId = "adminCompilationApiClient",
+        contextId = "admin-compilation-service",
         url = "${gateway.url:http://localhost:8080}",
         path = "/admin/compilations")
 @Validated
