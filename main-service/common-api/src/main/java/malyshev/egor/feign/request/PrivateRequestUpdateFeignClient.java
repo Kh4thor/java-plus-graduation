@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * при наличии нескольких методов с разными параметрами.
  */
 
-public interface PrivateRequestUpdateFeignClientTwo {
+public interface PrivateRequestUpdateFeignClient {
     @PatchMapping
     EventRequestStatusUpdateResult update(
             @PathVariable long userId,

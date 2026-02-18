@@ -3,6 +3,7 @@ package malyshev.egor.service.publics;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.*;
+import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.mapper.LocationMapper;
 import malyshev.egor.model.category.Category;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.stats.client.StatsClient;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

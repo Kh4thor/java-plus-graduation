@@ -7,6 +7,7 @@ import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.compilation.NewCompilationDto;
 import malyshev.egor.dto.compilation.UpdateCompilationRequest;
 import malyshev.egor.dto.event.EventShortDto;
+import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.CompilationNotFoundException;
 import malyshev.egor.exception.TitleAlreadyExistsException;
 import malyshev.egor.mapper.CompilationMapper;
@@ -16,7 +17,6 @@ import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.repository.CompilationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.stats.client.StatsClient;
 
 import java.util.List;
 import java.util.Set;

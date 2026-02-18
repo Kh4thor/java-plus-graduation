@@ -3,13 +3,14 @@ package malyshev.egor.ewm.stats.client;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.ewm.stats.client.props.ClientProperties;
+import malyshev.egor.ewm.stats.dto.EndpointHitDto;
+import malyshev.egor.ewm.stats.dto.ViewStatsDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.practicum.ewm.stats.dto.EndpointHitDto;
-import ru.practicum.ewm.stats.dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@Component
 public class StatsClient {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

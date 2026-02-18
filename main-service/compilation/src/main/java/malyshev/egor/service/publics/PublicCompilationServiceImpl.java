@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.event.EventShortDto;
+import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.CompilationNotFoundException;
 import malyshev.egor.mapper.CompilationMapper;
 import malyshev.egor.mapper.EventMapper;
@@ -14,7 +15,6 @@ import malyshev.egor.repository.CompilationRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.stats.client.StatsClient;
 
 import java.util.List;
 import java.util.Set;

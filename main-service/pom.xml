@@ -74,13 +74,6 @@
             <artifactId>querydsl-jpa</artifactId>
         </dependency>
 
-        <!-- Stats Client -->
-        <dependency>
-            <groupId>ru.practicum</groupId>
-            <artifactId>stats-client</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
         <!-- Тесты -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

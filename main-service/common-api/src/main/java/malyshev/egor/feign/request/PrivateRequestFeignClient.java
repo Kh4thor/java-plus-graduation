@@ -1,7 +1,5 @@
 package malyshev.egor.feign.request;
 
-import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
-import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;

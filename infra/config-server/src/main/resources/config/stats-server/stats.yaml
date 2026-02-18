@@ -1,0 +1,74 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: 9090
+
+spring:
+  main:
+    log-startup-info: false
+    banner-mode: off
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://stats-db:5460/stats
+    username: postgres
+    password: postgres
+
+# Logging (опционально, раскомментируйте при необходимости)
+# server.tomcat.accesslog.enabled: true
+# server.tomcat.accesslog.pattern: "%h %l %u %t \"%r\" %s %b %D"
+# logging.level.org.springframework.web: DEBUG
+# logging.level.org.springframework.web.servlet.DispatcherServlet: DEBUG
+# logging.level.org.apache.catalina: INFO
+
+logging:
+  level:
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    org.springframework.transaction.interceptor: INFO
+    org.springframework.orm.jpa.JpaTransactionManager: INFO
+
+stats:
+  base-url: http://localhost:9090
+  connect-timeout: 500ms
+  read-timeout: 1s
+  hit-max-attempts: 3
+  hit-backoff-millis: 200
+  hit-backoff-cap-millis: 2s
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:postgres
+    username: postgres
+    password: postgres
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 0
+
+stats:
+  baseUrl: http://localhost:9090
