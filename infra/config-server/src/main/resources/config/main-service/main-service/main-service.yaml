@@ -8,3 +8,9 @@ server:
 
 stats:
   baseUrl: http://stats-server
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
