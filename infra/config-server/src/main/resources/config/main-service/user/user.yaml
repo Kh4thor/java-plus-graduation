@@ -21,9 +21,3 @@ eureka:
 
 server:
   port: 0
-
-logging:
-  level:
-    malyshev.egor.feign: INFO
-    org.springframework.cloud.openfeign: INFO
-    feign: INFO
