@@ -27,7 +27,6 @@ public class StatsClient {
     private final ClientProperties props;
     private final String appName;
 
-    // Теперь инжектим RestTemplate, а не RestTemplateBuilder
     public StatsClient(@LoadBalanced RestTemplate restTemplate,
                        ClientProperties props,
                        @Value("${spring.application.name:ewm-service}") String appName) {
