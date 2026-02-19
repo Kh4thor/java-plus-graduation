@@ -25,23 +25,16 @@ spring:
       mode: always
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://stats-db:5460/stats
+    url: jdbc:postgresql://localhost:5432/stats
     username: postgres
     password: postgres
 
-# Logging (опционально, раскомментируйте при необходимости)
-# server.tomcat.accesslog.enabled: true
-# server.tomcat.accesslog.pattern: "%h %l %u %t \"%r\" %s %b %D"
-# logging.level.org.springframework.web: DEBUG
-# logging.level.org.springframework.web.servlet.DispatcherServlet: DEBUG
-# logging.level.org.apache.catalina: INFO
-
-logging:
-  level:
-    org.springframework.orm.jpa: INFO
-    org.springframework.transaction: INFO
-    org.springframework.transaction.interceptor: INFO
-    org.springframework.orm.jpa.JpaTransactionManager: INFO
+#logging:
+#  level:
+#    org.springframework.orm.jpa: INFO
+#    org.springframework.transaction: INFO
+#    org.springframework.transaction.interceptor: INFO
+#    org.springframework.orm.jpa.JpaTransactionManager: INFO
 
 stats:
   base-url: http://localhost:9090

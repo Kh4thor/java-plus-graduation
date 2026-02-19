@@ -6,8 +6,7 @@ import malyshev.egor.ewm.stats.client.props.ClientProperties;
 import malyshev.egor.ewm.stats.dto.EndpointHitDto;
 import malyshev.egor.ewm.stats.dto.ViewStatsDto;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -24,27 +23,21 @@ public class StatsClient {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private final RestTemplate rest;
+    private final RestTemplate restTemplate;
     private final ClientProperties props;
-    private final String appName; // откуда возьмём app
+    private final String appName;
 
-    public StatsClient(@NonNull RestTemplateBuilder builder,
-                       @NonNull ClientProperties props,
+    // Теперь инжектим RestTemplate, а не RestTemplateBuilder
+    public StatsClient(@LoadBalanced RestTemplate restTemplate,
+                       ClientProperties props,
                        @Value("${spring.application.name:ewm-service}") String appName) {
+        this.restTemplate = restTemplate;
         this.props = props;
         this.appName = appName;
-        this.rest = builder
-                .rootUri(props.getBaseUrl())
-                .setConnectTimeout(props.getConnectTimeout())
-                .setReadTimeout(props.getReadTimeout())
-                .build();
-        log.debug("StatsClient initialized: baseUrl={}, connectTimeout={}, readTimeout={}, hitMaxAttempts={}, hitBackoff={}ms, app={}",
-                props.getBaseUrl(), props.getConnectTimeout(), props.getReadTimeout(),
-                props.getHitMaxAttempts(), props.getHitBackoffMillis(), appName);
+        log.debug("StatsClient initialized with load-balanced RestTemplate");
     }
 
     public void hit(@NonNull String uri, @NonNull String ip) {
-        // DTO обычно имеет LocalDateTime timestamp с @JsonFormat, значит передаём LDT
         EndpointHitDto dto = new EndpointHitDto();
         dto.setApp(appName);
         dto.setUri(uri.trim());
@@ -61,13 +54,9 @@ public class StatsClient {
 
         while (true) {
             try {
-                // сервер возвращает 201 + json с записанным хит-DTO
-                rest.postForEntity("/hit", dto, EndpointHitDto.class);
+                // Вместо относительного пути используем полный URL с именем сервиса
+                restTemplate.postForEntity("http://stats-server/hit", dto, EndpointHitDto.class);
                 log.info("Hit sent successfully: id={}, uri={}", dto.getId(), dto.getUri());
-                if (log.isTraceEnabled()) {
-                    log.trace("POST /hit sent: app={}, uri={}, ip={}, ts={}",
-                            dto.getApp(), dto.getUri(), dto.getIp(), dto.getTimestamp());
-                }
                 return;
             } catch (RestClientException ex) {
                 if (attempt >= max) {
@@ -114,8 +103,6 @@ public class StatsClient {
                                     @NonNull LocalDateTime end,
                                     List<String> uris,
                                     boolean unique) {
-        // небольшой запас, чтобы свежий /hit точно попал в выборку
-
         StringBuilder qs = new StringBuilder()
                 .append("/stats")
                 .append("?start=").append(fmt(start))
@@ -124,15 +111,14 @@ public class StatsClient {
 
         if (uris != null && !uris.isEmpty()) {
             for (String u : uris) {
-                // здесь не кодируем: сервер нормально принимает /events/7
                 qs.append("&uris=").append(u.trim());
             }
         }
 
-        // rootUri уже задан в RestTemplateBuilder, так что относительный путь ок
-        ResponseEntity<ViewStatsDto[]> resp = rest.getForEntity(qs.toString(), ViewStatsDto[].class);
-        ViewStatsDto[] body = resp.getBody();
-        return (body == null) ? Collections.emptyList() : Arrays.asList(body);
+        // Используем имя сервиса в URL
+        String url = "http://stats-server" + qs.toString();
+        ViewStatsDto[] resp = restTemplate.getForObject(url, ViewStatsDto[].class);
+        return (resp == null) ? Collections.emptyList() : Arrays.asList(resp);
     }
 
     private void safeSleep(long millis) {
@@ -144,7 +130,6 @@ public class StatsClient {
         }
     }
 
-    // helper: "yyyy-MM-dd HH:mm:ss" -> "yyyy-MM-dd+HH:mm:ss"
     private static String fmt(LocalDateTime dt) {
         return FMT.format(dt).replace(' ', '+');
     }

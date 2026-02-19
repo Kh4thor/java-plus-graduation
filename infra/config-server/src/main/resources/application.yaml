@@ -10,7 +10,7 @@ spring:
           searchLocations:
             - classpath:config/infra/{application}
             - classpath:config/main-service/{application}
-            - classpath:config/stats-server/{application}
+            - classpath:config/stats/{application}
 server:
   port: 8888
 
