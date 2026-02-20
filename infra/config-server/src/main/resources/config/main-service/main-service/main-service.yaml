@@ -7,7 +7,7 @@ eureka:
     hostname: localhost
 
 server:
-  port: 0
+  port: 8081
 
 stats:
   baseUrl: http://stats-server
