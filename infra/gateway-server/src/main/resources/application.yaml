@@ -1,6 +1,6 @@
 spring:
   application:
-    name: gateway #имя сервиса
+    name: gateway-server #имя сервиса
   config:
     import: configserver:http://localhost:8888 # сервер конфигураций
   cloud:
