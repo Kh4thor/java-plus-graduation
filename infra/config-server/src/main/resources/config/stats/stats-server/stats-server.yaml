@@ -7,6 +7,12 @@ management:
     health:
       show-details: always
 
+      management:
+        endpoints:
+          web:
+            exposure:
+              include: health,info
+
 server:
   port: 9090
 

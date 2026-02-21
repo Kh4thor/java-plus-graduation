@@ -1,3 +1,9 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/comment
@@ -25,5 +31,5 @@ server:
 feign:
   client:
     config:
-      private-request-service:  # это contextId из @FeignClient
+      private-request-service: # это contextId из @FeignClient
         loggerLevel: full
