@@ -16,7 +16,7 @@
     <description>Main Service Module</description>
     <modules>
         <module>category-server</module>
-        <module>event-server</module>
+        <module>event-service</module>
         <module>request-server</module>
         <module>user-service</module>
         <module>comment-server</module>
