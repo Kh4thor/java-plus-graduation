@@ -1,6 +1,6 @@
 spring:
   application:
-    name: compilation #имя сервиса
+    name: compilation-service #имя сервиса
   config:
     import: configserver:http://localhost:8888 # сервер конфигураций
   cloud:

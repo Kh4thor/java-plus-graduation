@@ -1,6 +1,6 @@
 spring:
   application:
-    name: request #имя сервиса
+    name: request-service #имя сервиса
   config:
     import: configserver:http://localhost:8888 # сервер конфигураций
   cloud:
