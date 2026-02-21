@@ -27,3 +27,6 @@ eureka:
 
 server:
   port: 0
+
+stats:
+  baseUrl: http://stats-server
