@@ -18,7 +18,7 @@
         <module>category-server</module>
         <module>event-server</module>
         <module>request-server</module>
-        <module>user-server</module>
+        <module>user-service</module>
         <module>comment-server</module>
         <module>common-dto</module>
         <module>common-api</module>
