@@ -4,19 +4,7 @@ management:
       exposure:
         include: gateway,health,info
 
-spring:
-  cloud:
-    gateway:
-      default-filters:
-        - CircuitBreaker=myCircuitBreaker
-      routes:
-        - id: main_service_route
-          uri: lb://main-service
-          predicates:
-            - Path=/**
-      httpclient:
-        connect-timeout: 10000
-        response-timeout: 30s
+
 
 resilience4j:
   timelimiter:
@@ -29,59 +17,63 @@ resilience4j:
         sliding-window-size: 10
         failure-rate-threshold: 50
         wait-duration-in-open-state: 10s
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - CircuitBreaker=myCircuitBreaker
+      routes:
+        # Category
+        - id: category_service_route
+          uri: lb://category
+          predicates:
+            - Path=/categories
+            - Path=/categories/{categoryId}
+            - Path=/admin/categories
+            - Path=/admin/categories/{categoryId}
 
-#      routes:
-#        # Category
-#        - id: category_service_route
-#          uri: lb://category
-#          predicates:
-#            - Path=/categories
-#            - Path=/categories/{categoryId}
-#            - Path=/admin/categories
-#            - Path=/admin/categories/{categoryId}
-#
-#        # Comment
-#        - id: comment_service_route
-#          uri: lb://comment
-#          predicates:
-#            - Path=/admin/events/{eventId}/comments
-#            - Path=/admin/events/{eventId}/comments/{commentId}
-#            - Path=/users/{userId}/events/{eventId}/comments
-#            - Path=/users/{userId}/events/{eventId}/comments/{commentId}
-#            - Path=/events/{eventId}/comments
-#
-#        # Compilation
-#        - id: compilation_service_route
-#          uri: lb://compilation
-#          predicates:
-#            - Path=/admin/compilations
-#            - Path=/admin/compilations/{compilationId}
-#            - Path=/compilations
-#            - Path=/compilations/{compilationId}
-#
-#        # Event
-#        - id: event_service_route
-#          uri: lb://event
-#          predicates:
-#            - Path=/admin/events
-#            - Path=/admin/events/{eventId}
-#            - Path=/users/{userId}/events
-#            - Path=/users/{userId}/events/{eventId}
-#
-#        # Request
-#        - id: request_service_route
-#          uri: lb://request
-#          predicates:
-#            - Path=/users/{userId}/events/{eventId}/requests
-#            - Path=/users/{userId}/requests
-#            - Path=/users/{userId}/requests/{requestId}/cancel
-#
-#        # User
-#        - id: user_service_route
-#          uri: lb://user
-#          predicates:
-#            - Path=/admin/users
-#            - Path=/admin/users/{userId}
+        # Comment
+        - id: comment_service_route
+          uri: lb://comment
+          predicates:
+            - Path=/admin/events/{eventId}/comments
+            - Path=/admin/events/{eventId}/comments/{commentId}
+            - Path=/users/{userId}/events/{eventId}/comments
+            - Path=/users/{userId}/events/{eventId}/comments/{commentId}
+            - Path=/events/{eventId}/comments
+
+        # Compilation
+        - id: compilation_service_route
+          uri: lb://compilation
+          predicates:
+            - Path=/admin/compilations
+            - Path=/admin/compilations/{compilationId}
+            - Path=/compilations
+            - Path=/compilations/{compilationId}
+
+        # Event
+        - id: event_service_route
+          uri: lb://event
+          predicates:
+            - Path=/admin/events
+            - Path=/admin/events/{eventId}
+            - Path=/users/{userId}/events
+            - Path=/users/{userId}/events/{eventId}
+
+        # Request
+        - id: request_service_route
+          uri: lb://request
+          predicates:
+            - Path=/users/{userId}/events/{eventId}/requests
+            - Path=/users/{userId}/requests
+            - Path=/users/{userId}/requests/{requestId}/cancel
+
+        # User
+        - id: user_service_route
+          uri: lb://user
+          predicates:
+            - Path=/admin/users
+            - Path=/admin/users/{userId}
 
 server:
   port: 8080
