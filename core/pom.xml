@@ -15,14 +15,14 @@
     <name>core</name>
     <description>Main Service Module</description>
     <modules>
-        <module>category-server</module>
+        <module>category-service</module>
         <module>event-service</module>
-        <module>request-server</module>
+        <module>request-service</module>
         <module>user-service</module>
-        <module>comment-server</module>
+        <module>comment-service</module>
         <module>common-dto</module>
         <module>common-api</module>
-        <module>compilation-server</module>
+        <module>compilation-service</module>
     </modules>
 
     <dependencies>
