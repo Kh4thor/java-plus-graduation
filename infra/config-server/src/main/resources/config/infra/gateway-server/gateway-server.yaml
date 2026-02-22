@@ -8,11 +8,11 @@ management:
       enabled: true
 
 resilience4j:
-  timelimiter:
+  timeLimiter:
     instances:
       myCircuitBreaker:
         timeout-duration: 30s
-  circuitbreaker:
+  circuitBreaker:
     instances:
       myCircuitBreaker:
         sliding-window-size: 10
