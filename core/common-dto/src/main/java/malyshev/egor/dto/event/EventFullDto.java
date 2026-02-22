@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.user.UserShortDto;
-import malyshev.egor.model.event.EventState;
 
 import java.time.LocalDateTime;
 

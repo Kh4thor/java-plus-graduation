@@ -1,9 +1,9 @@
-package malyshev.egor.mapper;
+package malyshev.egor.util;
 
 import lombok.experimental.UtilityClass;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.dto.user.UserShortDto;
-import malyshev.egor.model.user.User;
+import malyshev.egor.model.User;
 
 @UtilityClass
 public final class UserMapper {

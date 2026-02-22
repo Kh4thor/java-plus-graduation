@@ -3,14 +3,13 @@ package malyshev.egor.service.admins;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.*;
+import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
-import malyshev.egor.mapper.EventMapper;
-import malyshev.egor.model.category.Category;
-import malyshev.egor.model.event.Event;
-import malyshev.egor.model.event.EventState;
-import malyshev.egor.model.event.Location;
-import malyshev.egor.model.request.RequestStatus;
+import malyshev.egor.feign.event.AdminEventFeignClient;
+import malyshev.egor.model.Event;
+import malyshev.egor.model.Location;
+import malyshev.egor.util.EventMapper;
 import malyshev.egor.repository.EventRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
-    private final InteractionApiManager interactionApiManager;
+    private final AdminEventFeignClient adminEventFeignClient;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -50,9 +49,9 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         // говняное решение
         var all = eventRepository.findAll().stream()
-                .filter(e -> users == null || users.contains(e.getInitiator().getId()))
+                .filter(e -> users == null || users.contains(e.getInitiator()))
                 .filter(e -> states == null || states.contains(e.getState().name()))
-                .filter(e -> categories == null || categories.contains(e.getCategory().getId()))
+                .filter(e -> categories == null || categories.contains(e.getCategory()))
                 .filter(e -> start == null || !e.getEventDate().isBefore(start))
                 .filter(e -> end == null || !e.getEventDate().isAfter(end))
                 .sorted(Comparator.comparing(Event::getEventDate))
@@ -64,7 +63,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         return all.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toFullDto(e, interactionApiManager.adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
+                .map(e -> EventMapper.toFullDto(e, adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
 
@@ -79,8 +78,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
 
         if (dto.getCategory() != null) {
-            Category c = interactionApiManager.publicGetCategoryById(dto.getCategory());
-            e.setCategory(c);
+            e.setCategory(dto.getCategory());
         }
 
         if (dto.getDescription() != null) {
@@ -159,10 +157,28 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     private int countConfirmedRequests(Long eventId) {
-        return interactionApiManager.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        return adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 
     private EventFullDto getEventFullDto(Event e) {
         return EventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
+    }
+
+    private int adminCountByEventIdAndStatus(Long eventId, RequestStatus requestStatus) {
+        List<String> states = List.of(requestStatus.name());
+        int searchFrom = 0;
+        int searchSize = 20;
+        List<EventFullDto> eventFullDtoList = adminEventFeignClient.search(
+                null,
+                states,
+                null,
+                null,
+                null,
+                searchFrom,
+                searchSize);
+
+        return (int) eventFullDtoList.stream()
+                .filter(event -> event.getId().equals(eventId))
+                .count();
     }
 }

@@ -1,7 +1,8 @@
-package malyshev.egor.mapper;
+package malyshev.egor.util;
+
 
 import malyshev.egor.dto.event.LocationDto;
-import malyshev.egor.model.event.Location;
+import malyshev.egor.model.Location;
 
 public class LocationMapper {
 

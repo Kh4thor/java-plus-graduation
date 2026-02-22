@@ -2,8 +2,6 @@ package malyshev.egor.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import malyshev.egor.model.event.Event;
-import malyshev.egor.model.user.User;
 
 import java.time.LocalDateTime;
 
@@ -23,16 +21,14 @@ public class Comment {
     @Column(nullable = false)
     private String text;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User commentator;
+    @Column(nullable = false)
+    private Long commentator;
 
     @Column(nullable = false)
     private LocalDateTime publishedOn;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @Column(nullable = false)
+    private Long event;
 
     private boolean deleted;
 }

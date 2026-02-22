@@ -2,7 +2,6 @@ package malyshev.egor.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import malyshev.egor.model.request.RequestStatus;
 
 import java.time.LocalDateTime;
 

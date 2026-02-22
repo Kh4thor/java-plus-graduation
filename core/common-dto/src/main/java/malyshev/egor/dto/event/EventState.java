@@ -1,4 +1,4 @@
-package malyshev.egor.model.event;
+package malyshev.egor.dto.event;
 
 public enum EventState {
     PENDING,

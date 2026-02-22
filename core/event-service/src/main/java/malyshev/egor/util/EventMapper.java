@@ -1,13 +1,10 @@
-package malyshev.egor.mapper;
+package malyshev.egor.util;
 
 import lombok.experimental.UtilityClass;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
-import malyshev.egor.model.category.Category;
-import malyshev.egor.model.event.Event;
-import malyshev.egor.model.event.Location;
-import malyshev.egor.model.user.User;
+import malyshev.egor.model.Event;
 
 @UtilityClass
 public final class EventMapper {
@@ -18,10 +15,10 @@ public final class EventMapper {
         return EventShortDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
-                .category(CategoryMapper.toDto(e.getCategory()))
+//                .category(CategoryMapper.toDto(e.getCategory()))
                 .confirmedRequests(confirmed)
                 .eventDate(e.getEventDate())
-                .initiator(UserMapper.toUserShort(e.getInitiator()))
+//                .initiator(UserMapper.toUserShort(e.getInitiator()))
                 .paid(e.isPaid())
                 .title(e.getTitle()).views(views)
                 .build();
@@ -34,12 +31,12 @@ public final class EventMapper {
         return EventFullDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
-                .category(CategoryMapper.toDto(e.getCategory()))
+//                .category(CategoryMapper.toDto(e.getCategory()))
                 .confirmedRequests(confirmed)
                 .createdOn(e.getCreatedOn())
                 .description(e.getDescription())
                 .eventDate(e.getEventDate())
-                .initiator(UserMapper.toUserShort(e.getInitiator()))
+//                .initiator(UserMapper.toUserShort(e.getInitiator()))
                 .location(new LocationDto(e.getLocation().getLat(), e.getLocation().getLon()))
                 .paid(e.isPaid())
                 .participantLimit(e.getParticipantLimit())
@@ -56,17 +53,17 @@ public final class EventMapper {
             return null;
         }
 
-        Category category = CategoryMapper.toCategory(eventFullDto.getCategory());
-        User initiator = UserMapper.toUser(eventFullDto.getInitiator(), userEmail);
-        Location location = LocationMapper.toLocation(eventFullDto.getLocation());
+//        Category category = CategoryMapper.toCategory(eventFullDto.getCategory());
+//        User initiator = UserMapper.toUser(eventFullDto.getInitiator(), userEmail);
+//        Location location = LocationMapper.toLocation(eventFullDto.getLocation());
 
         return Event.builder()
                 .id(eventFullDto.getId())
                 .annotation(eventFullDto.getAnnotation())
-                .category(category)
-                .initiator(initiator)
+//                .category(category)
+//                .initiator(initiator)
                 .description(eventFullDto.getDescription())
-                .location(location)
+//                .location(location)
                 .paid(eventFullDto.isPaid())
                 .participantLimit(eventFullDto.getParticipantLimit())
                 .requestModeration(eventFullDto.isRequestModeration())

@@ -1,4 +1,4 @@
-package malyshev.egor.model.request;
+package malyshev.egor.dto.request;
 
 public enum RequestStatus {
     PENDING,

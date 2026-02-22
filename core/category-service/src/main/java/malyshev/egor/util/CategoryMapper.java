@@ -1,8 +1,8 @@
-package malyshev.egor.mapper;
+package malyshev.egor.util;
 
 import lombok.experimental.UtilityClass;
 import malyshev.egor.dto.category.CategoryDto;
-import malyshev.egor.model.category.Category;
+import malyshev.egor.model.Category;
 
 @UtilityClass
 public final class CategoryMapper {

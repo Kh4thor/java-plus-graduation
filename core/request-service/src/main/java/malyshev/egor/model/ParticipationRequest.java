@@ -1,4 +1,4 @@
-package malyshev.egor.model.request;
+package malyshev.egor.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,5 +30,5 @@ public class ParticipationRequest {
     private User requester;
 
     @Enumerated(EnumType.STRING)
-    private RequestStatus status;
+    private malyshev.egor.dto.request.RequestStatus status;
 }

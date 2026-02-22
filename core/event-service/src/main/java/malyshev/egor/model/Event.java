@@ -1,9 +1,8 @@
-package malyshev.egor.model.event;
+package malyshev.egor.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import malyshev.egor.model.category.Category;
-import malyshev.egor.model.user.User;
+import malyshev.egor.dto.event.EventState;
 
 import java.time.LocalDateTime;
 
@@ -25,21 +24,19 @@ public class Event {
     @Column(nullable = false, length = 2000)
     private String annotation;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @Column
+    private Long category;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "initiator_id")
-    private User initiator;
+    @Column
+    private Long initiator;
 
     @Column(nullable = false, length = 7000)
     private String description;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "lat", column = @Column(name = "location_lat", nullable = false)),
-        @AttributeOverride(name = "lon", column = @Column(name = "location_lon", nullable = false))
+            @AttributeOverride(name = "lat", column = @Column(name = "location_lat", nullable = false)),
+            @AttributeOverride(name = "lon", column = @Column(name = "location_lon", nullable = false))
     })
     private Location location;
 
@@ -62,7 +59,8 @@ public class Event {
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
 
-    @Enumerated(STRING) @Column(nullable = false)
+    @Enumerated(STRING)
+    @Column(nullable = false)
     private EventState state;
 
     @Column(nullable = false, length = 120)
