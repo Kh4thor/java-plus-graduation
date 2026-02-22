@@ -73,8 +73,7 @@ spring:
         - id: user_service_route
           uri: lb://user-service
           predicates:
-            - Path=/admin/users,
-            - /admin/users/{userId}
+            - Path=/admin/users,/admin/users/{userId}
 
 server:
   port: 8080
