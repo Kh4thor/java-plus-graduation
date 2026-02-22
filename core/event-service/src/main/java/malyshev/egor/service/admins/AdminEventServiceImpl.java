@@ -1,16 +1,17 @@
 package malyshev.egor.service.admins;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.InteractionApiManager;
-import malyshev.egor.dto.event.*;
+import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventState;
+import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
-import malyshev.egor.feign.event.AdminEventFeignClient;
 import malyshev.egor.model.Event;
 import malyshev.egor.model.Location;
-import malyshev.egor.util.EventMapper;
 import malyshev.egor.repository.EventRepository;
+import malyshev.egor.util.EventMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,6 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
-    private final AdminEventFeignClient adminEventFeignClient;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -156,7 +156,8 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
     }
 
-    private int countConfirmedRequests(Long eventId) {
+    @Override
+    public int countConfirmedRequests(Long eventId) {
         return adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 
@@ -164,18 +165,18 @@ public class AdminEventServiceImpl implements AdminEventService {
         return EventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
     }
 
-    private int adminCountByEventIdAndStatus(Long eventId, RequestStatus requestStatus) {
+    @Override
+    public int adminCountByEventIdAndStatus(Long eventId, RequestStatus requestStatus) {
         List<String> states = List.of(requestStatus.name());
         int searchFrom = 0;
         int searchSize = 20;
-        List<EventFullDto> eventFullDtoList = adminEventFeignClient.search(
+        List<EventFullDto> eventFullDtoList = adminSearch(
                 null,
                 states,
                 null,
                 null,
                 null,
-                searchFrom,
-                searchSize);
+                PageRequest.of(searchFrom / searchSize, searchSize));
 
         return (int) eventFullDtoList.stream()
                 .filter(event -> event.getId().equals(eventId))

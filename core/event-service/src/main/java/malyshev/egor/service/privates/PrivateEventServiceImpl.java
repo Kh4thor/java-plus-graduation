@@ -1,19 +1,16 @@
 package malyshev.egor.service.privates;
 
 import lombok.RequiredArgsConstructor;
-import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.*;
+import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.model.Event;
+import malyshev.egor.model.Location;
+import malyshev.egor.repository.EventRepository;
+import malyshev.egor.service.admins.AdminEventService;
 import malyshev.egor.util.EventMapper;
 import malyshev.egor.util.LocationMapper;
-import malyshev.egor.model.category.Category;
-import malyshev.egor.model.event.Event;
-import malyshev.egor.model.event.EventState;
-import malyshev.egor.model.event.Location;
-import malyshev.egor.model.request.RequestStatus;
-import malyshev.egor.model.user.User;
-import malyshev.egor.repository.EventRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +28,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
-    private final InteractionApiManager interactionApiManager;
+    private final AdminEventService adminEventService;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -41,9 +38,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Override
     public List<EventShortDto> getUserEvents(Long userId, Pageable pageable) {
 
-        User user = interactionApiManager.adminGetUserById(userId);
-
-        var events = eventRepository.findAllByInitiator_Id(userId).stream()
+        var events = eventRepository.findAllByInitiator(userId).stream()
                 .sorted(Comparator.comparing(Event::getCreatedOn).reversed())
                 .toList();
 
@@ -63,8 +58,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional
     public EventFullDto addEvent(Long userId, NewEventDto dto) {
 
-        User initiator = interactionApiManager.adminGetUserById(userId);
-        Category category = interactionApiManager.publicGetCategoryById(dto.getCategory());
         Location location = LocationMapper.toLocation(dto.getLocation());
 
         // дата минимум +2 часа от «сейчас»
@@ -78,8 +71,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         var e = Event.builder()
                 .annotation(dto.getAnnotation())
-                .category(category)
-                .initiator(initiator)
+                .category(dto.getCategory())
+                .initiator(userId)
                 .description(dto.getDescription())
                 .location(location)
                 .paid(dto.isPaid())
@@ -100,7 +93,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         var e = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
-        if (!e.getInitiator().getId().equals(userId)) {
+        if (!e.getInitiator().equals(userId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
@@ -117,7 +110,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
 
-        if (!e.getInitiator().getId().equals(userId)) {
+        if (!e.getInitiator().equals(userId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
@@ -130,8 +123,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         if (dto.getCategory() != null) {
-            Category c = interactionApiManager.publicGetCategoryById(dto.getCategory());
-            e.setCategory(c);
+            e.setCategory(dto.getCategory());
         }
 
         if (dto.getDescription() != null)
@@ -188,7 +180,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private int countConfirmedRequests(Long eventId) {
-        return interactionApiManager.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        return adminEventService.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 
     private EventFullDto getEventFullDto(Event e) {
