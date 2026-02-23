@@ -21,28 +21,4 @@ public interface PublicEventService {
 
     // PUBLIC
     EventFullDto publicGet(Long eventId, String requestUri, String ip);
-
-
-    // PRIVATE
-    List<EventShortDto> getUserEvents(Long userId, Pageable pageable);
-
-    // PRIVATE
-    EventFullDto addEvent(Long userId, NewEventDto dto);
-
-    // PRIVATE
-    EventFullDto getUserEvent(Long userId, Long eventId);
-
-    // PRIVATE
-    EventFullDto updateEventUser(Long userId, Long eventId, UpdateEventUserRequest dto);
-
-    // ADMIN
-    List<EventFullDto> adminSearch(List<Long> users,
-                                   List<String> states,
-                                   List<Long> categories,
-                                   String rangeStart,
-                                   String rangeEnd,
-                                   Pageable pageable);
-
-    // ADMIN
-    EventFullDto adminUpdate(Long eventId, UpdateEventAdminRequest dto);
 }

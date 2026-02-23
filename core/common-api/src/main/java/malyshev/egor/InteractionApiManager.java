@@ -5,6 +5,7 @@ import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.feign.category.PublicCategoryFeignClient;
 import malyshev.egor.feign.event.AdminEventFeignClient;
@@ -86,5 +87,12 @@ public class InteractionApiManager {
 
     public List<ParticipationRequestDto> getRequestsForEvent(Long userId, Long eventId) {
         return privateRequestFeignClient.list(userId, eventId);
+    }
+
+    public Long countByEventAndStatus(Long eventId, RequestStatus status) {
+        Long count = privateRequestFeignClient.countByEventAndStatus(eventId, status);
+        if (count == null)
+            return 0L;
+        return count;
     }
 }

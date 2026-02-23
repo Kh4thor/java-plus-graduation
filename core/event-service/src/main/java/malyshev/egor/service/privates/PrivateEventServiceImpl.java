@@ -1,7 +1,11 @@
 package malyshev.egor.service.privates;
 
 import lombok.RequiredArgsConstructor;
+import malyshev.egor.InteractionApiManager;
+import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.*;
+import malyshev.egor.dto.request.RequestStatus;
+import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
@@ -29,6 +33,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final StatsClient statsClient;
     private final AdminEventService adminEventService;
     private final EventMapper eventMapper;
+    private final InteractionApiManager interactionApiManager;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -37,7 +42,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     // PRIVATE
     @Override
     public List<EventShortDto> getUserEvents(Long userId, Pageable pageable) {
-
+        interactionApiManager.getUserByAdmin(userId);
         var events = eventRepository.findAllByInitiator(userId).stream()
                 .sorted(Comparator.comparing(Event::getCreatedOn).reversed())
                 .toList();
@@ -48,8 +53,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return events.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
-                        statsClient.viewsForEvent(e.getId())))
+                .map(eventMapper::toShortDto)
                 .toList();
     }
 
@@ -57,8 +61,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Override
     @Transactional
     public EventFullDto addEvent(Long userId, NewEventDto dto) {
-
-        Location location = LocationMapper.toLocation(dto.getLocation());
+        UserDto initiator = interactionApiManager.getUserByAdmin(userId);
+        CategoryDto category = interactionApiManager.getCategoryByPublic(dto.getCategory());
 
         // дата минимум +2 часа от «сейчас»
         if (dto.getEventDate() == null || dto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
@@ -71,10 +75,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         var e = Event.builder()
                 .annotation(dto.getAnnotation())
-                .category(dto.getCategory())
-                .initiator(userId)
+                .category(category.getId())
+                .initiator(initiator.getId())
                 .description(dto.getDescription())
-                .location(location)
+                .location(new Location(dto.getLocation().getLat(), dto.getLocation().getLon()))
                 .paid(dto.isPaid())
                 .participantLimit(dto.getParticipantLimit())
                 .requestModeration(dto.isRequestModeration())
@@ -85,21 +89,21 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .build();
 
         e = eventRepository.save(e);
-        return eventMapper.toFullDto(e, 0L, 0L);
+
+        return eventMapper.toFullDto(e);
     }
 
     @Override
     public EventFullDto getUserEvent(Long userId, Long eventId) {
         var e = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event with id=" + eventId + " was not found"));
+                () -> new NotFoundException("Event with id=" + eventId + " was not found")
+        );
 
         if (!e.getInitiator().equals(userId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
-        return eventMapper.toFullDto(e,
-                countConfirmedRequests(e.getId()),
-                statsClient.viewsForEvent(e.getId()));
+        return eventMapper.toFullDto(e);
     }
 
     // PRIVATE
@@ -162,9 +166,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
         e = eventRepository.save(e);
 
-        int confirmedRequests = countConfirmedRequests(e.getId());
-        long views = statsClient.viewsForEvent(e.getId());
-        return eventMapper.toFullDto(e, confirmedRequests, views);
+        return eventMapper.toFullDto(e);
     }
 
     /**

@@ -1,7 +1,9 @@
 package malyshev.egor.service.publics;
 
 import lombok.RequiredArgsConstructor;
+import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.*;
+import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
@@ -23,6 +25,8 @@ import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
 
+import static malyshev.egor.dto.event.EventState.PUBLISHED;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,6 +36,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final StatsClient statsClient;
     private final AdminEventService adminEventService;
     private final EventMapper eventMapper;
+    private final InteractionApiManager interactionApiManager;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -50,7 +55,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         // только опубликованные
         Specification<Event> spec = (root, q, cb)
-                -> cb.equal(root.get("state"), EventState.PUBLISHED);
+                -> cb.equal(root.get("state"), PUBLISHED);
 
         if (text != null && !text.isBlank()) {
             String pattern = "%" + text.toLowerCase() + "%";
@@ -89,18 +94,19 @@ public class PublicEventServiceImpl implements PublicEventService {
             int size = pageable.getPageSize();
 
             return sorted.stream()
-                    .skip(from)
-                    .limit(size)
-                    .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
-                            statsClient.viewsForEvent(e.getId())))
+                    .skip(from).limit(size)
+                    .map(eventMapper::toShortDto)
                     .toList();
         } else {
             // по умолчанию сортируем по EVENT_DATE
-            var page = eventRepository.findAll(spec, PageRequest.of((int) (pageable.getOffset() / pageable.getPageSize()),
-                    pageable.getPageSize(), Sort.by("eventDate").ascending()));
+            var page = eventRepository.findAll(
+                    spec,
+                    PageRequest.of((int) (pageable.getOffset() / pageable.getPageSize()),
+                            pageable.getPageSize(),
+                            Sort.by("eventDate").ascending())
+            );
             return page.getContent().stream()
-                    .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
-                            statsClient.viewsForEvent(e.getId())))
+                    .map(eventMapper::toShortDto)
                     .toList();
         }
     }
@@ -110,249 +116,17 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Transactional
     public EventFullDto publicGet(Long eventId, String uri, String ip) {
         var e = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event with id=" + eventId + " was not found"));
+                () -> new NotFoundException("Event with id=" + eventId + " was not found")
+        );
 
-        if (e.getState() != EventState.PUBLISHED) {
+        if (e.getState() != PUBLISHED) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
         statsClient.hit(uri, ip);
-        return eventMapper.toFullDto(e, countConfirmedRequests(e.getId()),
-                statsClient.viewsForEvent(e.getId()));
+        return eventMapper.toFullDto(e);
     }
 
-    // PRIVATE
-    @Override
-    public List<EventShortDto> getUserEvents(Long userId, Pageable pageable) {
-
-        var events = eventRepository.findAllByInitiator(userId).stream()
-                .sorted(Comparator.comparing(Event::getCreatedOn).reversed())
-                .toList();
-
-        int from = (int) pageable.getOffset();
-        int size = pageable.getPageSize();
-
-        return events.stream()
-                .skip(from)
-                .limit(size)
-                .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
-                        statsClient.viewsForEvent(e.getId())))
-                .toList();
-    }
-
-    // PRIVATE
-    @Override
-    @Transactional
-    public EventFullDto addEvent(Long userId, NewEventDto dto) {
-
-        Location location = LocationMapper.toLocation(dto.getLocation());
-
-        // дата минимум +2 часа от «сейчас»
-        if (dto.getEventDate() == null || dto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new IllegalArgumentException("Event date must be at least 2 hours in the future");
-        }
-        // запрет отрицательного лимита
-        if (dto.getParticipantLimit() < 0) {
-            throw new IllegalArgumentException("participantLimit must be >= 0");
-        }
-
-        var e = Event.builder()
-                .annotation(dto.getAnnotation())
-                .category(dto.getCategory())
-                .initiator(userId)
-                .description(dto.getDescription())
-                .location(location)
-                .paid(dto.isPaid())
-                .participantLimit(dto.getParticipantLimit())
-                .requestModeration(dto.isRequestModeration())
-                .eventDate(dto.getEventDate())
-                .createdOn(LocalDateTime.now())
-                .state(EventState.PENDING)
-                .title(dto.getTitle())
-                .build();
-
-        e = eventRepository.save(e);
-        return eventMapper.toFullDto(e, 0L, 0L);
-    }
-
-    @Override
-    public EventFullDto getUserEvent(Long userId, Long eventId) {
-        var e = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event with id=" + eventId + " was not found"));
-
-        if (!e.getInitiator().equals(userId)) {
-            throw new NotFoundException("Event with id=" + eventId + " was not found");
-        }
-
-        return eventMapper.toFullDto(e,
-                countConfirmedRequests(e.getId()),
-                statsClient.viewsForEvent(e.getId()));
-    }
-
-    // PRIVATE
-    @Override
-    @Transactional
-    public EventFullDto updateEventUser(Long userId, Long eventId, UpdateEventUserRequest dto) {
-        var e = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event with id=" + eventId + " was not found"));
-
-
-        if (!e.getInitiator().equals(userId)) {
-            throw new NotFoundException("Event with id=" + eventId + " was not found");
-        }
-
-        if (e.getState() == EventState.PUBLISHED) {
-            throw new IllegalStateException("Only pending or canceled events can be changed");
-        }
-
-        if (dto.getAnnotation() != null) {
-            e.setAnnotation(dto.getAnnotation());
-        }
-
-        if (dto.getCategory() != null) {
-            e.setCategory(dto.getCategory());
-        }
-
-        if (dto.getDescription() != null)
-            e.setDescription(dto.getDescription());
-
-        if (dto.getEventDate() != null) {
-            LocalDateTime newDate = dto.getEventDate();
-            if (!newDate.isAfter(LocalDateTime.now().plusHours(2))) {
-                throw new IllegalArgumentException("Event date must be at least 2 hours in the future");
-            }
-            e.setEventDate(newDate);
-        }
-
-        if (dto.getLocation() != null) {
-            e.setLocation(LocationMapper.toLocation(dto.getLocation()));
-        }
-
-        if (dto.getPaid() != null)
-
-            e.setPaid(dto.getPaid());
-
-        if (dto.getParticipantLimit() != null) {
-            if (dto.getParticipantLimit() < 0) {
-                throw new IllegalArgumentException("participantLimit must be >= 0");
-            }
-            e.setParticipantLimit(dto.getParticipantLimit());
-        }
-
-        if (dto.getRequestModeration() != null) e.setRequestModeration(dto.getRequestModeration());
-        if (dto.getTitle() != null) e.setTitle(dto.getTitle());
-
-        if ("SEND_TO_REVIEW".equalsIgnoreCase(dto.getStateAction())) {
-            e.setState(EventState.PENDING);
-        }
-        if ("CANCEL_REVIEW".equalsIgnoreCase(dto.getStateAction())) {
-            e.setState(EventState.CANCELED);
-        }
-
-        e = eventRepository.save(e);
-        return getEventFullDto(e);
-    }
-
-    @Override
-    public List<EventFullDto> adminSearch(List<Long> users,
-                                          List<String> states,
-                                          List<Long> categories,
-                                          String rangeStart,
-                                          String rangeEnd,
-                                          Pageable pageable) {
-        // строгая валидация диапазона дат
-        LocalDateTime start = parseStrict(rangeStart);
-        LocalDateTime end = parseStrict(rangeEnd);
-        validateRangeOrThrow(start, end);
-
-        // говняное решение
-        var all = eventRepository.findAll().stream()
-                .filter(e -> users == null || users.contains(e.getInitiator()))
-                .filter(e -> states == null || states.contains(e.getState().name()))
-                .filter(e -> categories == null || categories.contains(e.getCategory()))
-                .filter(e -> start == null || !e.getEventDate().isBefore(start))
-                .filter(e -> end == null || !e.getEventDate().isAfter(end))
-                .sorted(Comparator.comparing(Event::getEventDate))
-                .toList();
-
-        int from = (int) pageable.getOffset();
-        int size = pageable.getPageSize();
-
-        return all.stream()
-                .skip(from)
-                .limit(size)
-                .map(e -> eventMapper.toFullDto(e, adminEventService.countConfirmedRequests(e.getId()),
-                        statsClient.viewsForEvent(e.getId())))
-                .toList();
-    }
-
-    @Override
-    @Transactional
-    public EventFullDto adminUpdate(Long eventId, UpdateEventAdminRequest dto) {
-        var e = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event with id=" + eventId + " was not found"));
-
-        if (dto.getAnnotation() != null) {
-            e.setAnnotation(dto.getAnnotation());
-        }
-
-        if (dto.getCategory() != null) {
-            e.setCategory(dto.getCategory());
-        }
-
-        if (dto.getDescription() != null) {
-            e.setDescription(dto.getDescription());
-        }
-
-        if (dto.getEventDate() != null) {
-            if (!dto.getEventDate().isAfter(LocalDateTime.now())) {
-                throw new IllegalArgumentException("Event date must be in the future");
-            }
-            e.setEventDate(dto.getEventDate());
-        }
-
-        if (dto.getLocation() != null) {
-            e.setLocation(new Location(dto.getLocation().getLat(), dto.getLocation().getLon()));
-        }
-
-        if (dto.getPaid() != null) {
-            e.setPaid(dto.getPaid());
-        }
-
-        if (dto.getParticipantLimit() != null) {
-            if (dto.getParticipantLimit() < 0) {
-                throw new IllegalArgumentException("participantLimit must be >= 0");
-            }
-            e.setParticipantLimit(dto.getParticipantLimit());
-        }
-
-        if (dto.getRequestModeration() != null) {
-            e.setRequestModeration(dto.getRequestModeration());
-        }
-        if (dto.getTitle() != null) {
-            e.setTitle(dto.getTitle());
-        }
-
-        if ("PUBLISH_EVENT".equalsIgnoreCase(dto.getStateAction())) {
-            if (e.getState() != EventState.PENDING) {
-                throw new IllegalStateException("Cannot publish the event because it's not in the right state: " +
-                        e.getState());
-            }
-            var pubTime = LocalDateTime.now();
-            if (e.getEventDate().isBefore(pubTime.plusHours(1))) {
-                throw new IllegalStateException("Event date must be at least 1 hour after publication");
-            }
-            e.setPublishedOn(pubTime);
-            e.setState(EventState.PUBLISHED);
-
-        } else if ("REJECT_EVENT".equalsIgnoreCase(dto.getStateAction())) {
-            if (e.getState() == EventState.PUBLISHED) {
-                throw new IllegalStateException("Cannot reject the event because it's already published");
-            }
-            e.setState(EventState.CANCELED);
-        }
-        return getEventFullDto(e);
-    }
 
     /**
      * Парсит строго. Если строка присутствует, но формат неверный — кидаем 400. Если null/blank — возвращаем null.
@@ -374,17 +148,5 @@ public class PublicEventServiceImpl implements PublicEventService {
         if (start != null && end != null && end.isBefore(start)) {
             throw new IllegalArgumentException("rangeEnd must be after rangeStart");
         }
-    }
-
-    private int countConfirmedRequests(Long eventId) {
-        return adminEventService.countConfirmedRequests(eventId);
-    }
-
-    private EventFullDto getEventFullDto(Event e) {
-        return eventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
-    }
-
-    private EventShortDto getEventShortDto(Event e) {
-        return eventMapper.toShortDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
     }
 }

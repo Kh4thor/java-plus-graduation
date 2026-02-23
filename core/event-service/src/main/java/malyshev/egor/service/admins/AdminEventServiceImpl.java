@@ -66,7 +66,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         return all.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> eventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId())))
+                .map(eventMapper::toFullDto)
                 .toList();
     }
 
@@ -160,7 +160,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     private EventFullDto getEventFullDto(Event e) {
-        return eventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
+        return eventMapper.toFullDto(e);
     }
 
     @Override
