@@ -10,7 +10,7 @@ import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.model.Event;
 import malyshev.egor.model.Location;
 import malyshev.egor.repository.EventRepository;
-import malyshev.egor.util.EventMapper;
+import malyshev.egor.mapper.EventMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

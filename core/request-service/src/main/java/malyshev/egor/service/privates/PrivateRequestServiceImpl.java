@@ -3,6 +3,7 @@ package malyshev.egor.service.privates;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.InteractionApiManager;
+import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.request.*;
 import malyshev.egor.mapper.RequestMapper;
 import malyshev.egor.repository.RequestRepository;
@@ -25,8 +26,9 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
-        return requestRepository.findAllByEventId(eventId).stream()
+        return requestRepository.findAllByEvent(eventId).stream()
                 .map(RequestMapper::toRequestDto)
+                .filter(r -> r.getRequester().equals(userId)) // не было
                 .toList();
     }
 
@@ -36,11 +38,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     public EventRequestStatusUpdateResult updateEventRequests(long userId,
                                                               long eventId,
                                                               EventRequestStatusUpdateRequest body) {
-
-        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
-
-
-
+        EventFullDto event = interactionApiManager.getEventOfUserByPrivate(userId, eventId);
         if (!event.getInitiator().getId().equals(userId)) {
             throw new IllegalStateException("Пользователь не является инициатором события");
         }
@@ -57,7 +55,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         }
 
         int limit = event.getParticipantLimit();
-        long alreadyConfirmed = requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        long alreadyConfirmed = requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED);
 
         if (action == EventRequestStatus.CONFIRMED && limit > 0 && alreadyConfirmed >= limit) {
             throw new IllegalStateException("The participant limit has been reached");
@@ -67,7 +65,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
 
         var toUpdate = requestRepository.findAllById(body.getRequestIds())
                 .stream()
-                .filter(r -> r.getEvent().getId().equals(eventId))
+                .filter(r -> r.getEvent().equals(eventId))
                 .toList();
 
         List<ParticipationRequestDto> confirmed = new ArrayList<>();
@@ -101,6 +99,5 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .confirmedRequests(confirmed)
                 .rejectedRequests(rejected)
                 .build();
-    }
     }
 }

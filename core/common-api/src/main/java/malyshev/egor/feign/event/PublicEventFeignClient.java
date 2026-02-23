@@ -34,5 +34,8 @@ public interface PublicEventFeignClient {
                             @RequestHeader(value = "X-Request-URI", required = false) String requestUri);
 
     @GetMapping("/{id}")
-    EventFullDto getById(@PathVariable("id") Long id);
+    EventFullDto getById(@PathVariable("id") Long id,
+                         @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+                         @RequestHeader(value = "X-Request-URI", required = false) String requestUri
+    );
 }

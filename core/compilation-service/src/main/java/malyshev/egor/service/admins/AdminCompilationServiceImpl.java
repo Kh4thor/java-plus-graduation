@@ -11,15 +11,14 @@ import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.CompilationNotFoundException;
 import malyshev.egor.exception.TitleAlreadyExistsException;
 import malyshev.egor.mapper.CompilationMapper;
-import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.model.Compilation;
-import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.repository.CompilationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,14 +88,17 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     private List<EventShortDto> loadEventShortDtos(Compilation compilation) {
         Set<Long> eventIds = compilation.getEvents();
         if (eventIds == null || eventIds.isEmpty()) return List.of();
+        String uri = String.format("/admin/compilations/%d", compilation.getId());
+        List<EventShortDto> all = interactionApiManager.getAllEventsByPublic(uri);
+        List<EventShortDto> filteredById = all.stream()
+                .filter(e -> eventIds.contains(e.getId()))
+                .collect(Collectors.toList());
 
-        return interactionApiManager.adminFindAllById(eventIds).stream()
-                .map(e -> {
-                    long confirmed = interactionApiManager
-                            .adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED);
-                    long views = statsClient.viewsForEvent(e.getId());
-                    return EventMapper.toShortDto(e, confirmed, views);
-                })
-                .toList();
+        // Дополняем каждое DTO актуальными просмотрами из сервиса статистики
+        for (EventShortDto dto : filteredById) {
+            long views = statsClient.viewsForEvent(dto.getId());
+            dto.setViews(views);
+        }
+        return filteredById;
     }
 }

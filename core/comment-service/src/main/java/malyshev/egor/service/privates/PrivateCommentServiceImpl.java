@@ -6,14 +6,13 @@ import lombok.AllArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.comment.CommentShortDto;
 import malyshev.egor.dto.comment.NewCommentDto;
+import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventState;
+import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.CommentMapper;
 import malyshev.egor.model.Comment;
-import malyshev.egor.model.event.Event;
-import malyshev.egor.model.event.EventState;
-import malyshev.egor.model.request.ParticipationRequest;
-import malyshev.egor.model.request.RequestStatus;
-import malyshev.egor.model.user.User;
 import malyshev.egor.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +31,9 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     @Transactional
     @Override
     public CommentShortDto createComment(NewCommentDto dto, Long userId, Long eventId) {
-        User commentator = interactionApiManager.adminGetUserById(userId);
-        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
-        ParticipationRequest request = interactionApiManager.adminFindByRequesterIdAndEventId(userId, eventId);
+
+        EventFullDto event = interactionApiManager.getEventOfUserByPrivate(eventId, userId);
+        ParticipationRequestDto request = interactionApiManager.getRequestOfUserByPrivate(userId, eventId);
 
         // у пользователя не одобрена заявка на событие
         if (request.getStatus() != RequestStatus.CONFIRMED) {
@@ -49,9 +48,9 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
         Comment comment = Comment.builder()
                 .text(dto.getText())
-                .commentator(commentator)
+                .commentator(userId)
                 .publishedOn(LocalDateTime.now())
-                .event(event)
+                .event(eventId)
                 .build();
 
         Comment cretedComment = commentRepository.save(comment);
@@ -66,7 +65,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
                 () -> new NotFoundException("Unable to patch comment. Comment id=" + commentId + "not found")
         );
-        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
+        EventFullDto event = interactionApiManager.getEventOfUserByPrivate(eventId, userId);
 
         //событие не опубликовано
         if (event.getState() != EventState.PUBLISHED) {
@@ -75,14 +74,13 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
         // комментарий не относится к событию eventId
         if (comment.getEvent() != null) {
-            if (!Objects.equals(comment.getEvent().getId(), eventId)) {
+            if (!Objects.equals(comment.getEvent(), eventId)) {
                 throw new IllegalArgumentException("Comment does not belong to event with id=" + eventId);
             }
         }
 
         // пользователь не является автором комментария
-        User commentator = comment.getCommentator();
-        if (!Objects.equals(commentator.getId(), userId))
+        if (!Objects.equals(comment.getCommentator(), userId))
             throw new IllegalArgumentException(
                     "Unable to patch comment. User with id=" + userId + " is not creator of comment id=" + commentId
             );
@@ -100,11 +98,10 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         Comment comment = commentRepository.findByIdAndDeleted(commentId, false).orElseThrow(
                 () -> new NotFoundException("Unable to delete comment. Comment id=" + commentId + "not found")
         );
-        Event event = interactionApiManager.adminGetEventByUserIdAndEventId(userId, eventId);
+        EventFullDto event = interactionApiManager.getEventOfUserByPrivate(eventId, userId);
 
         // пользователь не является автором комментария
-        User commentator = comment.getCommentator();
-        if (!Objects.equals(commentator.getId(), userId))
+        if (!Objects.equals(comment.getCommentator(), userId))
             throw new IllegalArgumentException(
                     "Unable to delete comment. User with id=" + userId + " is not creator of comment id=" + commentId
             );
@@ -116,7 +113,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
         // комментарий не относится к событию eventId
         if (comment.getEvent() != null) {
-            if (!Objects.equals(comment.getEvent().getId(), eventId)) {
+            if (!Objects.equals(comment.getEvent(), eventId)) {
                 throw new IllegalArgumentException("Comment does not belong to event with id=" + eventId);
             }
         }

@@ -5,9 +5,9 @@ import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.category.NewCategoryDto;
 import malyshev.egor.dto.category.UpdateCategoryRequest;
 import malyshev.egor.exception.NotFoundException;
-import malyshev.egor.util.CategoryMapper;
 import malyshev.egor.model.Category;
 import malyshev.egor.repository.CategoryRepository;
+import malyshev.egor.util.CategoryMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

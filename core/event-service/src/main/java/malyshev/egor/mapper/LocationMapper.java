@@ -1,4 +1,4 @@
-package malyshev.egor.util;
+package malyshev.egor.mapper;
 
 
 import malyshev.egor.dto.event.LocationDto;

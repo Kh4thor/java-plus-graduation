@@ -9,8 +9,8 @@ import malyshev.egor.model.Event;
 import malyshev.egor.model.Location;
 import malyshev.egor.repository.EventRepository;
 import malyshev.egor.service.admins.AdminEventService;
-import malyshev.egor.util.EventMapper;
-import malyshev.egor.util.LocationMapper;
+import malyshev.egor.mapper.EventMapper;
+import malyshev.egor.mapper.LocationMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +29,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
     private final AdminEventService adminEventService;
+    private final EventMapper eventMapper;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -48,7 +49,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return events.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
+                .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
                         statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
@@ -85,7 +86,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .build();
 
         e = eventRepository.save(e);
-        return EventMapper.toFullDto(e, 0L, 0L);
+        return eventMapper.toFullDto(e, 0L, 0L);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
-        return EventMapper.toFullDto(e,
+        return eventMapper.toFullDto(e,
                 countConfirmedRequests(e.getId()),
                 statsClient.viewsForEvent(e.getId()));
     }
@@ -151,7 +152,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             }
             e.setParticipantLimit(dto.getParticipantLimit());
         }
-
         if (dto.getRequestModeration() != null) e.setRequestModeration(dto.getRequestModeration());
         if (dto.getTitle() != null) e.setTitle(dto.getTitle());
 
@@ -161,9 +161,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         if ("CANCEL_REVIEW".equalsIgnoreCase(dto.getStateAction())) {
             e.setState(EventState.CANCELED);
         }
-
         e = eventRepository.save(e);
-        return getEventFullDto(e);
+
+        int confirmedRequests = countConfirmedRequests(e.getId());
+        long views = statsClient.viewsForEvent(e.getId());
+        return eventMapper.toFullDto(e, confirmedRequests, views);
     }
 
     /**
@@ -173,7 +175,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         if (s == null || s.isBlank()) return null;
         try {
             // поддерживаем оба часто встречающихся формата
-            return (s.indexOf('T') >= 0) ? LocalDateTime.parse(s, F_T) : LocalDateTime.parse(s, F_SPACE);
+            return (s.indexOf('T') >= 0)
+                    ? LocalDateTime.parse(s, F_T)
+                    : LocalDateTime.parse(s, F_SPACE);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Date must match 'yyyy-MM-dd HH:mm:ss' or 'yyyy-MM-dd'T'HH:mm:ss': " + s);
         }
@@ -181,9 +185,5 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     private int countConfirmedRequests(Long eventId) {
         return adminEventService.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
-    }
-
-    private EventFullDto getEventFullDto(Event e) {
-        return EventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
     }
 }

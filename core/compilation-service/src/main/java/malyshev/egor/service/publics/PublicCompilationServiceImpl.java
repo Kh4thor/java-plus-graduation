@@ -8,9 +8,7 @@ import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.CompilationNotFoundException;
 import malyshev.egor.mapper.CompilationMapper;
-import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.model.Compilation;
-import malyshev.egor.model.request.RequestStatus;
 import malyshev.egor.repository.CompilationRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -58,14 +56,17 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         if (eventIds == null || eventIds.isEmpty()) {
             return CompilationMapper.toDto(compilation, List.of());
         }
-        List<EventShortDto> events = interactionApiManager.adminFindAllById(eventIds).stream()
-                .map(e -> {
-                    long confirmed = interactionApiManager
-                            .adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED);
-                    long views = statsClient.viewsForEvent(e.getId());
-                    return EventMapper.toShortDto(e, confirmed, views);
-                })
+        String uri = String.format("/compilations/%d", compilation.getId());
+        List<EventShortDto> all = interactionApiManager.getAllEventsByPublic(uri);
+        List<EventShortDto> filteredById = all.stream()
+                .filter(e -> eventIds.contains(e.getId()))
                 .toList();
-        return CompilationMapper.toDto(compilation, events);
+
+        // Дополняем каждое DTO актуальными просмотрами из сервиса статистики
+        for (EventShortDto dto : filteredById) {
+            long views = statsClient.viewsForEvent(dto.getId());
+            dto.setViews(views);
+        }
+        return CompilationMapper.toDto(compilation, filteredById);
     }
 }

@@ -1,42 +1,66 @@
-package malyshev.egor.util;
+package malyshev.egor.mapper;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import malyshev.egor.InteractionApiManager;
+import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
+import malyshev.egor.dto.user.UserDto;
+import malyshev.egor.dto.user.UserShortDto;
 import malyshev.egor.model.Event;
+import malyshev.egor.model.Location;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
-public final class EventMapper {
-    public static EventShortDto toShortDto(Event e, long confirmed, long views) {
+@Component
+@RequiredArgsConstructor
+public class EventMapper {
+
+    private final InteractionApiManager interactionApiManager;
+
+    public EventShortDto toShortDto(Event e, long confirmed, long views) {
         if (e == null) {
             return null;
         }
+        CategoryDto category = interactionApiManager.getCategoryByPublic(e.getCategory());
+        UserDto userDto = interactionApiManager.getUserByAdmin(e.getInitiator());
+        UserShortDto initiator = UserShortDto.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .build();
+
         return EventShortDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
-//                .category(CategoryMapper.toDto(e.getCategory()))
+                .category(category)
                 .confirmedRequests(confirmed)
                 .eventDate(e.getEventDate())
-//                .initiator(UserMapper.toUserShort(e.getInitiator()))
+                .initiator(initiator)
                 .paid(e.isPaid())
                 .title(e.getTitle()).views(views)
                 .build();
     }
 
-    public static EventFullDto toFullDto(Event e, long confirmed, long views) {
+    public EventFullDto toFullDto(Event e, long confirmed, long views) {
         if (e == null) {
             return null;
         }
+        CategoryDto category = interactionApiManager.getCategoryByPublic(e.getCategory());
+        UserDto userDto = interactionApiManager.getUserByAdmin(e.getInitiator());
+        UserShortDto initiator = UserShortDto.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .build();
+
         return EventFullDto.builder()
                 .id(e.getId())
                 .annotation(e.getAnnotation())
-//                .category(CategoryMapper.toDto(e.getCategory()))
+                .category(category)
                 .confirmedRequests(confirmed)
                 .createdOn(e.getCreatedOn())
                 .description(e.getDescription())
                 .eventDate(e.getEventDate())
-//                .initiator(UserMapper.toUserShort(e.getInitiator()))
+                .initiator(initiator)
                 .location(new LocationDto(e.getLocation().getLat(), e.getLocation().getLon()))
                 .paid(e.isPaid())
                 .participantLimit(e.getParticipantLimit())
@@ -48,22 +72,22 @@ public final class EventMapper {
                 .build();
     }
 
-    public static Event toEvent(EventFullDto eventFullDto, String userEmail) {
+    public Event toEvent(EventFullDto eventFullDto, String userEmail) {
         if (eventFullDto == null) {
             return null;
         }
-
-//        Category category = CategoryMapper.toCategory(eventFullDto.getCategory());
-//        User initiator = UserMapper.toUser(eventFullDto.getInitiator(), userEmail);
-//        Location location = LocationMapper.toLocation(eventFullDto.getLocation());
-
+        Location location = LocationMapper.toLocation(eventFullDto.getLocation());
         return Event.builder()
                 .id(eventFullDto.getId())
                 .annotation(eventFullDto.getAnnotation())
-//                .category(category)
-//                .initiator(initiator)
+                .category(eventFullDto.getCategory() == null
+                        ? null
+                        : eventFullDto.getCategory().getId())
+                .initiator(eventFullDto.getInitiator() == null
+                        ? null
+                        : eventFullDto.getInitiator().getId())
                 .description(eventFullDto.getDescription())
-//                .location(location)
+                .location(location)
                 .paid(eventFullDto.isPaid())
                 .participantLimit(eventFullDto.getParticipantLimit())
                 .requestModeration(eventFullDto.isRequestModeration())

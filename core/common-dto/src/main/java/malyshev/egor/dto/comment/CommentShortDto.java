@@ -2,6 +2,7 @@ package malyshev.egor.dto.comment;
 
 import lombok.Builder;
 import lombok.Data;
+import malyshev.egor.dto.user.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,6 @@ import java.time.LocalDateTime;
 public class CommentShortDto {
     private Long id;
     private String text;
-    private User commentator;
+    private UserShortDto commentator;
     private LocalDateTime publishedOn;
 }

@@ -2,8 +2,7 @@ package malyshev.egor.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import malyshev.egor.model.event.Event;
-import malyshev.egor.model.user.User;
+import malyshev.egor.dto.request.RequestStatus;
 
 import java.time.LocalDateTime;
 
@@ -19,16 +18,16 @@ public class ParticipationRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column
     private LocalDateTime created;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @Column
+    private Long event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester_id")
-    private User requester;
+    @Column
+    private Long requester;
 
+    @Column
     @Enumerated(EnumType.STRING)
-    private malyshev.egor.dto.request.RequestStatus status;
+    private RequestStatus status;
 }
