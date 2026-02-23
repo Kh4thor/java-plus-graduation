@@ -7,7 +7,6 @@ import malyshev.egor.dto.event.EventState;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import malyshev.egor.dto.request.ParticipationRequestDto;
 import malyshev.egor.dto.request.RequestStatus;
-import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.model.Event;
@@ -29,7 +28,6 @@ import java.util.List;
 public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
-    private final StatsClient statsClient;
     private final EventMapper eventMapper;
     private final InteractionApiManager interactionApiManager;
 

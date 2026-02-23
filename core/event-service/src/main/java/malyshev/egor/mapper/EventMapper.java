@@ -11,7 +11,6 @@ import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.dto.user.UserShortDto;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.model.Event;
-import malyshev.egor.model.Location;
 import org.springframework.stereotype.Component;
 
 @Component

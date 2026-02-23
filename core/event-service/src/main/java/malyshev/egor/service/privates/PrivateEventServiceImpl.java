@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.*;
-import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;

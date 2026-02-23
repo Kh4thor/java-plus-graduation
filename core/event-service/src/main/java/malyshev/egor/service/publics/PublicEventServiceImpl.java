@@ -2,14 +2,12 @@ package malyshev.egor.service.publics;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
-import malyshev.egor.dto.event.*;
-import malyshev.egor.dto.request.RequestStatus;
+import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
-import malyshev.egor.mapper.LocationMapper;
 import malyshev.egor.model.Event;
-import malyshev.egor.model.Location;
 import malyshev.egor.repository.EventRepository;
 import malyshev.egor.service.admins.AdminEventService;
 import org.springframework.data.domain.PageRequest;

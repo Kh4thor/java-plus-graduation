@@ -11,6 +11,7 @@ import malyshev.egor.feign.category.PublicCategoryFeignClient;
 import malyshev.egor.feign.event.AdminEventFeignClient;
 import malyshev.egor.feign.event.PrivateEventFeignClient;
 import malyshev.egor.feign.event.PublicEventFeignClient;
+import malyshev.egor.feign.request.CountRequestFeignClient;
 import malyshev.egor.feign.request.PrivateRequestFeignClient;
 import malyshev.egor.feign.user.AdminUserFeignClient;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class InteractionApiManager {
     private final PublicEventFeignClient publicEventFeignClient;
 
     private final PrivateRequestFeignClient privateRequestFeignClient;
+    private final CountRequestFeignClient countRequestFeignClient;
 
     private final PublicCategoryFeignClient publicCategoryFeignClient;
 
@@ -90,7 +92,7 @@ public class InteractionApiManager {
     }
 
     public Long countByEventAndStatus(Long eventId, RequestStatus status) {
-        Long count = privateRequestFeignClient.countByEventAndStatus(eventId, status);
+        Long count = countRequestFeignClient.countByEventAndStatus(eventId, status);
         if (count == null)
             return 0L;
         return count;
