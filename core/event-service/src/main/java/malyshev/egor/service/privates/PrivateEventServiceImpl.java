@@ -2,7 +2,6 @@ package malyshev.egor.service.privates;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.event.*;
-import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
@@ -184,6 +183,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private int countConfirmedRequests(Long eventId) {
-        return adminEventService.adminCountByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        return adminEventService.countConfirmedRequests(eventId);
     }
 }

@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static malyshev.egor.dto.request.EventRequestStatus.CONFIRMED;
+import static malyshev.egor.dto.request.EventRequestStatus.REJECTED;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -26,6 +29,14 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
+        String uri = String.format("/events/%s/requests/%s", eventId, eventId);
+        EventFullDto event = interactionApiManager.getEventByPublic(eventId, uri);
+
+        if (!event.getInitiator().getId().equals(userId)) {
+            // 409
+            throw new IllegalStateException("Пользователь не является инициатором события");
+        }
+
         return requestRepository.findAllByEvent(eventId).stream()
                 .map(RequestMapper::toRequestDto)
                 .toList();
@@ -38,6 +49,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                                                               long eventId,
                                                               EventRequestStatusUpdateRequest body) {
         EventFullDto event = interactionApiManager.getEventOfUserByPrivate(userId, eventId);
+
         if (!event.getInitiator().getId().equals(userId)) {
             throw new IllegalStateException("Пользователь не является инициатором события");
         }
@@ -49,14 +61,14 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         }
 
         var action = body.getStatus();
-        if (action != EventRequestStatus.CONFIRMED && action != EventRequestStatus.REJECTED) {
+        if (action != CONFIRMED && action != REJECTED) {
             throw new IllegalArgumentException("status must be CONFIRMED or REJECTED");
         }
 
         int limit = event.getParticipantLimit();
         long alreadyConfirmed = requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED);
 
-        if (action == EventRequestStatus.CONFIRMED && limit > 0 && alreadyConfirmed >= limit) {
+        if (action == CONFIRMED && limit > 0 && alreadyConfirmed >= limit) {
             throw new IllegalStateException("The participant limit has been reached");
         }
 
@@ -75,7 +87,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 throw new IllegalStateException("Можно изменять только заявки в статусе PENDING");
             }
 
-            if (action == EventRequestStatus.REJECTED) {
+            if (action == REJECTED) {
                 r.setStatus(RequestStatus.REJECTED);
                 rejected.add(RequestMapper.toRequestDto(r));
             } else { // CONFIRMED

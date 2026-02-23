@@ -75,11 +75,11 @@ public class PublicEventController {
 
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable("id") Long id,
-                                @RequestParam (value = "X-Forwarded-For", required = false) String clientIp,
-                                @RequestParam (value = "X-Request-URI", required = false) String requestUri
+                                @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
+                                @RequestParam(value = "X-Request-URI", required = false) String requestUri
     ) {
         if (clientIp == null) clientIp = "unknown";
-        if (requestUri == null) requestUri = "/events/" + id;
+        if (requestUri == null) requestUri = "unknown";
         return service.publicGet(
                 id,
                 requestUri,

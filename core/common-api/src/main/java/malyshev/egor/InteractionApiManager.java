@@ -83,4 +83,8 @@ public class InteractionApiManager {
     public CategoryDto getCategoryByPublic(Long categoryId) {
         return publicCategoryFeignClient.get(categoryId);
     }
+
+    public List<ParticipationRequestDto> getRequestsForEvent(Long userId, Long eventId) {
+        return privateRequestFeignClient.list(userId, eventId);
+    }
 }

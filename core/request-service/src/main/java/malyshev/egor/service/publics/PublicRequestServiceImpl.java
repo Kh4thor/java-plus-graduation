@@ -41,33 +41,35 @@ public class PublicRequestServiceImpl implements PublicRequestService {
     public ParticipationRequestDto createRequest(long userId, long eventId) {
 
         String uri = String.format("/users/%d/requests", userId);
-        EventFullDto eventFullDto = interactionApiManager.getEventByPublic(eventId, uri);
+        EventFullDto event = interactionApiManager.getEventByPublic(eventId, uri);
 
-        ParticipationRequest request = ParticipationRequest.builder()
-                .requester(userId)
-                .event(eventId)
-                .created(LocalDateTime.now())
-                .build();
+        validateRequest(userId, event);
+
+        ParticipationRequest req = new ParticipationRequest();
+        req.setRequester(userId);
+        req.setEvent(eventId);
+        req.setCreated(LocalDateTime.now());
 
         // Автоподтверждение: либо модерация отключена, либо лимит = 0 (без ограничений)
-        boolean unlimited = eventFullDto.getParticipantLimit() == 0;
-        boolean autoConfirm = !eventFullDto.isRequestModeration() || unlimited;
+        boolean unlimited = event.getParticipantLimit() == 0;
+        boolean autoConfirm = !event.isRequestModeration() || unlimited;
 
         if (autoConfirm) {
-            request.setStatus(RequestStatus.CONFIRMED);
+            req.setStatus(RequestStatus.CONFIRMED);
             // счётчик подтверждений считаем по таблице запросов (через репозиторий), Event не трогаем
         } else {
-            request.setStatus(RequestStatus.PENDING);
+            req.setStatus(RequestStatus.PENDING);
         }
-
-        request = requestRepository.save(request);
-        return RequestMapper.toRequestDto(request);
+        req = requestRepository.save(req);
+        return RequestMapper.toRequestDto(req);
     }
 
     //PUBLIC
     @Override
     @Transactional
     public ParticipationRequestDto cancelRequest(long userId, long requestId) {
+        // проверка наличия пользователя
+        interactionApiManager.getUserByAdmin(userId);
 
         ParticipationRequest req = requestRepository.findById(requestId)
                 .orElseThrow(() -> {
