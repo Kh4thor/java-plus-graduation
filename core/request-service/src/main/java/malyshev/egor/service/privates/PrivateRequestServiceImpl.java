@@ -28,7 +28,6 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
         return requestRepository.findAllByEvent(eventId).stream()
                 .map(RequestMapper::toRequestDto)
-                .filter(r -> r.getRequester().equals(userId)) // не было
                 .toList();
     }
 

@@ -128,7 +128,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     @Transactional
     @Override
     public List<CommentShortDto> getAllCommentsByEventPrivate(Long userId, Long eventId) {
-        List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
+        List<Comment> commentList = commentRepository.findByEventAndDeleted(eventId, false);
 
         return commentList.stream()
                 .map(commentMapper::toShortDto)

@@ -34,7 +34,7 @@ public class AdminCommentServiceImpl implements AdminCommentService {
     @Transactional
     @Override
     public List<CommentFullDto> getAllCommentsByEventAdmin(Long eventId) {
-        return commentRepository.findByEventId(eventId).stream()
+        return commentRepository.findByEvent(eventId).stream()
                 .map(commentMapper::toFullDto)
                 .toList();
     }

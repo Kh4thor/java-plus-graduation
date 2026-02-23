@@ -35,11 +35,14 @@ public class PublicEventController {
                                    @RequestParam(value = "sort", required = false) String sort,
                                    @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
                                    @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                   @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
-                                   @RequestHeader(value = "X-Request-URI", required = false) String requestUri) {
+                                   @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
+                                   @RequestParam(value = "X-Request-URI", required = false) String requestUri) {
 
         LocalDateTime start = null;
         LocalDateTime end = null;
+
+        if (clientIp == null) clientIp = "unknown";
+        if (requestUri == null) requestUri = "unknown";
 
         try {
             if (rangeStart != null && !rangeStart.isBlank()) {
@@ -72,9 +75,11 @@ public class PublicEventController {
 
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable("id") Long id,
-                                @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
-                                @RequestHeader(value = "X-Request-URI", required = false) String requestUri
+                                @RequestParam (value = "X-Forwarded-For", required = false) String clientIp,
+                                @RequestParam (value = "X-Request-URI", required = false) String requestUri
     ) {
+        if (clientIp == null) clientIp = "unknown";
+        if (requestUri == null) requestUri = "/events/" + id;
         return service.publicGet(
                 id,
                 requestUri,

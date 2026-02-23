@@ -83,5 +83,4 @@ public class InteractionApiManager {
     public CategoryDto getCategoryByPublic(Long categoryId) {
         return publicCategoryFeignClient.get(categoryId);
     }
-
 }

@@ -8,7 +8,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -30,12 +29,12 @@ public interface PublicEventFeignClient {
                             @RequestParam(value = "sort", required = false) String sort,
                             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
                             @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
-                            @RequestHeader(value = "X-Request-URI", required = false) String requestUri);
+                            @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
+                            @RequestParam(value = "X-Request-URI", required = false) String requestUri);
 
     @GetMapping("/{id}")
     EventFullDto getById(@PathVariable("id") Long id,
-                         @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
-                         @RequestHeader(value = "X-Request-URI", required = false) String requestUri
+                         @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
+                         @RequestParam(value = "X-Request-URI", required = false) String requestUri
     );
 }

@@ -65,7 +65,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
         if (categories != null && !categories.isEmpty()) {
             spec = spec.and((root, q, cb)
-                    -> root.get("category").get("id").in(categories));
+                    -> root.get("category").in(categories));
         }
         if (start != null) {
             spec = spec.and((root, q, cb)

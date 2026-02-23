@@ -21,7 +21,7 @@ public class PublicCommentServiceImpl implements PublicCommentService {
     @Transactional
     @Override
     public List<CommentShortDto> getAllCommentsByEventPublic(Long eventId) {
-        List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
+        List<Comment> commentList = commentRepository.findByEventAndDeleted(eventId, false);
 
         return commentList.stream()
                 .map(commentMapper::toShortDto)
