@@ -15,6 +15,7 @@ import java.util.List;
 public class PublicCommentServiceImpl implements PublicCommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     // PUBLIC
     @Transactional
@@ -23,7 +24,7 @@ public class PublicCommentServiceImpl implements PublicCommentService {
         List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
 
         return commentList.stream()
-                .map(CommentMapper::toShortDto)
+                .map(commentMapper::toShortDto)
                 .toList();
     }
 }
