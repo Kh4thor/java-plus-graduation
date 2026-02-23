@@ -26,6 +26,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
     private final CommentRepository commentRepository;
     private final InteractionApiManager interactionApiManager;
+    private final CommentMapper commentMapper;
 
     // PRIVATE
     @Transactional
@@ -55,7 +56,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
         Comment cretedComment = commentRepository.save(comment);
 
-        return CommentMapper.toShortDto(cretedComment);
+        return commentMapper.toShortDto(cretedComment);
     }
 
     // PRIVATE
@@ -88,7 +89,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         String text = dto.getText() == null ? comment.getText() : dto.getText();
         comment.setText(text);
         comment = commentRepository.save(comment);
-        return CommentMapper.toShortDto(comment);
+        return commentMapper.toShortDto(comment);
     }
 
     // PRIVATE
@@ -120,7 +121,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
         comment.setDeleted(true);
         comment = commentRepository.save(comment);
-        return CommentMapper.toShortDto(comment);
+        return commentMapper.toShortDto(comment);
     }
 
     // PRIVATE
@@ -130,7 +131,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         List<Comment> commentList = commentRepository.findByEventIdAndDeleted(eventId, false);
 
         return commentList.stream()
-                .map(CommentMapper::toShortDto)
+                .map(commentMapper::toShortDto)
                 .filter(c -> c.getCommentator().getId().equals(userId))
                 .toList();
     }

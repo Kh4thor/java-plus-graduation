@@ -16,6 +16,7 @@ import java.util.List;
 public class AdminCommentServiceImpl implements AdminCommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     // ADMIN
     @Transactional
@@ -26,7 +27,7 @@ public class AdminCommentServiceImpl implements AdminCommentService {
         );
         comment.setDeleted(true);
         comment = commentRepository.save(comment);
-        return CommentMapper.toFullDto(comment);
+        return commentMapper.toFullDto(comment);
     }
 
     // ADMIN
@@ -34,7 +35,7 @@ public class AdminCommentServiceImpl implements AdminCommentService {
     @Override
     public List<CommentFullDto> getAllCommentsByEventAdmin(Long eventId) {
         return commentRepository.findByEventId(eventId).stream()
-                .map(CommentMapper::toFullDto)
+                .map(commentMapper::toFullDto)
                 .toList();
     }
 }

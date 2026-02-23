@@ -1,7 +1,7 @@
 package malyshev.egor.repository;
 
-import malyshev.egor.model.ParticipationRequest;
 import malyshev.egor.dto.request.RequestStatus;
+import malyshev.egor.model.ParticipationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

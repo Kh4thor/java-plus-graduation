@@ -5,12 +5,12 @@ import malyshev.egor.dto.event.*;
 import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.mapper.EventMapper;
+import malyshev.egor.mapper.LocationMapper;
 import malyshev.egor.model.Event;
 import malyshev.egor.model.Location;
 import malyshev.egor.repository.EventRepository;
 import malyshev.egor.service.admins.AdminEventService;
-import malyshev.egor.mapper.EventMapper;
-import malyshev.egor.mapper.LocationMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +32,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
     private final AdminEventService adminEventService;
+    private final EventMapper eventMapper;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -91,7 +92,7 @@ public class PublicEventServiceImpl implements PublicEventService {
             return sorted.stream()
                     .skip(from)
                     .limit(size)
-                    .map(e -> EventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
+                    .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
                             statsClient.viewsForEvent(e.getId())))
                     .toList();
         } else {
@@ -99,7 +100,7 @@ public class PublicEventServiceImpl implements PublicEventService {
             var page = eventRepository.findAll(spec, PageRequest.of((int) (pageable.getOffset() / pageable.getPageSize()),
                     pageable.getPageSize(), Sort.by("eventDate").ascending()));
             return page.getContent().stream()
-                    .map(e -> EventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
+                    .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
                             statsClient.viewsForEvent(e.getId())))
                     .toList();
         }
@@ -117,7 +118,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
 
         statsClient.hit(uri, ip);
-        return EventMapper.toFullDto(e, countConfirmedRequests(e.getId()),
+        return eventMapper.toFullDto(e, countConfirmedRequests(e.getId()),
                 statsClient.viewsForEvent(e.getId()));
     }
 
@@ -135,7 +136,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         return events.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
+                .map(e -> eventMapper.toShortDto(e, countConfirmedRequests(e.getId()),
                         statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
@@ -172,7 +173,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .build();
 
         e = eventRepository.save(e);
-        return EventMapper.toFullDto(e, 0L, 0L);
+        return eventMapper.toFullDto(e, 0L, 0L);
     }
 
     @Override
@@ -184,7 +185,7 @@ public class PublicEventServiceImpl implements PublicEventService {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
-        return EventMapper.toFullDto(e,
+        return eventMapper.toFullDto(e,
                 countConfirmedRequests(e.getId()),
                 statsClient.viewsForEvent(e.getId()));
     }
@@ -281,7 +282,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         return all.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toFullDto(e, adminEventService.countConfirmedRequests(e.getId()),
+                .map(e -> eventMapper.toFullDto(e, adminEventService.countConfirmedRequests(e.getId()),
                         statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
@@ -381,10 +382,10 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     private EventFullDto getEventFullDto(Event e) {
-        return EventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
+        return eventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
     }
 
     private EventShortDto getEventShortDto(Event e) {
-        return EventMapper.toShortDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
+        return eventMapper.toShortDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
     }
 }

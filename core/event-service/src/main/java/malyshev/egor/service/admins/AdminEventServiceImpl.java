@@ -7,10 +7,10 @@ import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
+import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.model.Event;
 import malyshev.egor.model.Location;
 import malyshev.egor.repository.EventRepository;
-import malyshev.egor.mapper.EventMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final StatsClient statsClient;
+    private final EventMapper eventMapper;
 
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -63,7 +64,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         return all.stream()
                 .skip(from)
                 .limit(size)
-                .map(e -> EventMapper.toFullDto(e, adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
+                .map(e -> eventMapper.toFullDto(e, adminCountByEventIdAndStatus(e.getId(), RequestStatus.CONFIRMED), statsClient.viewsForEvent(e.getId())))
                 .toList();
     }
 
@@ -162,7 +163,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     private EventFullDto getEventFullDto(Event e) {
-        return EventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
+        return eventMapper.toFullDto(e, countConfirmedRequests(e.getId()), statsClient.viewsForEvent(e.getId()));
     }
 
     @Override

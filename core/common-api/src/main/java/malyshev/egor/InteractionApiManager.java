@@ -1,7 +1,6 @@
 package malyshev.egor;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
@@ -81,8 +80,8 @@ public class InteractionApiManager {
         return publicEventFeignClient.getById(eventId, ip, uri);
     }
 
-    public CategoryDto getCategoryByPublic (Long categoryId) {
-       return publicCategoryFeignClient.get(categoryId);
+    public CategoryDto getCategoryByPublic(Long categoryId) {
+        return publicCategoryFeignClient.get(categoryId);
     }
 
 }
