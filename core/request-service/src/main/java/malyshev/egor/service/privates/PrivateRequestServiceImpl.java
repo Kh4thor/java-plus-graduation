@@ -111,4 +111,9 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .rejectedRequests(rejected)
                 .build();
     }
+
+    @Override
+    public Long countByEventAndStatus(Long eventId, RequestStatus status) {
+        return requestRepository.countByEventAndStatus(eventId, status);
+    }
 }

@@ -1,6 +1,7 @@
 package malyshev.egor.feign.request;
 
 import malyshev.egor.dto.request.ParticipationRequestDto;
+import malyshev.egor.dto.request.RequestStatus;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,4 +24,7 @@ public interface PrivateRequestFeignClient {
             @PathVariable long userId,
             @PathVariable long eventId
     );
+
+    @GetMapping("/count")
+    Long countByEventAndStatus(Long eventId, RequestStatus status);
 }
