@@ -5,13 +5,12 @@ import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.request.ParticipationRequestDto;
-import malyshev.egor.dto.request.RequestStatus;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.feign.category.PublicCategoryFeignClient;
 import malyshev.egor.feign.event.AdminEventFeignClient;
 import malyshev.egor.feign.event.PrivateEventFeignClient;
 import malyshev.egor.feign.event.PublicEventFeignClient;
-import malyshev.egor.feign.request.CountRequestFeignClient;
+import malyshev.egor.feign.request.ConfirmedRequestsFeignClient;
 import malyshev.egor.feign.request.PrivateRequestFeignClient;
 import malyshev.egor.feign.user.AdminUserFeignClient;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class InteractionApiManager {
     private final PublicEventFeignClient publicEventFeignClient;
 
     private final PrivateRequestFeignClient privateRequestFeignClient;
-    private final CountRequestFeignClient countRequestFeignClient;
+    private final ConfirmedRequestsFeignClient confirmedRequestsFeignClient;
 
     private final PublicCategoryFeignClient publicCategoryFeignClient;
 
@@ -38,7 +37,7 @@ public class InteractionApiManager {
     public UserDto getUserByAdmin(Long userId) {
         List<Long> users = List.of(userId);
         int from = 0;
-        int size = 20;
+        int size = 10;
 
         List<UserDto> userDtoList = adminUserFeignClient.list(users, from, size);
         if (userDtoList.isEmpty()) {
@@ -91,10 +90,14 @@ public class InteractionApiManager {
         return privateRequestFeignClient.list(userId, eventId);
     }
 
-    public Long countByEventAndStatus(Long eventId, RequestStatus status) {
-        Long count = countRequestFeignClient.countByEventAndStatus(eventId, status);
-        if (count == null)
+    public Long countConfirmedRequests(Long eventId) {
+        try {
+            Long count = confirmedRequestsFeignClient.countConfirmedRequests(eventId);
+            System.out.println(">>> countConfirmedRequests: eventId=" + eventId + ", count=" + count);
+            return count == null ? 0L : count;
+        } catch (Exception e) {
+            e.printStackTrace();
             return 0L;
-        return count;
+        }
     }
 }

@@ -88,7 +88,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .build();
 
         e = eventRepository.save(e);
-
         return eventMapper.toFullDto(e);
     }
 

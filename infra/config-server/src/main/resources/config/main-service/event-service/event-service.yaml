@@ -30,3 +30,8 @@ server:
 
 stats:
   baseUrl: http://stats-server
+
+logging:
+  level:
+    org.springframework.cloud.openfeign: DEBUG
+    feign: DEBUG

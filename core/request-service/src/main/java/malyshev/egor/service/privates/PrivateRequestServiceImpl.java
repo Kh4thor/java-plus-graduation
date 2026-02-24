@@ -116,7 +116,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
-    public Long countByEventAndStatus(Long eventId, RequestStatus status) {
-        return requestRepository.countByEventAndStatus(eventId, status);
+    public Long countConfirmedRequests(Long eventId) {
+        return requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED);
     }
 }

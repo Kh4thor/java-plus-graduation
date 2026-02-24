@@ -4,7 +4,6 @@ package malyshev.egor.service.privates;
 import malyshev.egor.dto.request.EventRequestStatusUpdateRequest;
 import malyshev.egor.dto.request.EventRequestStatusUpdateResult;
 import malyshev.egor.dto.request.ParticipationRequestDto;
-import malyshev.egor.dto.request.RequestStatus;
 
 import java.util.List;
 
@@ -17,5 +16,5 @@ public interface PrivateRequestService {
     EventRequestStatusUpdateResult updateEventRequests(long userId, long eventId, EventRequestStatusUpdateRequest body);
 
     // НОВЫЙ МЕТОД ВНЕ ТЗ
-    Long countByEventAndStatus(Long eventId, RequestStatus status);
+    Long countConfirmedRequests(Long eventId);
 }

@@ -16,15 +16,17 @@ public class CommentMapper {
     private final InteractionApiManager interactionApiManager;
 
     public CommentShortDto toShortDto(Comment comment) {
-        if (comment == null)
+        if (comment == null) {
             return null;
-
-        UserDto userDto = interactionApiManager.getUserByAdmin(comment.getCommentator());
-        UserShortDto commentator = UserShortDto.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .build();
-
+        }
+        UserShortDto commentator = null;
+        if (comment.getCommentator() != null) {
+            UserDto userDto = interactionApiManager.getUserByAdmin(comment.getCommentator());
+            commentator = UserShortDto.builder()
+                    .id(userDto.getId())
+                    .name(userDto.getName())
+                    .build();
+        }
         return CommentShortDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
@@ -34,15 +36,17 @@ public class CommentMapper {
     }
 
     public CommentFullDto toFullDto(Comment comment) {
-        if (comment == null)
+        if (comment == null) {
             return null;
-
-        UserDto userDto = interactionApiManager.getUserByAdmin(comment.getCommentator());
-        UserShortDto commentator = UserShortDto.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .build();
-
+        }
+        UserShortDto commentator = null;
+        if (comment.getCommentator() != null) {
+            UserDto userDto = interactionApiManager.getUserByAdmin(comment.getCommentator());
+            commentator = UserShortDto.builder()
+                    .id(userDto.getId())
+                    .name(userDto.getName())
+                    .build();
+        }
         return CommentFullDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())

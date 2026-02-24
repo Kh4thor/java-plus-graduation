@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-
 @Validated
 @FeignClient(
         name = "request-service",
