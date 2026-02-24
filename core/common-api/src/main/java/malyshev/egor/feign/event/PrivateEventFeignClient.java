@@ -8,10 +8,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Validated
 @FeignClient(name = "event-service",
-        contextId = "private-event-service",
-        url = "${gateway.url:http://localhost:8080}",
-        path = "/users/{userId}/events")
+        contextId = "private-event-service")
 public interface PrivateEventFeignClient {
+    @GetMapping("/users/{userId}/events/{eventId}")
+    EventFullDto getUserEvent(@PathVariable Long userId, @PathVariable Long eventId);
+}
+//@Validated
+//@FeignClient(name = "event-service",
+//        contextId = "private-event-service",
+//        url = "${gateway.url:http://localhost:8080}",
+//        path = "/users/{userId}/events")
+//public interface PrivateEventFeignClient {
 
 //    @GetMapping
 //    List<EventShortDto> getUserEvents(@PathVariable Long userId,
@@ -23,12 +30,12 @@ public interface PrivateEventFeignClient {
 //    EventFullDto addEvent(@PathVariable Long userId,
 //                          @Valid @RequestBody NewEventDto dto);
 
-    @GetMapping("/{eventId}")
-    EventFullDto getUserEvent(@PathVariable Long userId,
-                              @PathVariable Long eventId);
+//    @GetMapping("/{eventId}")
+//    EventFullDto getUserEvent(@PathVariable Long userId,
+//                              @PathVariable Long eventId);
 
 //    @PatchMapping("/{eventId}")
 //    EventFullDto updateEventUser(@PathVariable Long userId,
 //                                 @PathVariable Long eventId,
 //                                 @Valid @RequestBody UpdateEventUserRequest dto);
-}
+//}
