@@ -12,6 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Контроллер для управления подборками событий от имени администратора.
+ * Предоставляет эндпоинты для создания, удаления и обновления подборок.
+ */
 @Slf4j
 @Validated
 @RestController
@@ -21,6 +25,14 @@ public class AdminCompilationController {
 
     private final AdminCompilationService adminCompilationService;
 
+    /**
+     * Создаёт новую подборку событий.
+     *
+     * @param dto объект с данными новой подборки (название, список идентификаторов событий, признак закрепления)
+     * @return созданная подборка с присвоенным идентификатором
+     * @throws jakarta.validation.ConstraintViolationException если передан некорректный DTO
+     * @throws malyshev.egor.exception.TitleAlreadyExistsException если подборка с таким названием уже существует
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto create(@Valid @RequestBody NewCompilationDto dto) {
@@ -28,6 +40,12 @@ public class AdminCompilationController {
         return adminCompilationService.create(dto);
     }
 
+    /**
+     * Удаляет подборку по её идентификатору.
+     *
+     * @param compId идентификатор удаляемой подборки (должен быть положительным)
+     * @throws malyshev.egor.exception.CompilationNotFoundException если подборка с указанным идентификатором не найдена
+     */
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @Positive Long compId) {
@@ -35,6 +53,16 @@ public class AdminCompilationController {
         adminCompilationService.delete(compId);
     }
 
+    /**
+     * Обновляет существующую подборку.
+     * Если тело запроса пустое, создаётся пустой DTO, и обновление не применяется (сервис вернёт текущее состояние).
+     *
+     * @param compId идентификатор обновляемой подборки (должен быть положительным)
+     * @param dto    объект с обновляемыми полями (название, список событий, признак закрепления) — может отсутствовать
+     * @return обновлённая подборка
+     * @throws malyshev.egor.exception.CompilationNotFoundException если подборка с указанным идентификатором не найдена
+     * @throws malyshev.egor.exception.TitleAlreadyExistsException если новое название уже занято другой подборкой
+     */
     @PatchMapping("/{compId}")
     public CompilationDto update(
             @PathVariable @Positive Long compId,
