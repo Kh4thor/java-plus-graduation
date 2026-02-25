@@ -93,8 +93,8 @@ public class PublicEventController {
                 onlyAvailable,
                 sort,
                 PageRequest.of(from / size, size),
-                clientIp,
-                requestURI
+                requestURI,
+                clientIp
         );
     }
 

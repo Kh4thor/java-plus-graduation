@@ -40,4 +40,8 @@ public interface HitRepository extends JpaRepository<EndpointHit, Long> {
     List<ViewStatsDto> getUniqueStatsByUris(@Param("start") LocalDateTime start,
                                             @Param("end") LocalDateTime end,
                                             @Param("uris") List<String> uris);
+
+    List<EndpointHit> findByHitTimestampBetweenAndUriIn(LocalDateTime start, LocalDateTime end, List<String> uris);
+
+    List<EndpointHit> findByHitTimestampBetween(LocalDateTime start, LocalDateTime end);
 }
