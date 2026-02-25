@@ -11,7 +11,5 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
 
     List<Event> findByIdIn(List<Long> ids);
 
-    void deleteByCategory(Long categoryId);
-
     boolean existsByCategory(Long categoryId);
 }

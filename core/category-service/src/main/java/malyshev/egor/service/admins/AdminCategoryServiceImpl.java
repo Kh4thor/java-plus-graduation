@@ -52,7 +52,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
             throw new NotFoundException("Category with id=" + id + " was not found");
         }
         if (interactionApiManager.existsEventsByCategoryId(id)) {
-            throw new CategoryHasEventsException("Category with id=" + id + " has linked events and cannot be deleted")
+            throw new CategoryHasEventsException("Category with id=" + id + " has linked events and cannot be deleted");
         }
         repo.deleteById(id);
     }

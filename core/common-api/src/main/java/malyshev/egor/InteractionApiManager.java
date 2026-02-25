@@ -6,6 +6,7 @@ import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.request.ParticipationRequestDto;
 import malyshev.egor.dto.user.UserDto;
+import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.feign.category.PublicCategoryFeignClient;
 import malyshev.egor.feign.event.AdminEventFeignClient;
 import malyshev.egor.feign.event.PrivateEventFeignClient;
@@ -46,37 +47,23 @@ public class InteractionApiManager {
     }
 
     public EventFullDto getEventOfUserByPrivate(Long userId, Long eventId) {
-        return privateEventFeignClient.getUserEvent(userId, eventId);
+        try {
+            return privateEventFeignClient.getUserEvent(userId, eventId);
+        } catch (feign.FeignException.NotFound e) {
+            throw new NotFoundException("Event with id=" + eventId + " not found for user " + userId);
+        }
     }
 
     public ParticipationRequestDto getRequestOfUserByPrivate(Long userId, Long eventId) {
         return privateRequestFeignClient.list(userId, eventId).getFirst();
     }
 
-    public List<UserDto> getAllUsersByAdmin(List<Long> list) {
-        int from = 0;
-        int size = 10;
-        return adminUserFeignClient.list(list, from, size);
-    }
-
-    public List<EventShortDto> getAllEventsByPublic() {
-        int from = 0;
-        int size = 10;
-        return publicEventFeignClient.get(
-                null,
-                null,
-                null,
-                null,
-                null,
-                true,
-                null,
-                from,
-                size
-        );
-    }
-
     public EventFullDto getEventByPublic(Long eventId) {
-        return publicEventFeignClient.getById(eventId);
+        try {
+            return publicEventFeignClient.getById(eventId);
+        } catch (feign.FeignException.NotFound e) {
+            throw new IllegalStateException("Event with id=" + eventId + " was not found");
+        }
     }
 
     public CategoryDto getCategoryByPublic(Long categoryId) {
@@ -103,7 +90,6 @@ public class InteractionApiManager {
         if (ids == null || ids.isEmpty()) return List.of();
         return adminEventFeignClient.getEventsByIds(List.copyOf(ids));
     }
-
 
     public boolean existsEventsByCategoryId(long categoryId) {
         return adminEventFeignClient.existsEventsByCategoryId(categoryId);

@@ -56,7 +56,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         if (eventIds == null || eventIds.isEmpty()) {
             return CompilationMapper.toDto(compilation, List.of());
         }
-        List<EventShortDto> all = interactionApiManager.getAllEventsByPublic();
+        List<EventShortDto> all = interactionApiManager.getEventsByIds(eventIds);
         List<EventShortDto> filteredById = all.stream()
                 .filter(e -> eventIds.contains(e.getId()))
                 .toList();
