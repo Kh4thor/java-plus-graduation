@@ -88,8 +88,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     private List<EventShortDto> loadEventShortDtos(Compilation compilation) {
         Set<Long> eventIds = compilation.getEvents();
         if (eventIds == null || eventIds.isEmpty()) return List.of();
-        String uri = String.format("/admin/compilations/%d", compilation.getId());
-        List<EventShortDto> all = interactionApiManager.getAllEventsByPublic(uri);
+        List<EventShortDto> all = interactionApiManager.getEventsByIds(compilation.getEvents());
         List<EventShortDto> filteredById = all.stream()
                 .filter(e -> eventIds.contains(e.getId()))
                 .collect(Collectors.toList());

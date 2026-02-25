@@ -5,7 +5,6 @@ import malyshev.egor.model.ParticipationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<ParticipationRequest, Long> {
     List<ParticipationRequest> findAllByRequester(Long requesterId);

@@ -59,7 +59,7 @@ public class InteractionApiManager {
         return adminUserFeignClient.list(list, from, size);
     }
 
-    public List<EventShortDto> getAllEventsByPublic(String uri) {
+    public List<EventShortDto> getAllEventsByPublic() {
         int from = 0;
         int size = 10;
         return publicEventFeignClient.get(

@@ -3,7 +3,6 @@ package malyshev.egor.service.admins;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.EventFullDto;
-import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.EventState;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import malyshev.egor.dto.request.ParticipationRequestDto;

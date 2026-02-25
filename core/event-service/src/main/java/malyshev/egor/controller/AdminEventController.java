@@ -49,7 +49,6 @@ public class AdminEventController {
         );
     }
 
-
     @GetMapping("/by-ids")
     List<EventShortDto> getEventsByIds(@RequestParam("ids") List<Long> ids) {
         return adminEventService.getEventsByIds(ids).stream()
