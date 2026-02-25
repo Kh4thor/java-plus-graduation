@@ -1,5 +1,6 @@
 package malyshev.egor.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +36,16 @@ public class PublicEventController {
                                    @RequestParam(value = "sort", required = false) String sort,
                                    @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
                                    @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                   @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
-                                   @RequestParam(value = "X-Request-URI", required = false) String requestUri) {
+                                   HttpServletRequest request) {
 
         LocalDateTime start = null;
         LocalDateTime end = null;
 
+        String clientIp = request.getRemoteAddr();
+        String requestURI = request.getRequestURI();
+
         if (clientIp == null) clientIp = "unknown";
-        if (requestUri == null) requestUri = "unknown";
+        if (requestURI == null) requestURI = "unknown";
 
         try {
             if (rangeStart != null && !rangeStart.isBlank()) {
@@ -68,21 +71,23 @@ public class PublicEventController {
                 onlyAvailable,
                 sort,
                 PageRequest.of(from / size, size),
-                requestUri,
-                clientIp
+                clientIp,
+                requestURI
         );
     }
 
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable("id") Long id,
-                                @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
-                                @RequestParam(value = "X-Request-URI", required = false) String requestUri
+                                HttpServletRequest request
     ) {
+        String clientIp = request.getRemoteAddr();
+        String requestURI = request.getRequestURI();
+
         if (clientIp == null) clientIp = "unknown";
-        if (requestUri == null) requestUri = "unknown";
+        if (requestURI == null) requestURI = "unknown";
         return service.publicGet(
                 id,
-                requestUri,
+                requestURI,
                 clientIp
         );
     }

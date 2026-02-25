@@ -28,13 +28,8 @@ public interface PublicEventFeignClient {
                             @RequestParam(value = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                             @RequestParam(value = "sort", required = false) String sort,
                             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
-                            @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                            @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
-                            @RequestParam(value = "X-Request-URI", required = false) String requestUri);
+                            @RequestParam(value = "size", defaultValue = "10") @Positive int size);
 
     @GetMapping("/{id}")
-    EventFullDto getById(@PathVariable("id") Long id,
-                         @RequestParam(value = "X-Forwarded-For", required = false) String clientIp,
-                         @RequestParam(value = "X-Request-URI", required = false) String requestUri
-    );
+    EventFullDto getById(@PathVariable("id") Long id);
 }

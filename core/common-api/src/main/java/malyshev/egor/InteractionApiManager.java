@@ -32,8 +32,6 @@ public class InteractionApiManager {
 
     private final PublicCategoryFeignClient publicCategoryFeignClient;
 
-    private final String ip = "127.0.0.1";
-
     public UserDto getUserByAdmin(Long userId) {
         List<Long> users = List.of(userId);
         int from = 0;
@@ -72,14 +70,12 @@ public class InteractionApiManager {
                 true,
                 null,
                 from,
-                size,
-                ip,
-                uri
+                size
         );
     }
 
-    public EventFullDto getEventByPublic(Long eventId, String uri) {
-        return publicEventFeignClient.getById(eventId, ip, uri);
+    public EventFullDto getEventByPublic(Long eventId) {
+        return publicEventFeignClient.getById(eventId);
     }
 
     public CategoryDto getCategoryByPublic(Long categoryId) {
@@ -92,6 +88,7 @@ public class InteractionApiManager {
 
     public Long countConfirmedRequests(Long eventId) {
         try {
+            // feign-client выносит голову, все динамические поля должны быть в path конкретного метода, а не класса
             Long count = confirmedRequestsFeignClient.countConfirmedRequests(eventId);
             System.out.println(">>> countConfirmedRequests: eventId=" + eventId + ", count=" + count);
             return count == null ? 0L : count;

@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
         contextId = "private-event-service")
 public interface PrivateEventFeignClient {
     @GetMapping("/users/{userId}/events/{eventId}")
-    EventFullDto getUserEvent(@PathVariable Long userId, @PathVariable Long eventId);
+    EventFullDto getUserEvent(@PathVariable Long userId,
+                              @PathVariable Long eventId);
 }
 //@Validated
 //@FeignClient(name = "event-service",
