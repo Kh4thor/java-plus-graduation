@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Публичный контроллер для работы с комментариями к событиям.
+ * Предоставляет эндпоинты для получения списка комментариев по идентификатору события.
+ */
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +23,14 @@ public class PublicCommentController {
 
     private final PublicCommentService publicCommentService;
 
+    /**
+     * Возвращает список всех комментариев к указанному событию.
+     * Доступно без аутентификации.
+     *
+     * @param eventId идентификатор события, для которого запрашиваются комментарии
+     * @return список комментариев в сокращённом представлении
+     * @throws malyshev.egor.exception.NotFoundException если событие с указанным идентификатором не существует
+     */
     @GetMapping
     public List<CommentShortDto> getAllCommentsByEvent(
             @PathVariable Long eventId
