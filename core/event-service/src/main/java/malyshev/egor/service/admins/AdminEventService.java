@@ -1,7 +1,9 @@
 package malyshev.egor.service.admins;
 
 import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
+import malyshev.egor.model.Event;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -21,4 +23,7 @@ public interface AdminEventService {
 
     // ADMIN - for private and public event services
     int countConfirmedRequests(Long eventId);
+
+    // Дополнительный метод вне ТЗ
+    List<Event> getEventsByIds(List<Long> ids);
 }

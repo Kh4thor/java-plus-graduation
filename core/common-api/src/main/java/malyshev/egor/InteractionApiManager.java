@@ -16,6 +16,7 @@ import malyshev.egor.feign.user.AdminUserFeignClient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -96,5 +97,10 @@ public class InteractionApiManager {
             e.printStackTrace();
             return 0L;
         }
+    }
+
+    public List<EventShortDto> getEventsByIds(Set<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        return adminEventFeignClient.getEventsByIds(List.copyOf(ids));
     }
 }

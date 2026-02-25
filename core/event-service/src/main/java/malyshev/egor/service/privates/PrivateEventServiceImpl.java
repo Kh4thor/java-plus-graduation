@@ -181,8 +181,4 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             throw new IllegalArgumentException("Date must match 'yyyy-MM-dd HH:mm:ss' or 'yyyy-MM-dd'T'HH:mm:ss': " + s);
         }
     }
-
-    private int countConfirmedRequests(Long eventId) {
-        return adminEventService.countConfirmedRequests(eventId);
-    }
 }

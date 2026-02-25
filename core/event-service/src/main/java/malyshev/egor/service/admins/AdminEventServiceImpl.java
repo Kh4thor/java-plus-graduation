@@ -3,6 +3,7 @@ package malyshev.egor.service.admins;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
 import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.EventState;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import malyshev.egor.dto.request.ParticipationRequestDto;
@@ -170,5 +171,10 @@ public class AdminEventServiceImpl implements AdminEventService {
         return (int) requests.stream()
                 .filter(r -> r.getStatus() == RequestStatus.CONFIRMED)
                 .count();
+    }
+
+    @Override
+    public List<Event> getEventsByIds(List<Long> ids) {
+        return eventRepository.findByEventIdIn(ids);
     }
 }

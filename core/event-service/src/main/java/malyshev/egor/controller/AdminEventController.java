@@ -3,7 +3,9 @@ package malyshev.egor.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
+import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.service.admins.AdminEventService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,7 @@ import java.util.List;
 public class AdminEventController {
 
     private final AdminEventService adminEventService;
+    private final EventMapper eventMapper;
 
     @GetMapping
     public List<EventFullDto> search(@RequestParam(value = "users", required = false) List<Long> users,
@@ -44,5 +47,13 @@ public class AdminEventController {
                 eventId,
                 dto
         );
+    }
+
+
+    @GetMapping("/by-ids")
+    List<EventShortDto> getEventsByIds(@RequestParam("ids") List<Long> ids) {
+        return adminEventService.getEventsByIds(ids).stream()
+                .map(eventMapper::toShortDto)
+                .toList();
     }
 }

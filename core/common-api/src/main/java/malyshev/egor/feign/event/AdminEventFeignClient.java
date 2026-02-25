@@ -2,6 +2,7 @@ package malyshev.egor.feign.event;
 
 import jakarta.validation.Valid;
 import malyshev.egor.dto.event.EventFullDto;
+import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.UpdateEventAdminRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
@@ -28,4 +29,7 @@ public interface AdminEventFeignClient {
     @PatchMapping("/{eventId}")
     EventFullDto update(@PathVariable Long eventId,
                         @Valid @RequestBody UpdateEventAdminRequest dto);
+
+    @GetMapping ("/by-ids")
+    List<EventShortDto> getEventsByIds(List<Long> longs);
 }
