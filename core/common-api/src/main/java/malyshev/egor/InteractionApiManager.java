@@ -103,4 +103,9 @@ public class InteractionApiManager {
         if (ids == null || ids.isEmpty()) return List.of();
         return adminEventFeignClient.getEventsByIds(List.copyOf(ids));
     }
+
+
+    public boolean existsEventsByCategoryId(long categoryId) {
+        return adminEventFeignClient.existsEventsByCategoryId(categoryId);
+    }
 }

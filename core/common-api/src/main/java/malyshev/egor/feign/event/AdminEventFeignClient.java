@@ -4,6 +4,7 @@ import malyshev.egor.dto.event.EventShortDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -17,4 +18,7 @@ public interface AdminEventFeignClient {
 
     @GetMapping("/by-ids")
     List<EventShortDto> getEventsByIds(@RequestParam("ids") List<Long> ids);
+
+    @GetMapping("/exists-by-categoryId/{categoryId}")
+    boolean existsEventsByCategoryId(@PathVariable Long categoryId);
 }

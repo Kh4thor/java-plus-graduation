@@ -174,6 +174,11 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public List<Event> getEventsByIds(List<Long> ids) {
-        return eventRepository.findByEventIdIn(ids);
+        return eventRepository.findByIdIn(ids);
+    }
+
+    @Override
+    public boolean existsByCategoryId(Long categoryId) {
+       return eventRepository.existsByCategory(categoryId);
     }
 }

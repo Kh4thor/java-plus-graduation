@@ -25,4 +25,7 @@ public interface AdminEventService {
 
     // Дополнительный метод вне ТЗ
     List<Event> getEventsByIds(List<Long> ids);
+
+    // Дополнительный метод вне ТЗ
+    boolean existsByCategoryId(Long categoryId);
 }

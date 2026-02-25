@@ -55,4 +55,9 @@ public class AdminEventController {
                 .map(eventMapper::toShortDto)
                 .toList();
     }
+
+    @GetMapping ("/exists-by-categoryId/{categoryId}")
+    boolean deleteEventsByCategoryId(@PathVariable Long categoryId) {
+        return adminEventService.existsByCategoryId(categoryId);
+    }
 }

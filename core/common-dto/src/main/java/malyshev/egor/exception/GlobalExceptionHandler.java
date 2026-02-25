@@ -82,4 +82,10 @@ public class GlobalExceptionHandler {
     public ApiError handleOther(Exception ex) {
         return ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error.", ex.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler
+    public ApiError handleConflict(CategoryHasEventsException exception) {
+        return ApiError.of(HttpStatus.CONFLICT, "Unexpected error.", exception.getMessage());
+    }
 }
