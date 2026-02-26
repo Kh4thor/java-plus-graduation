@@ -18,9 +18,9 @@
     <name>java-plus-graduation</name>
 
     <modules>
-        <module>infra</module>
-        <module>stats</module>
         <module>core</module>
+        <module>stats</module>
+        <module>infra</module>
     </modules>
 
     <properties>

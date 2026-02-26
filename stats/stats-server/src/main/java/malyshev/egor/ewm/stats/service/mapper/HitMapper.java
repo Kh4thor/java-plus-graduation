@@ -17,12 +17,12 @@ public class HitMapper {
     }
 
     public EndpointHitDto toDto(EndpointHit e) {
-        return new EndpointHitDto(
-            e.getId(),
-            e.getApp(),
-            e.getUri(),
-            e.getIp(),
-            e.getHitTimestamp()
-        );
+        return EndpointHitDto.builder()
+                .id(e.getId())
+                .app(e.getApp())
+                .uri(e.getUri())
+                .ip(e.getIp())
+                .timestamp(e.getHitTimestamp())
+                .build();
     }
 }
