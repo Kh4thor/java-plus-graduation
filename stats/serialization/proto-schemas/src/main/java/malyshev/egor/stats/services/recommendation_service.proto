@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package ru.practicum.ewm.stats.proto;
+
+import "recommendations.proto";
+import "google/protobuf/empty.proto";
+
+service RecommendationsService {
+  rpc GetRecommendationsForUser(UserPredictionsRequestProto)
+      returns (stream RecommendedEventProto);
+
+  rpc GetSimilarEvents(SimilarEventsRequestProto)
+      returns (stream RecommendedEventProto);
+
+  rpc GetInteractionsCount(InteractionsCountRequestProto)
+      returns (stream RecommendedEventProto);
+}
