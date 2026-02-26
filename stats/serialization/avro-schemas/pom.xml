@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>malyshev.egor</groupId>
-    <artifactId>serialization</artifactId>
+    <artifactId>avro-schemas</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -13,10 +13,5 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <modules>
-        <module>avro-schemas</module>
-        <module>proto-schemas</module>
-    </modules>
 
 </project>
