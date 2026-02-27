@@ -1,0 +1,10 @@
+@namespace("malyshev.egor.stats.avro")
+protocol EventSimilarityProtocol {
+
+	record EventSimilarityAvro {
+		long eventA;
+		long eventB;
+		float score;
+		timestamp_ms timestamp;
+	}
+}

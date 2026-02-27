@@ -96,7 +96,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         // Дополняем каждое DTO актуальными просмотрами из сервиса статистики
         for (EventShortDto dto : filteredById) {
             long views = statsClient.viewsForEvent(dto.getId());
-            dto.setViews(views);
+            dto.setRating(views);
         }
         return filteredById;
     }

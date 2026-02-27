@@ -64,7 +64,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         // Дополняем каждое DTO актуальными просмотрами из сервиса статистики
         for (EventShortDto dto : filteredById) {
             long views = statsClient.viewsForEvent(dto.getId());
-            dto.setViews(views);
+            dto.setRating(views);
         }
         return CompilationMapper.toDto(compilation, filteredById);
     }

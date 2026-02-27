@@ -1,0 +1,16 @@
+@namespace("malyshev.egor.stats.avro")
+protocol UserActionProtocol {
+
+	enum ActionTypeAvro {
+		VIEW,
+		REGISTER,
+		LIKE
+	}
+
+	record UserActionAvro {
+		long userId;
+		long eventId;
+		ActionTypeAvro actionType;
+		long timestamp;
+	}
+}
