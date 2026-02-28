@@ -1,4 +1,4 @@
-@namespace("malyshev.egor.stats.avro")
+@namespace("stats.avro")
 protocol EventSimilarityProtocol {
 
 	record EventSimilarityAvro {

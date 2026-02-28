@@ -7,6 +7,7 @@
     <groupId>malyshev.egor</groupId>
     <artifactId>serialization</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
