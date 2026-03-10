@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package ru.practicum.ewm.stats.proto;
-
-import "recommendations_message.proto";
 import "google/protobuf/empty.proto";
+import "recommendations_message.proto";
+
+option java_package = "malyshev.egor.stats.proto";
 
 service RecommendationsService {
   rpc GetRecommendationsForUser(UserPredictionsRequestProto)

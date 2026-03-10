@@ -14,7 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Entity
 @Table(name = "similarities", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"event1", "event2"})
+        @UniqueConstraint(columnNames = {"eventA", "eventB"})
 })
 public class Similarity {
 
@@ -23,10 +23,10 @@ public class Similarity {
     private Long id;
 
     @Column(nullable = false)
-    private Long event1;
+    private Long eventA;
 
     @Column(nullable = false)
-    private Long event2;
+    private Long eventB;
 
     @Column(nullable = false)
     private Float similarity;

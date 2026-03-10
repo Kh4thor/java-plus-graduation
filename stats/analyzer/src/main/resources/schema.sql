@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS interactions (
 
 CREATE TABLE IF NOT EXISTS similarities (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    event1 BIGINT NOT NULL,
-    event2 BIGINT NOT NULL,
+    eventA BIGINT NOT NULL,
+    eventB BIGINT NOT NULL,
     similarity FLOAT NOT NULL,
     timestamp TIMESTAMP WITH THE ZONE NOT NULL,
-    UNIQUE (event1, event2)
+    UNIQUE (eventA, eventB)
 )
