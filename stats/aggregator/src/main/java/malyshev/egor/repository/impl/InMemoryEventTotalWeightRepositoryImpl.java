@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Repository
-class InMemoryEventTotalWeightRepositoryImpl implements InMemoryEventTotalWeightRepository {
+public class InMemoryEventTotalWeightRepositoryImpl implements InMemoryEventTotalWeightRepository {
     private final Map<Long, Integer> eventTotalWeights = new ConcurrentHashMap<>();
 
     @Override
-    public int getSum(long eventId) {
+    public int getTotalWeightByEventId(long eventId) {
         return eventTotalWeights.getOrDefault(eventId, 0);
     }
 

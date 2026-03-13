@@ -12,21 +12,30 @@ import java.util.concurrent.ConcurrentHashMap;
  * текущий максимальный вес его взаимодействия с этим событием (значение Integer).
  */
 @Repository
-class InMemoryEventUserWeightsRepositoryImpl implements InMemoryEventUserWeightsRepository {
+public class InMemoryEventUserWeightsRepositoryImpl implements InMemoryEventUserWeightsRepository {
 
     private final Map<Long, Map<Long, Integer>> eventUserWeights = new ConcurrentHashMap<>();
 
     // Возвращает разницу между старым и обновленным значениями
     @Override
-    public int add(long eventId, long userId, int weight) {
+    public void setWeight(long eventId, long userId, int weight) {
         Map<Long, Integer> userWeights = eventUserWeights.computeIfAbsent(eventId, k -> new ConcurrentHashMap<>());
-        int currentWeight = userWeights.getOrDefault(userId, 0);
-        return userWeights.merge(userId, weight, Math::max) - currentWeight;
+        userWeights.merge(userId, weight, Math::max);
     }
 
     @Override
     public int getWeight(long eventId, long userId) {
         Map<Long, Integer> userWeights = eventUserWeights.get(eventId);
-        return userWeights.getOrDefault(userId, 0);
+        return userWeights == null ? 0 : userWeights.getOrDefault(userId, 0);
+    }
+
+    @Override
+    public Map<Long, Integer> getUserMapWeights(long eventId) {
+        return eventUserWeights.getOrDefault(eventId, Map.of());
+    }
+
+    @Override
+    public Set<Long> getAllEventIds() {
+        return eventUserWeights.keySet();
     }
 }
