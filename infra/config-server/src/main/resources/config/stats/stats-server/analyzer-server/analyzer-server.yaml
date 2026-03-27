@@ -10,7 +10,7 @@ spring:
   application:
     name: analyzer-server
   config:
-    import: configserver:http://localhost:8888   # Config Server
+    import: configserver:http://localhost:8888
   cloud:
     config:
       fail-fast: true
@@ -18,7 +18,6 @@ spring:
       useRandomPolicy: true
       max-interval: 6000
 
-  # База данных (пример для PostgreSQL)
   datasource:
     url: jdbc:postgresql://localhost:5432/analyzer
     username: postgres
