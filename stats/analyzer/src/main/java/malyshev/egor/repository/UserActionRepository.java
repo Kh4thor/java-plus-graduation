@@ -25,7 +25,7 @@ public interface UserActionRepository extends JpaRepository<UserAction, Long> {
     @Query("SELECT SUM(u.weight) FROM UserAction u WHERE u.eventId = :eventId")
     Optional<Integer> sumWeightsByEventId(@Param("eventId") Long eventId);
 
-    // Эффективный метод для суммы весов по списку мероприятий
+    // Метод для суммы весов по списку мероприятий
     @Query("SELECT u.eventId, SUM(u.weight) FROM UserAction u WHERE u.eventId IN :eventIds GROUP BY u.eventId")
     List<Object[]> sumWeightsByEventIds(@Param("eventIds") List<Long> eventIds);
 

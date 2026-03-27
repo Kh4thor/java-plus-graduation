@@ -89,7 +89,7 @@ public class GrpcAnalyzerClient {
                 .setMaxResults(maxResults)
                 .build();
 
-        // Получаем итератор из gRPC-стрима
+        // Получаем итератор из gRPC-потока
         Iterator<RecommendedEventProto> similarEvents = analyzerStub.getSimilarEvents(request);
 
         // Оборачиваем итератор в Spliterator (с сохранением порядка) для использования со StreamAPI
