@@ -5,10 +5,10 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConfigurationProperties(prefix = "kafka_aggregator")
 @Getter
 @Setter
+@Component
+@ConfigurationProperties(prefix = "kafka_aggregator")
 public class KafkaProperties {
     private String bootstrapServers;
     private Consumer consumer = new Consumer();

@@ -18,9 +18,9 @@
     <name>java-plus-graduation</name>
 
     <modules>
-        <module>core</module>
-        <module>stats</module>
         <module>infra</module>
+        <module>stats</module>
+        <module>core</module>
     </modules>
 
     <properties>
@@ -103,7 +103,6 @@
                 <version>${lombok-mapstruct-binding.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- gRPC -->
             <dependency>
                 <groupId>net.devh</groupId>
                 <artifactId>grpc-spring-boot-starter</artifactId>
@@ -129,14 +128,11 @@
                 <artifactId>grpc-client-spring-boot-starter</artifactId>
                 <version>3.1.0.RELEASE</version>
             </dependency>
-            <!-- Avro -->
             <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
             </dependency>
-            <!-- Kafka -->
-
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>

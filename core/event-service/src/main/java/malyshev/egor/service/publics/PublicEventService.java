@@ -3,6 +3,7 @@ package malyshev.egor.service.publics;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,10 +17,13 @@ public interface PublicEventService {
                                      String rangeEnd,
                                      Boolean onlyAvailable,
                                      String sort,
-                                     Pageable pageable,
-                                     String requestUri,
-                                     String ip);
+                                     Pageable pageable
+    );
 
     // PUBLIC
-    EventFullDto publicGet(Long eventId, String requestUri, String ip);
+    EventFullDto publicGet(Long eventId);
+
+    // PUBLIC
+    @Transactional
+    EventFullDto publicGet(Long eventId, Long userId);
 }

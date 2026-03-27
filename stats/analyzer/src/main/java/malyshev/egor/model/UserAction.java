@@ -1,23 +1,19 @@
-package model;
+package malyshev.egor.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "interactions",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "event_id"})
-        })
-public class Interaction {
+@Table(name = "user_actions",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "event_id"}))
+public class UserAction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +26,8 @@ public class Interaction {
     private Long eventId;
 
     @Column(nullable = false)
-    private Float rating;
+    private Integer weight;   // максимальный вес действия (1,2,3)
 
-    @Column(nullable = false)
-    private Instant timestamp;
+    @Column(name = "last_interaction", nullable = false)
+    private Instant lastInteraction;
 }

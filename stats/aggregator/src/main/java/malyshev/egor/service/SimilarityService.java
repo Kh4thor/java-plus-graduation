@@ -1,10 +1,8 @@
 package malyshev.egor.service;
 
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.repository.InMemoryEventTotalWeightRepository;
-import malyshev.egor.repository.InMemoryEventUserWeightsRepository;
-import malyshev.egor.repository.InMemoryMinWeightsSumsRepository;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import malyshev.egor.config.KafkaProperties;
+import malyshev.egor.repository.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import stats.avro.ActionTypeAvro;
@@ -12,7 +10,6 @@ import stats.avro.EventSimilarityAvro;
 import stats.avro.UserActionAvro;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -21,75 +18,88 @@ public class SimilarityService {
 
     private final KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate;
     private final KafkaProperties kafkaProperties;
-    private final InMemoryMinWeightsSumsRepository minWeightsRepo;
+    private final InMemoryMinWeightsSumRepository minWeightsSumRepo;
     private final InMemoryEventUserWeightsRepository userWeightsRepo;
     private final InMemoryEventTotalWeightRepository totalWeightsRepo;
+    private final InMemoryUserEventsRepository userEventsRepo;
 
-    public SimilarityService(KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate, KafkaProperties kafkaProperties,
+    public SimilarityService(KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate,
+                             KafkaProperties kafkaProperties,
+                             InMemoryMinWeightsSumRepository minWeightsSumRepo,
+                             InMemoryEventUserWeightsRepository userWeightsRepo,
                              InMemoryEventTotalWeightRepository totalWeightsRepo,
-                             InMemoryMinWeightsSumsRepository minWeightsRepo,
-                             InMemoryEventUserWeightsRepository userWeightsRepo) {
+                             InMemoryUserEventsRepository userEventsRepo) {
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaProperties = kafkaProperties;
-        this.totalWeightsRepo = totalWeightsRepo;
-        this.minWeightsRepo = minWeightsRepo;
+        this.minWeightsSumRepo = minWeightsSumRepo;
         this.userWeightsRepo = userWeightsRepo;
+        this.totalWeightsRepo = totalWeightsRepo;
+        this.userEventsRepo = userEventsRepo;
     }
 
-    public void processUserAction(UserActionAvro userActionAvro) {
-        long userId = userActionAvro.getUserId();
-        long eventId = userActionAvro.getEventId();
-        int newWeight = getActionWeight(userActionAvro.getActionType());
-        Instant timestamp = Instant.ofEpochMilli(userActionAvro.getTimestamp());
+    public void processUserAction(UserActionAvro action) {
+        long userId = action.getUserId();
+        long eventA = action.getEventId();
+        int newWeight = getActionWeight(action.getActionType());
+        Instant timestamp = Instant.ofEpochMilli(action.getTimestamp());
 
-        int currentWeight = userWeightsRepo.getWeight(eventId, userId);
-        if (newWeight <= currentWeight) {
-            log.debug("Обновление не требуется: userId={}, eventId={}, newWeight={} <= currentWeight={}",
-                    userId, eventId, newWeight, currentWeight);
+        int oldWeight = userWeightsRepo.getWeight(eventA, userId);
+        if (newWeight <= oldWeight) {
+            log.debug("Пропускаем: вес не увеличился для userId={}, eventId={}", userId, eventA);
             return;
         }
 
-        int diff = newWeight - currentWeight; // разница для общей суммы
-        userWeightsRepo.setWeight(eventId, userId, newWeight); // сохраняем новый вес
-        totalWeightsRepo.addDiff(eventId, diff);
+        // Обновление максимального веса реакции пользователя на событие
+        userWeightsRepo.setWeight(eventA, userId, newWeight);
+        int diff = newWeight - oldWeight;
+        totalWeightsRepo.addDiff(eventA, diff);
 
-        // Получаем все события и обновляем сходство для пар (eventId, otherId)
-        Set<Long> allEventIds = userWeightsRepo.getAllEventIds();
-        for (Long otherId : allEventIds) {
-            if (!otherId.equals(eventId)) {
-                updatePairSimilarity(eventId, otherId, timestamp);
+        // Если это первое взаимодействие пользователя с событием, запоминаем
+        if (oldWeight == 0) {
+            userEventsRepo.addEvent(userId, eventA);
+        }
+
+        // Получаем все события, с которыми пользователь уже взаимодействовал (кроме текущего)
+        Set<Long> otherEvents = userEventsRepo.getEventsByUser(userId);
+        for (Long eventB : otherEvents) {
+            if (eventB.equals(eventA)) continue;
+
+            int weightB = userWeightsRepo.getWeight(eventB, userId); // всегда > 0
+            int oldContribution = Math.min(oldWeight, weightB);
+            int newContribution = Math.min(newWeight, weightB);
+            double delta = newContribution - oldContribution;
+
+            if (delta != 0) {
+                // Обновляем S_min для пары (eventA, eventB)
+                minWeightsSumRepo.addToSum(eventA, eventB, delta);
+
+                // Пересчитываем сходство
+                double totalWeightEventA = totalWeightsRepo.getTotalWeightByEventId(eventA);
+                double totalWeightEventB = totalWeightsRepo.getTotalWeightByEventId(eventB);
+                double sMin = minWeightsSumRepo.getSum(eventA, eventB);
+
+                double similarity = (totalWeightEventA > 0 && totalWeightEventB > 0) ? sMin / Math.sqrt(totalWeightEventA * totalWeightEventB) : 0.0;
+
+                // Отправляем в Kafka (упорядочиваем идентификаторы)
+                long first = Math.min(eventA, eventB);
+                long second = Math.max(eventA, eventB);
+                EventSimilarityAvro similarityMsg = EventSimilarityAvro.newBuilder()
+                        .setEventA(first)
+                        .setEventB(second)
+                        .setScore((float) similarity)
+                        .setTimestamp(timestamp)
+                        .build();
+
+                kafkaTemplate.send(kafkaProperties.getProducer().getTopic(), similarityMsg)
+                        .whenComplete((result, ex) -> {
+                            if (ex == null) {
+                                log.debug("Отправлено сходство для ({}, {}): {}", first, second, similarity);
+                            } else {
+                                log.error("Ошибка отправки сходства для ({}, {})", first, second, ex);
+                            }
+                        });
             }
         }
-    }
-
-    private void updatePairSimilarity(long eventA, long eventB, Instant timestamp) {
-        double minWeightSum = getMinWeightSum(eventA, eventB);
-
-        minWeightsRepo.putPairSimilarity(eventA, eventB, minWeightSum);
-        double totalA = totalWeightsRepo.getTotalWeightByEventId(eventA);
-        double totalB = totalWeightsRepo.getTotalWeightByEventId(eventB);
-
-        if (totalA == 0 || totalB == 0) {
-            log.debug("Нулевая сумма для ({}, {}), пропускаем", eventA, eventB);
-            return;
-        }
-
-        float similarity = (float) (minWeightSum / (totalA * totalB));
-        long first = Math.min(eventA, eventB);
-        long second = Math.max(eventA, eventB);
-
-        EventSimilarityAvro eventSimilarityAvro = EventSimilarityAvro.newBuilder()
-                .setEventA(first)
-                .setEventB(second)
-                .setScore(similarity)
-                .setTimestamp(timestamp)
-                .build();
-
-        kafkaTemplate.send(props.getProducer().getTopic(), eventSimilarityAvro)
-                .addCallback(
-                        result -> log.debug("Отправлено сходство для ({}, {}): {}", first, second, similarity),
-                        ex -> log.error("Ошибка отправки сходства для ({}, {})", first, second, ex)
-                );
     }
 
     private int getActionWeight(ActionTypeAvro actionType) {
@@ -98,15 +108,5 @@ public class SimilarityService {
             case REGISTER -> 2;
             case LIKE -> 3;
         };
-    }
-
-    private double getMinWeightSum(long eventA, long eventB) {
-        Map<Long, Integer> userMapA = userWeightsRepo.getUserMapWeights(eventA);
-        Map<Long, Integer> userMapB = userWeightsRepo.getUserMapWeights(eventB);
-
-        return userMapA.entrySet().stream()
-                .filter(e -> userMapB.get(e.getKey()) != null)
-                .mapToDouble(e -> Math.min(e.getValue(), userMapB.get(e.getKey())))
-                .sum();
     }
 }

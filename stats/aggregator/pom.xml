@@ -12,7 +12,6 @@
     </parent>
 
     <artifactId>aggregator</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -37,26 +36,18 @@
         </dependency>
         <dependency>
             <groupId>malyshev.egor</groupId>
-            <artifactId>serialization</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>avro-schemas</artifactId>
+            <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>malyshev.egor</groupId>
-            <artifactId>avro-schemas</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
