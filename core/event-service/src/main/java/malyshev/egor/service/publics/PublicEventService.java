@@ -20,8 +20,8 @@ public interface PublicEventService {
                                      Pageable pageable
     );
 
-    // PUBLIC
-    EventFullDto publicGet(Long eventId);
+//    // PUBLIC
+//    EventFullDto publicGet(Long eventId);
 
     // PUBLIC
     @Transactional

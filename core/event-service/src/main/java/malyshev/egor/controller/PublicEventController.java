@@ -68,6 +68,6 @@ public class PublicEventController {
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable("id") Long id,
                                 @RequestHeader("X-EWM-USER-ID") Long userId) {
-        return service.publicGet(id);
+        return service.publicGet(id, userId);
     }
 }

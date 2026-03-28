@@ -1,38 +1,248 @@
+version: '3.8'
+
+networks:
+  core-net:
+    driver: bridge
+
 services:
-  stats-db:
-    image: postgres:16.1
-    container_name: stats-db
-    environment:
-      - POSTGRES_DB=stats
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+  discovery-server:
+    build: infra/discovery-server
+    container_name: discovery-server
     ports:
-      - "5460:5432"
-    volumes:
-      - stats-data:/var/lib/postgresql/data
+      - "8761:8761"
+    networks:
+      - core-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
-      interval: 5s
+      test: "curl --fail --silent http://localhost:8761/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  config-server:
+    build: infra/config-server
+    container_name: config-server
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    ports:
+      - "8888:8888"
+    networks:
+      - core-net
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8888/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  gateway-server:
+    build: infra/gateway-server
+    container_name: gateway-server
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - core-net
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+  kafka:
+    image: confluentinc/confluent-local:7.4.3
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    networks:
+      - core-net
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_PROCESS_ROLES: 'broker, controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:29092", "--list"]
+      interval: 10s
       timeout: 5s
       retries: 10
 
-  ewm-db:
-    image: postgres:16.1
-    container_name: ewm-db
+  kafka-init-topics:
+    image: confluentinc/confluent-local:7.4.3
+    container_name: kafka-init-topics
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - core-net
+    command: >
+      bash -c "
+        kafka-topics --create --topic stats.user-actions.v1 --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 &&
+        kafka-topics --create --topic stats.events-similarity.v1 --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092
+      "
+
+  collector:
+    build: stats/collector
+    container_name: ewm-collector
+    depends_on:
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - core-net
     environment:
-      - POSTGRES_DB=ewm
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+  aggregator:
+    build: stats/aggregator
+    container_name: ewm-aggregator
+    depends_on:
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - core-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+  analyzer:
+    build: stats/analyzer
+    container_name: ewm-analyzer
+    depends_on:
+      analyzer-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - core-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+  analyzer-db:
+    image: postgres:17
+    container_name: postgres-ewm-analyzer-db
+    networks:
+      - core-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-analyzer
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U root -d ewm-analyzer"]
+      interval: 10s
       timeout: 5s
       retries: 10
 
-volumes:
-  stats-data:
-  postgres_data:
+  event-db:
+    image: postgres:17
+    container_name: postgres-ewm-event-db
+    networks:
+      - core-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-event
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d ewm-event"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  event-service:
+    build: core/event-service
+    container_name: ewm-event-service
+    depends_on:
+      event-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - core-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  request-db:
+    image: postgres:17
+    container_name: postgres-ewm-request-db
+    networks:
+      - core-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-request
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d ewm-request"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  request-service:
+    build: core/request-service
+    container_name: ewm-request-service
+    depends_on:
+      request-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - core-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  user-db:
+    image: postgres:17
+    container_name: postgres-ewm-user-db
+    networks:
+      - core-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-user
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d ewm-user"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  user-service:
+    build: core/user-service
+    container_name: ewm-user-service
+    depends_on:
+      user-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - core-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
