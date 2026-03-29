@@ -1,9 +1,16 @@
 package malyshev.egor.client;
 
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.stats.proto.*;
+import malyshev.egor.stats.proto.InteractionsCountRequestProto;
+import malyshev.egor.stats.proto.RecommendedEventProto;
+import malyshev.egor.stats.proto.RecommendationsServiceGrpc;
+import malyshev.egor.stats.proto.SimilarEventsRequestProto;
+import malyshev.egor.stats.proto.UserPredictionsRequestProto;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.StreamSupport;
 
 import java.util.*;
 import java.util.stream.StreamSupport;

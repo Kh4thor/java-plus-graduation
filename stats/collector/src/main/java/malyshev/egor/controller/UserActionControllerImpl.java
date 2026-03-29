@@ -6,12 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.service.KafkaProducerService;
 import malyshev.egor.stats.proto.ActionTypeProto;
+import malyshev.egor.stats.proto.UserActionControllerGrpc.UserActionControllerImplBase;
 import malyshev.egor.stats.proto.UserActionProto;
 import net.devh.boot.grpc.server.service.GrpcService;
 import stats.avro.ActionTypeAvro;
 import stats.avro.UserActionAvro;
-
-import malyshev.egor.stats.proto.UserActionControllerGrpc.UserActionControllerImplBase;
 
 @GrpcService
 @RequiredArgsConstructor

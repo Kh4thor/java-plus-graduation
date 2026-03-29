@@ -3,7 +3,7 @@ package malyshev.egor.service.admins;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.InteractionApiManager;
-import malyshev.egor.client.GrpcAnalyzerClient; // новый импорт
+import malyshev.egor.client.GrpcAnalyzerClient;
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.compilation.NewCompilationDto;
 import malyshev.egor.dto.compilation.UpdateCompilationRequest;

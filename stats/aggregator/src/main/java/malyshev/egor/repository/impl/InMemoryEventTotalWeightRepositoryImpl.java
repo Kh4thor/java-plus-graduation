@@ -2,6 +2,7 @@ package malyshev.egor.repository.impl;
 
 import malyshev.egor.repository.InMemoryEventTotalWeightRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

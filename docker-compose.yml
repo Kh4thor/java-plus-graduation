@@ -105,10 +105,15 @@ services:
         condition: service_healthy
     networks:
       - core-net
+    links:
+      - kafka
+    restart: on-failure
     environment:
+      - SPRING_APPLICATION_NAME=collector
       - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
 
   aggregator:
     build: stats/aggregator
@@ -120,10 +125,15 @@ services:
         condition: service_healthy
     networks:
       - core-net
+    links:
+      - kafka
+    restart: on-failure
     environment:
+      - SPRING_APPLICATION_NAME=aggregator
       - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
 
   analyzer:
     build: stats/analyzer
@@ -137,10 +147,15 @@ services:
         condition: service_healthy
     networks:
       - core-net
+    links:
+      - kafka
+    restart: on-failure
     environment:
+      - SPRING_APPLICATION_NAME=analyzer
       - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
 
   analyzer-db:
     image: postgres:17

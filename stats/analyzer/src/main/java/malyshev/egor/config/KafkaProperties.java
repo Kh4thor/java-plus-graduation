@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "kafkaAnalyzer")
+@ConfigurationProperties(prefix = "kafka-analyzer")
 public class KafkaProperties {
     private Topics topics = new Topics();
 
     @Data
     public static class Topics {
-        private String userActionsTopic = "stats.user-actions.v1";
-        private String eventsSimilarityTopic = "stats.events-similarity.v1";
+        private String userActionsTopic;
+        private String eventsSimilarityTopic;
     }
 }

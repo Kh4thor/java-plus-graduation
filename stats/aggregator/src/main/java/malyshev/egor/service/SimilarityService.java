@@ -2,7 +2,10 @@ package malyshev.egor.service;
 
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.config.KafkaProperties;
-import malyshev.egor.repository.*;
+import malyshev.egor.repository.InMemoryEventTotalWeightRepository;
+import malyshev.egor.repository.InMemoryEventUserWeightsRepository;
+import malyshev.egor.repository.InMemoryMinWeightsSumRepository;
+import malyshev.egor.repository.InMemoryUserEventsRepository;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import stats.avro.ActionTypeAvro;
@@ -15,6 +18,10 @@ import java.util.Set;
 @Slf4j
 @Service
 public class SimilarityService {
+
+    private static final int WEIGHT_VIEW = 1;
+    private static final int WEIGHT_REGISTER = 3;
+    private static final int WEIGHT_LIKE = 5;
 
     private final KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate;
     private final KafkaProperties kafkaProperties;
@@ -104,9 +111,9 @@ public class SimilarityService {
 
     private int getActionWeight(ActionTypeAvro actionType) {
         return switch (actionType) {
-            case VIEW -> 1;
-            case REGISTER -> 2;
-            case LIKE -> 3;
+            case VIEW -> WEIGHT_VIEW;
+            case REGISTER -> WEIGHT_REGISTER;
+            case LIKE -> WEIGHT_LIKE;
         };
     }
 }

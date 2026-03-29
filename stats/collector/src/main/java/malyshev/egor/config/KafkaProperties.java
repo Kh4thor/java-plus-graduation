@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "kafka_collector")
+@ConfigurationProperties(prefix = "kafka-collector")
 public class KafkaProperties {
     private Topics topics = new Topics();
 

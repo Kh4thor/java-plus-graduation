@@ -1,33 +1,24 @@
 package malyshev.egor.config;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Getter
-@Setter
+@Data
 @Component
-@ConfigurationProperties(prefix = "kafka_aggregator")
+@ConfigurationProperties(prefix = "kafka-aggregator")
 public class KafkaProperties {
-    private String bootstrapServers;
     private Consumer consumer = new Consumer();
     private Producer producer = new Producer();
 
-    @Getter
-    @Setter
+    @Data
     public static class Consumer {
         private String groupId;
         private String topic;
-        private String keyDeserializer;
-        private String valueDeserializer;
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class Producer {
         private String topic;
-        private String keySerializer;
-        private String valueSerializer;
     }
 }

@@ -2,6 +2,8 @@ package malyshev.egor.service.publics;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
+import malyshev.egor.client.GrpcAnalyzerClient;
+import malyshev.egor.client.GrpcCollectorClient;
 import malyshev.egor.dto.event.EventFullDto;
 import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.exception.NotFoundException;
@@ -15,9 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import malyshev.egor.client.GrpcAnalyzerClient;
-import malyshev.egor.client.GrpcCollectorClient;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

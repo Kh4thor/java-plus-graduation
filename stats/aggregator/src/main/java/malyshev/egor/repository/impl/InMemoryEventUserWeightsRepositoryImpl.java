@@ -3,7 +3,8 @@ package malyshev.egor.repository.impl;
 import malyshev.egor.repository.InMemoryEventUserWeightsRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
