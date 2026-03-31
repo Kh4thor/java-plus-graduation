@@ -1,8 +1,8 @@
 spring:
   application:
-    name: request-service #имя сервиса
+    name: compilation-service #имя сервиса
   config:
-    import: configserver:http://localhost:8888 # сервер конфигураций
+    import: configserver:http://config-server:8888 # сервер конфигураций
   cloud:
     config:
       fail-fast: true # текущий сервис падает, если конфигурационный сервер недоступен

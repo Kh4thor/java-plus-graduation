@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import stats.avro.UserActionAvro;
 import malyshev.egor.service.SimilarityService;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class UserActionListener {
 
     private final SimilarityService similarityService;

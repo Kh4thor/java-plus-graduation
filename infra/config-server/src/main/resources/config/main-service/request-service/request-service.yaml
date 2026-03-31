@@ -23,12 +23,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discovery-server:8761/eureka/
 
 server:
   port: 0
-
-logging:
-  level:
-    org.springframework.cloud.openfeign: DEBUG
-    feign: DEBUG
