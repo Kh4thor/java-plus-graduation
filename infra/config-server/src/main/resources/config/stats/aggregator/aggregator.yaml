@@ -1,13 +1,10 @@
 eureka:
   client:
-    enabled: true
-    register-with-eureka: true
-    fetch-registry: true
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka/
   instance:
+    hostname: ${spring.application.name}
     prefer-ip-address: true
-    hostname: ewm-aggregator
 
 server:
   port: 0

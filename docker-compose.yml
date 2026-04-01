@@ -23,9 +23,6 @@ services:
         condition: service_healthy
     networks:
       - ewm-net
-    environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SERVER_PORT=8888
     healthcheck:
       test: ["CMD", "curl", "-f", "http://config-server:8888/actuator/health"]
       timeout: 5s
@@ -42,8 +39,6 @@ services:
         condition: service_healthy
     networks:
       - ewm-net
-    environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
 
   event-db:
     image: postgres:16.1
@@ -78,7 +73,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://event-db:5432/ewm-event
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
       timeout: 5s
@@ -116,7 +110,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://request-db:5432/ewm-request
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
       timeout: 5s
@@ -188,16 +181,7 @@ services:
       - kafka
     networks:
       - ewm-net
-    command: >
-      bash -c "
-      sleep 10 &&
-      kafka-topics --create --topic stats.user-actions.v1 \
-                   --partitions 1 --replication-factor 1 --if-not-exists \
-                   --bootstrap-server kafka:29092 &&
-      kafka-topics --create --topic stats.events-similarity.v1 \
-                   --partitions 1 --replication-factor 1 --if-not-exists \
-                   --bootstrap-server kafka:29092
-      "
+    command: bash -c "sleep 10 && kafka-topics --create --topic stats.user-actions.v1 --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && kafka-topics --create --topic stats.events-similarity.v1 --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092"
     init: true
 
   collector:
@@ -210,8 +194,6 @@ services:
         condition: service_healthy
     networks:
       - ewm-net
-    environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
       timeout: 5s
@@ -222,16 +204,10 @@ services:
     build: stats/aggregator
     container_name: ewm-aggregator
     depends_on:
-      config-server:
-        condition: service_healthy
       discovery-server:
         condition: service_healthy
     networks:
       - ewm-net
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
-      - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_NETFLIX_EUREKA=DEBUG
 
   analyzer-db:
     image: postgres:16.1
@@ -264,7 +240,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://analyzer-db:5432/ewm-analyzer
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
       timeout: 5s
