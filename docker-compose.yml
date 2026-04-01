@@ -31,7 +31,6 @@ services:
       interval: 15s
       retries: 10
 
-
   gateway-server:
     build: infra/gateway-server
     container_name: gateway-server
@@ -76,11 +75,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://event-db:5432/ewm-event
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
-      timeout: 5s
-      interval: 15s
-      retries: 10
 
   request-db:
     image: postgres:16.1
@@ -113,11 +107,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://request-db:5432/ewm-request
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
-      timeout: 5s
-      interval: 15s
-      retries: 10
 
   user-db:
     image: postgres:16.1
@@ -151,11 +140,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
-      timeout: 5s
-      interval: 15s
-      retries: 10
 
   kafka:
     image: confluentinc/confluent-local:7.4.3
@@ -197,11 +181,6 @@ services:
         condition: service_healthy
     networks:
       - ewm-net
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
-      timeout: 5s
-      interval: 15s
-      retries: 10
 
   aggregator:
     build: stats/aggregator
@@ -257,8 +236,39 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://analyzer-db:5432/ewm-analyzer
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+
+  compilation-db:
+    image: postgres:16.1
+    container_name: postgres-ewm-compilation-db
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-compilation
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
-      interval: 15s
-      retries: 10
+      interval: 10s
+      retries: 15
+
+  compilation-service:
+    build: core/compilation-service
+    container_name: ewm-compilation-service
+    depends_on:
+      compilation-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - SPRING_APPLICATION_NAME=compilation-service
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://compilation-db:5432/ewm-compilation
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
