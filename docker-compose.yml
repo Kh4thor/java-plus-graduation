@@ -83,6 +83,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8081
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/   # добавлено
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
       interval: 10s
@@ -122,6 +124,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8082
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/   # добавлено
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
       interval: 10s
@@ -208,6 +212,8 @@ services:
       - ewm-net
     environment:
       - SERVER_PORT=8087
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
+      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
       interval: 10s
@@ -275,6 +281,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8089
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
+      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8089/actuator/health"]
       interval: 10s
