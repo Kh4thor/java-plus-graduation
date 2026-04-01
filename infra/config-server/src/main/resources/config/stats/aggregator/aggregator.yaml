@@ -1,5 +1,33 @@
-kafka:
-  bootstrap-servers: kafka:29092
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: ewm-aggregator
+
+server:
+  port: 0
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: aggregator-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: malyshev.egor.deserialization.UserActionAvroDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: malyshev.egor.serialization.AvroSerializer
+  cloud:
+    inetutils:
+      preferred-networks:
+        - 172.
 
 kafka-aggregator:
   consumer:

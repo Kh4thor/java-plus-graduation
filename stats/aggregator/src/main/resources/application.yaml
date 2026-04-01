@@ -1,11 +1,5 @@
 spring:
   application:
     name: aggregator
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://discovery-server:8761/eureka/
-  instance:
-    prefer-ip-address: true
-    hostname: ewm-aggregator
+  config:
+    import: configserver:http://config-server:8888

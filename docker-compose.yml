@@ -25,9 +25,9 @@ services:
       - ewm-net
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SERVER_PORT=9091
+      - SERVER_PORT=8888
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://config-server:9091/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://config-server:8888/actuator/health"]
       timeout: 5s
       interval: 15s
       retries: 10
@@ -222,22 +222,14 @@ services:
     build: stats/aggregator
     container_name: ewm-aggregator
     depends_on:
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
     networks:
       - ewm-net
     environment:
-      - SPRING_APPLICATION_NAME=aggregator
-      - SPRING_CLOUD_CONFIG_ENABLED=false
-      - EUREKA_CLIENT_ENABLED=true
-      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
-      - EUREKA_CLIENT_FETCH_REGISTRY=true
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
-      - EUREKA_INSTANCE_HOSTNAME=ewm-aggregator
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
-      - KAFKA_AGGREGATOR_CONSUMER_TOPIC=stats.user-actions.v1
-      - KAFKA_AGGREGATOR_PRODUCER_TOPIC=stats.events-similarity.v1
+      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
       - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_NETFLIX_EUREKA=DEBUG
 
