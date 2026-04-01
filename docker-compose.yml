@@ -16,6 +16,8 @@ services:
       retries: 12
 
   config-server:
+    ports:
+      - "8888:8888"
     build: infra/config-server
     container_name: config-server
     depends_on:
@@ -28,6 +30,7 @@ services:
       timeout: 5s
       interval: 15s
       retries: 10
+
 
   gateway-server:
     build: infra/gateway-server
@@ -204,10 +207,26 @@ services:
     build: stats/aggregator
     container_name: ewm-aggregator
     depends_on:
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
     networks:
       - ewm-net
+    environment:
+      - SPRING_APPLICATION_NAME=aggregator
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_ENABLED=true
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_HOSTNAME=ewm-aggregator
+      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
+      - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_NETFLIX_EUREKA=DEBUG
+      - EUREKA_INSTANCE_IP_ADDRESS=172.18.0.16
 
   analyzer-db:
     image: postgres:16.1
@@ -231,8 +250,6 @@ services:
       analyzer-db:
         condition: service_healthy
       config-server:
-        condition: service_healthy
-      discovery-server:
         condition: service_healthy
     networks:
       - ewm-net

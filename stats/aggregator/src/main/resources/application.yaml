@@ -1,6 +1,6 @@
 spring:
   application:
-    name: collector #имя сервиса
+    name: aggregator #имя сервиса
   config:
     import: configserver:http://config-server:8888 # сервер конфигураций
   cloud:
@@ -8,4 +8,4 @@ spring:
       fail-fast: true # текущий сервис падает, если конфигурационный сервер недоступен
     retry:
       useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
-      max-interval: 6000 #максимально возможный интервал, по
+      max-interval: 6000 #максимально возможный интервал, после которого fail
