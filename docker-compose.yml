@@ -10,7 +10,7 @@ services:
     networks:
       - ewm-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://discovery-server:8761/eureka/apps"]
+      test: [ "CMD", "curl", "-f", "http://discovery-server:8761/eureka/apps" ]
       timeout: 5s
       interval: 10s
       retries: 12
@@ -26,7 +26,7 @@ services:
     networks:
       - ewm-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://config-server:8888/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://config-server:8888/actuator/health" ]
       timeout: 5s
       interval: 15s
       retries: 10
@@ -54,7 +54,7 @@ services:
     ports:
       - 5434:5433
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -86,7 +86,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-request
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -118,7 +118,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-user
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -217,7 +217,7 @@ services:
     networks:
       - ewm-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -269,6 +269,78 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - SPRING_DATASOURCE_URL=jdbc:postgresql://compilation-db:5432/ewm-compilation
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  category-db:
+    image: postgres:16.1
+    container_name: postgres-ewm-category-db
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-category
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  category-service:
+    build: core/category-service
+    container_name: ewm-category-service
+    depends_on:
+      category-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - SPRING_APPLICATION_NAME=category-service
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://category-db:5432/ewm-category
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  comment-db:
+    image: postgres:16.1
+    container_name: postgres-ewm-comment-db
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-comment
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  comment-service:
+    build: core/comment-service
+    container_name: ewm-comment-service
+    depends_on:
+      comment-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - SPRING_APPLICATION_NAME=comment-service
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://comment-db:5432/ewm-comment
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
