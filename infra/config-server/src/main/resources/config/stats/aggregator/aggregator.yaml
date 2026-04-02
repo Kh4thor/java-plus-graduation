@@ -13,7 +13,6 @@ eureka:
 server:
   port: 0
 
-
 spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
