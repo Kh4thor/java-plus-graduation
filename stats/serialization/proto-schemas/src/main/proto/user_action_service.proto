@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package stats.collector;
+package stats.service.collector;
 
 import "google/protobuf/empty.proto";
 import "recommendations_message.proto";

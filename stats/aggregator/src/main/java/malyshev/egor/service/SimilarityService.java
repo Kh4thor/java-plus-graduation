@@ -6,6 +6,7 @@ import malyshev.egor.repository.InMemoryEventTotalWeightRepository;
 import malyshev.egor.repository.InMemoryEventUserWeightsRepository;
 import malyshev.egor.repository.InMemoryMinWeightsSumRepository;
 import malyshev.egor.repository.InMemoryUserEventsRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import stats.avro.ActionTypeAvro;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.Set;
 
 @Slf4j
+@Profile("docker")
 @Service
 public class SimilarityService {
 
