@@ -212,8 +212,8 @@ services:
       - ewm-net
     environment:
       - SERVER_PORT=8087
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
-      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+#      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
       interval: 10s
