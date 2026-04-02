@@ -1,22 +1,15 @@
 package malyshev.egor.client;
 
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.stats.proto.InteractionsCountRequestProto;
-import malyshev.egor.stats.proto.RecommendedEventProto;
-import malyshev.egor.stats.proto.RecommendationsServiceGrpc;
-import malyshev.egor.stats.proto.SimilarEventsRequestProto;
-import malyshev.egor.stats.proto.UserPredictionsRequestProto;
+import malyshev.egor.stats.proto.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import java.util.*;
-import java.util.stream.StreamSupport;
-
 /**
- * gRPC-клиент для взаимодействия с сервисом рекомендаций.
+ * gRPC-клиент для взаимодействия с сервисом рекомендаций (анализатором).
  * <p>Использует блокирующий stub для вызова методов:
  * <ul>
  *     <li>{@code getInteractionsCount} — получение рейтинга события</li>
@@ -32,11 +25,11 @@ import java.util.stream.StreamSupport;
 public class GrpcAnalyzerClient {
 
     /**
-     * Блокирующий stub для вызова gRPC-сервиса {@code RecommendationsService}.
+     * Блокирующий stub для вызова gRPC-сервиса {@code RecommendationsController}.
      * Имя клиента настраивается в {@code application.yml} через {@code grpc.client.analyzerGrpcClient}.
      */
     @GrpcClient("analyzerGrpcClient")
-    private RecommendationsServiceGrpc.RecommendationsServiceBlockingStub analyzerStub;
+    private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub analyzerStub;
 
     /**
      * Получает рейтинг (score) события по его идентификатору.

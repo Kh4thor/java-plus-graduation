@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
-public class RecommendationsController extends RecommendationsServiceGrpc.RecommendationsServiceImplBase {
+public class RecommendationsController extends RecommendationsControllerGrpc.RecommendationsControllerImplBase {
 
     private final RecommendationService recommendationService;
 
