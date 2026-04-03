@@ -15,7 +15,7 @@ server:
 
 grpc:
   server:
-    port: 0
+    port: 19336
 
 spring:
   kafka:

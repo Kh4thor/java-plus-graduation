@@ -10,7 +10,7 @@ services:
     networks:
       - ewm-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://discovery-server:8761/eureka/apps"]
+      test: [ "CMD", "curl", "-f", "http://discovery-server:8761/eureka/apps" ]
       timeout: 5s
       interval: 10s
       retries: 12
@@ -28,7 +28,7 @@ services:
     environment:
       - SERVER_PORT=8888
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://config-server:8888/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://config-server:8888/actuator/health" ]
       timeout: 5s
       interval: 15s
       retries: 10
@@ -46,7 +46,7 @@ services:
     environment:
       - SERVER_PORT=8080
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       timeout: 5s
       interval: 15s
       retries: 10
@@ -61,7 +61,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-event
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -83,10 +83,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8081
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/   # добавлено
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -102,7 +102,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-request
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -124,10 +124,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8082
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/   # добавлено
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -143,7 +143,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-user
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -167,7 +167,7 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SERVER_PORT=8083
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -200,7 +200,10 @@ services:
     command: bash -c "sleep 10 && kafka-topics --create --topic stats.user-actions.v1 --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && kafka-topics --create --topic stats.events-similarity.v1 --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092"
     init: true
 
+
   collector:
+    ports:
+      - "19336:19336"
     build: stats/collector
     container_name: stats-collector
     depends_on:
@@ -213,9 +216,9 @@ services:
     environment:
       - SERVER_PORT=8087
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-#      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
+    #      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092  
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8087/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -245,7 +248,7 @@ services:
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_NETFLIX_EUREKA=DEBUG
       - SERVER_PORT=8088
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8088/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -261,12 +264,14 @@ services:
     networks:
       - ewm-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
 
   analyzer:
+    ports:
+      - "19337:19337"
     build: stats/analyzer
     container_name: stats-analyzer
     depends_on:
@@ -281,10 +286,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8089
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
-      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8089/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8089/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -300,7 +305,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-compilation
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -327,7 +332,7 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SERVER_PORT=8084
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -343,7 +348,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-category
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -370,7 +375,7 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SERVER_PORT=8086
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8086/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -386,7 +391,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-comment
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
       interval: 10s
       retries: 15
@@ -413,7 +418,7 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SERVER_PORT=8085
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -10,7 +10,7 @@ spring:
         useRandomPolicy: true
         max-interval: 6000
       discovery:
-        enabled: true
+        enabled: false
         service-id: config-server
 
   profiles:
@@ -28,4 +28,3 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
-

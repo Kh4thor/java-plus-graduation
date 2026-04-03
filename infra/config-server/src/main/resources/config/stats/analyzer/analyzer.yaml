@@ -37,7 +37,7 @@ spring:
 
 grpc:
   server:
-    port: 0
+    port: 19337
 
 kafka-analyzer:
   topics:

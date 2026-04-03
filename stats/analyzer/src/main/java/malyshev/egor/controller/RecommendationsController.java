@@ -61,36 +61,19 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
     public void getInteractionsCount(InteractionsCountRequestProto request,
                                      StreamObserver<RecommendedEventProto> responseObserver) {
 
-        try {
-            List<Long> eventIds = request.getEventIdList();
-            log.info("getInteractionsCount called with ids: {}", eventIds);
-            List<RecommendationService.RecommendedEvent> result =
-                    recommendationService.getInteractionsCount(eventIds);
-            for (var rec : result) {
-                responseObserver.onNext(RecommendedEventProto.newBuilder()
-                        .setEventId(rec.eventId())
-                        .setScore(rec.score())
-                        .build());
-            }
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            log.error("Error in getInteractionsCount", e);
-            responseObserver.onError(e);
-        }
+        List<Long> eventIds = request.getEventIdList();
+        log.debug("getInteractionsCount: eventIds={}", eventIds);
 
-//        List<Long> eventIds = request.getEventIdList();
-//        log.debug("getInteractionsCount: eventIds={}", eventIds);
-//
-//        List<RecommendationService.RecommendedEvent> recommendationsForUser =
-//                recommendationService.getInteractionsCount(eventIds);
-//
-//        for (RecommendationService.RecommendedEvent rec : recommendationsForUser) {
-//            RecommendedEventProto proto = RecommendedEventProto.newBuilder()
-//                    .setEventId(rec.eventId())
-//                    .setScore(rec.score())
-//                    .build();
-//            responseObserver.onNext(proto);
-//        }
-//        responseObserver.onCompleted();
+        List<RecommendationService.RecommendedEvent> recommendationsForUser =
+                recommendationService.getInteractionsCount(eventIds);
+
+        for (RecommendationService.RecommendedEvent rec : recommendationsForUser) {
+            RecommendedEventProto proto = RecommendedEventProto.newBuilder()
+                    .setEventId(rec.eventId())
+                    .setScore(rec.score())
+                    .build();
+            responseObserver.onNext(proto);
+        }
+        responseObserver.onCompleted();
     }
 }

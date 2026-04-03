@@ -11,9 +11,9 @@ import stats.avro.UserActionAvro;
 import java.time.Instant;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserActionService {
 
     private static final int WEIGHT_VIEW = 1;
