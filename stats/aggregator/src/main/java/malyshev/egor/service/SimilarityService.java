@@ -61,7 +61,7 @@ public class SimilarityService {
             return;
         }
 
-        // Update max user weight for event
+        // Обновить максимальный вес для события
         userWeightsRepo.setWeight(eventA, userId, newWeight);
         double diff = newWeight - oldWeight;
         totalWeightsRepo.addDiff(eventA, diff);
@@ -107,7 +107,7 @@ public class SimilarityService {
                 EventSimilarityAvro similarityMsg = EventSimilarityAvro.newBuilder()
                         .setEventA(first)
                         .setEventB(second)
-                        .setScore((float) similarity)
+                        .setScore(similarity)
                         .setTimestamp(timestamp)
                         .build();
 
