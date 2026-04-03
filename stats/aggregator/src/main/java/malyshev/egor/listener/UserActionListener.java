@@ -2,13 +2,12 @@ package malyshev.egor.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import malyshev.egor.service.SimilarityService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import stats.avro.UserActionAvro;
-import malyshev.egor.service.SimilarityService;
 
-@Profile("docker")
+//@Profile("docker")
 @Slf4j
 @Component
 @RequiredArgsConstructor

@@ -15,23 +15,23 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class InMemoryEventUserWeightsRepositoryImpl implements InMemoryEventUserWeightsRepository {
 
-    private final Map<Long, Map<Long, Integer>> eventUserWeights = new ConcurrentHashMap<>();
+    private final Map<Long, Map<Long, Double>> eventUserWeights = new ConcurrentHashMap<>();
 
     // Возвращает разницу между старым и обновленным значениями
     @Override
-    public void setWeight(long eventId, long userId, int weight) {
-        Map<Long, Integer> userWeights = eventUserWeights.computeIfAbsent(eventId, k -> new ConcurrentHashMap<>());
+    public void setWeight(long eventId, long userId, double weight) {
+        Map<Long, Double> userWeights = eventUserWeights.computeIfAbsent(eventId, k -> new ConcurrentHashMap<>());
         userWeights.merge(userId, weight, Math::max);
     }
 
     @Override
-    public int getWeight(long eventId, long userId) {
-        Map<Long, Integer> userWeights = eventUserWeights.get(eventId);
-        return userWeights == null ? 0 : userWeights.getOrDefault(userId, 0);
+    public double getWeight(long eventId, long userId) {
+        Map<Long, Double> userWeights = eventUserWeights.get(eventId);
+        return userWeights == null ? 0 : userWeights.getOrDefault(userId, 0.0);
     }
 
     @Override
-    public Map<Long, Integer> getUserMapWeights(long eventId) {
+    public Map<Long, Double> getUserMapWeights(long eventId) {
         return eventUserWeights.getOrDefault(eventId, Map.of());
     }
 

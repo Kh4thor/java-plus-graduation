@@ -26,7 +26,7 @@ public class UserAction {
     private Long eventId;
 
     @Column(nullable = false)
-    private Integer weight;   // максимальный вес действия (1,2,3)
+    private Double weight;
 
     @Column(name = "last_interaction", nullable = false)
     private Instant lastInteraction;

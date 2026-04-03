@@ -16,9 +16,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserActionService {
 
-    private static final int WEIGHT_VIEW = 1;
-    private static final int WEIGHT_REGISTER = 3;
-    private static final int WEIGHT_LIKE = 5;
+    private static final double WEIGHT_VIEW = 0.4;
+    private static final double WEIGHT_REGISTER = 0.8;
+    private static final double WEIGHT_LIKE = 1;
 
     private final UserActionRepository userActionRepository;
 
@@ -26,7 +26,7 @@ public class UserActionService {
     public void process(UserActionAvro action) {
         long userId = action.getUserId();
         long eventId = action.getEventId();
-        int newWeight = getWeight(action.getActionType());
+        double newWeight = getWeight(action.getActionType());
         Instant timestamp = Instant.ofEpochMilli(action.getTimestamp());
 
         Optional<UserAction> existing = userActionRepository.findByUserIdAndEventId(userId, eventId);
@@ -54,7 +54,7 @@ public class UserActionService {
         }
     }
 
-    private int getWeight(stats.avro.ActionTypeAvro actionType) {
+    private double getWeight(stats.avro.ActionTypeAvro actionType) {
         return switch (actionType) {
             case VIEW -> WEIGHT_VIEW;
             case REGISTER -> WEIGHT_REGISTER;

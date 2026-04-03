@@ -232,9 +232,10 @@ services:
       discovery-server:
         condition: service_healthy
     networks:
-      - ewm-net
+      - ewm-net\
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092
+#      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - EUREKA_CLIENT_ENABLED=true
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true

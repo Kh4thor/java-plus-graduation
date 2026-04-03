@@ -104,14 +104,15 @@ public class RecommendationService {
     private double predictScore(long userId, long candidateEventId) {
         List<EventSimilarity> similarities = eventSimilarityRepository.findAllByEventId(candidateEventId);
         List<UserAction> userActions = userActionRepository.findAllByUserId(userId);
-        Map<Long, Integer> userWeights = userActions.stream()
+        Map<Long, Double> userWeights = userActions.stream()
                 .collect(Collectors.toMap(UserAction::getEventId, UserAction::getWeight));
 
         List<Neighbor> neighbors = new ArrayList<>();
         for (EventSimilarity sim : similarities) {
             Long neighborId = sim.getEventA().equals(candidateEventId) ? sim.getEventB() : sim.getEventA();
-            if (userWeights.containsKey(neighborId)) {
-                neighbors.add(new Neighbor(neighborId, sim.getSimilarity(), userWeights.get(neighborId)));
+            Double weight = userWeights.get(neighborId);
+            if (weight != null) {
+                neighbors.add(new Neighbor(neighborId, sim.getSimilarity(), weight));
             }
         }
 
@@ -134,9 +135,9 @@ public class RecommendationService {
     private static class Neighbor {
         long eventId;
         double similarity;
-        int weight;
+        double weight;
 
-        Neighbor(long eventId, double similarity, int weight) {
+        Neighbor(long eventId, double similarity, double weight) {
             this.eventId = eventId;
             this.similarity = similarity;
             this.weight = weight;

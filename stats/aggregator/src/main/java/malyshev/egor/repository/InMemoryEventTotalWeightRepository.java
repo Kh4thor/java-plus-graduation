@@ -6,8 +6,8 @@ package malyshev.egor.repository;
 public interface InMemoryEventTotalWeightRepository {
 
     // получить сумму весов события
-    int getTotalWeightByEventId(long eventId);
+    double getTotalWeightByEventId(long eventId);
 
     // прибавить значение к текущему весу события
-    void addDiff(long eventId, int diff);
+    void addDiff(long eventId, double diff);
 }
