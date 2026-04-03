@@ -5,17 +5,17 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.service.KafkaProducerService;
-import malyshev.egor.stats.proto.ActionTypeProto;
-import malyshev.egor.stats.proto.UserActionControllerGrpc.UserActionControllerImplBase;
-import malyshev.egor.stats.proto.UserActionProto;
 import net.devh.boot.grpc.server.service.GrpcService;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
+import ru.practicum.ewm.stats.proto.UserActionControllerGrpc;
+import ru.practicum.ewm.stats.proto.UserActionProto;
 import stats.avro.ActionTypeAvro;
 import stats.avro.UserActionAvro;
 
 @GrpcService
 @RequiredArgsConstructor
 @Slf4j
-public class UserActionControllerImpl extends UserActionControllerImplBase  {
+public class UserActionControllerImpl extends UserActionControllerGrpc.UserActionControllerImplBase {
 
     private final KafkaProducerService kafkaProducerService;
 

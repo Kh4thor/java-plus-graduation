@@ -1,9 +1,9 @@
 package malyshev.egor.client;
 
 import lombok.extern.slf4j.Slf4j;
-import malyshev.egor.stats.proto.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
+import ru.practicum.ewm.stats.proto.*;
 
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -89,10 +89,8 @@ public class GrpcAnalyzerClient {
                 .setMaxResults(maxResults)
                 .build();
 
-        // Получаем итератор из gRPC-потока
         Iterator<RecommendedEventProto> similarEvents = analyzerStub.getSimilarEvents(request);
 
-        // Оборачиваем итератор в Spliterator (с сохранением порядка) для использования со StreamAPI
         Spliterator<RecommendedEventProto> spliterator =
                 Spliterators.spliteratorUnknownSize(similarEvents, Spliterator.ORDERED);
 

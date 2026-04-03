@@ -4,8 +4,9 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.service.RecommendationService;
-import malyshev.egor.stats.proto.*;
+import ru.practicum.ewm.stats.proto.*;
 import net.devh.boot.grpc.server.service.GrpcService;
+import ru.practicum.ewm.stats.proto.*;
 
 import java.util.List;
 

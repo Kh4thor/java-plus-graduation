@@ -13,7 +13,6 @@
 
     <artifactId>collector</artifactId>
     <name>collector</name>
-    <description>gRPC service that collects user actions and sends to Kafka</description>
 
     <dependencies>
         <dependency>

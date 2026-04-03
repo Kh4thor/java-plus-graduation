@@ -83,8 +83,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8081
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/   # добавлено
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 10s
@@ -124,8 +124,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8082
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888   # добавлено
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/   # добавлено
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 10s
@@ -200,7 +200,6 @@ services:
     command: bash -c "sleep 10 && kafka-topics --create --topic stats.user-actions.v1 --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && kafka-topics --create --topic stats.events-similarity.v1 --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092"
     init: true
 
-
   collector:
     ports:
       - "19336:19336"
@@ -216,7 +215,7 @@ services:
     environment:
       - SERVER_PORT=8087
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-    #      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092  
+    #      - KAFKA_BOOTSTRAP_SERVERS=PLAINTEXT://kafka:29092   # добавлено
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8087/actuator/health" ]
       interval: 10s

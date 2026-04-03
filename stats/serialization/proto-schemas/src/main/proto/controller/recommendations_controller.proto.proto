@@ -1,12 +1,11 @@
 syntax = "proto3";
 
-package stats.service.dashboard;
+package ru.practicum.ewm.stats.proto;
 
 import "google/protobuf/empty.proto";
 import "messages/recommendations_messages.proto";
 
 option java_multiple_files = true;
-option java_package = "malyshev.egor.stats.proto";
 
 service RecommendationsController {
   rpc GetRecommendationsForUser(UserPredictionsRequestProto)
