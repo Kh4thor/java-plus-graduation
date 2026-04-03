@@ -1,7 +1,7 @@
 package malyshev.egor.repository.impl;
 
-import malyshev.egor.repository.InMemoryMinWeightsSumRepository;
 import lombok.extern.slf4j.Slf4j;
+import malyshev.egor.repository.InMemoryMinWeightsSumRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;

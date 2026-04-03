@@ -23,7 +23,7 @@ public class EventSimilarityService {
         long eventA = similarityAvro.getEventA();
         long eventB = similarityAvro.getEventB();
         double score = similarityAvro.getScore();
-        Instant timestamp = similarityAvro.getTimestamp();
+        Instant timestamp = Instant.ofEpochMilli(similarityAvro.getTimestamp());
 
         if (eventA > eventB) {
             long temp = eventA;

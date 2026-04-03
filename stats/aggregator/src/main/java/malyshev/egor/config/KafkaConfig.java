@@ -18,15 +18,11 @@ import stats.avro.UserActionAvro;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Profile("docker")
 @Configuration
 public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
-
-//    @Value("localhost:9092")
-//    private String bootstrapServers;
 
     @Bean
     public ConsumerFactory<String, UserActionAvro> userActionConsumerFactory() {

@@ -12,7 +12,6 @@ import stats.avro.ActionTypeAvro;
 import stats.avro.EventSimilarityAvro;
 import stats.avro.UserActionAvro;
 
-import java.time.Instant;
 import java.util.Set;
 
 @Slf4j
@@ -48,7 +47,7 @@ public class SimilarityService {
         long userId = action.getUserId();
         long eventA = action.getEventId();
         double newWeight = getActionWeight(action.getActionType());
-        Instant timestamp = Instant.ofEpochMilli(action.getTimestamp());
+        long timestamp = action.getTimestamp();
 
         log.info(">>> processUserAction: userId={}, eventA={}, newWeight={}, timestamp={}",
                 userId, eventA, newWeight, timestamp);
@@ -87,41 +86,37 @@ public class SimilarityService {
             log.debug("Pair ({}<->{}): weightB={}, oldContr={}, newContr={}, delta={}",
                     eventA, eventB, weightB, oldContribution, newContribution, delta);
 
-            if (delta != 0) {
-                minWeightsSumRepo.addToSum(eventA, eventB, delta);
-                double totalA = totalWeightsRepo.getTotalWeightByEventId(eventA);
-                double totalB = totalWeightsRepo.getTotalWeightByEventId(eventB);
-                double sMin = minWeightsSumRepo.getSum(eventA, eventB);
+            minWeightsSumRepo.addToSum(eventA, eventB, delta);
+            double totalA = totalWeightsRepo.getTotalWeightByEventId(eventA);
+            double totalB = totalWeightsRepo.getTotalWeightByEventId(eventB);
+            double sMin = minWeightsSumRepo.getSum(eventA, eventB);
 
-                log.debug("Before similarity: totalA={}, totalB={}, sMin={}", totalA, totalB, sMin);
+            log.debug("Before similarity: totalA={}, totalB={}, sMin={}", totalA, totalB, sMin);
 
-                double similarity = (totalA > 0 && totalB > 0)
-                        ? sMin / Math.sqrt(totalA * totalB)
-                        : 0.0;
+            double similarity = (totalA > 0 && totalB > 0)
+                    ? sMin / Math.sqrt(totalA * totalB)
+                    : 0.0;
 
-                long first = Math.min(eventA, eventB);
-                long second = Math.max(eventA, eventB);
-                log.info("SIMILARITY: ({},{}) = {}, sMin={}, sqrtProduct={}",
-                        first, second, similarity, sMin, Math.sqrt(totalA * totalB));
+            long first = Math.min(eventA, eventB);
+            long second = Math.max(eventA, eventB);
+            log.info("SIMILARITY: ({},{}) = {}, sMin={}, sqrtProduct={}",
+                    first, second, similarity, sMin, Math.sqrt(totalA * totalB));
 
-                EventSimilarityAvro similarityMsg = EventSimilarityAvro.newBuilder()
-                        .setEventA(first)
-                        .setEventB(second)
-                        .setScore(similarity)
-                        .setTimestamp(timestamp)
-                        .build();
+            EventSimilarityAvro similarityMsg = EventSimilarityAvro.newBuilder()
+                    .setEventA(first)
+                    .setEventB(second)
+                    .setScore(similarity)
+                    .setTimestamp(timestamp)
+                    .build();
 
-                kafkaTemplate.send(kafkaProperties.getProducer().getTopic(), similarityMsg)
-                        .whenComplete((result, ex) -> {
-                            if (ex == null) {
-                                log.debug("Sent similarity for ({}, {}): {}", first, second, similarity);
-                            } else {
-                                log.error("Failed to send similarity for ({}, {})", first, second, ex);
-                            }
-                        });
-            } else {
-                log.debug("Delta=0 for pair ({},{}), skip sending", eventA, eventB);
-            }
+            kafkaTemplate.send(kafkaProperties.getProducer().getTopic(), similarityMsg)
+                    .whenComplete((result, ex) -> {
+                        if (ex == null) {
+                            log.debug("Sent similarity for ({}, {}): {}", first, second, similarity);
+                        } else {
+                            log.error("Failed to send similarity for ({}, {})", first, second, ex);
+                        }
+                    });
         }
     }
 
