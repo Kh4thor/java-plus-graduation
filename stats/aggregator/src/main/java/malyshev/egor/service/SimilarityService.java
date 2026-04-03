@@ -16,13 +16,12 @@ import java.time.Instant;
 import java.util.Set;
 
 @Slf4j
-//@Profile("docker")
 @Service
 public class SimilarityService {
 
     private static final double WEIGHT_VIEW = 0.4;
     private static final double WEIGHT_REGISTER = 0.8;
-    private static final double WEIGHT_LIKE = 1;
+    private static final double WEIGHT_LIKE = 1.0;
 
     private final KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate;
     private final KafkaProperties kafkaProperties;
@@ -31,7 +30,12 @@ public class SimilarityService {
     private final InMemoryEventTotalWeightRepository totalWeightsRepo;
     private final InMemoryUserEventsRepository userEventsRepo;
 
-    public SimilarityService(KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate, KafkaProperties kafkaProperties, InMemoryMinWeightsSumRepository minWeightsSumRepo, InMemoryEventUserWeightsRepository userWeightsRepo, InMemoryEventTotalWeightRepository totalWeightsRepo, InMemoryUserEventsRepository userEventsRepo) {
+    public SimilarityService(KafkaTemplate<String, EventSimilarityAvro> kafkaTemplate,
+                             KafkaProperties kafkaProperties,
+                             InMemoryMinWeightsSumRepository minWeightsSumRepo,
+                             InMemoryEventUserWeightsRepository userWeightsRepo,
+                             InMemoryEventTotalWeightRepository totalWeightsRepo,
+                             InMemoryUserEventsRepository userEventsRepo) {
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaProperties = kafkaProperties;
         this.minWeightsSumRepo = minWeightsSumRepo;
@@ -46,55 +50,77 @@ public class SimilarityService {
         double newWeight = getActionWeight(action.getActionType());
         Instant timestamp = Instant.ofEpochMilli(action.getTimestamp());
 
+        log.info(">>> processUserAction: userId={}, eventA={}, newWeight={}, timestamp={}",
+                userId, eventA, newWeight, timestamp);
+
         double oldWeight = userWeightsRepo.getWeight(eventA, userId);
+        log.debug("oldWeight for event {} user {} = {}", eventA, userId, oldWeight);
+
         if (newWeight <= oldWeight) {
-            log.debug("Пропускаем: вес не увеличился для userId={}, eventId={}", userId, eventA);
+            log.debug("Skip: weight not increased for userId={}, eventId={}", userId, eventA);
             return;
         }
 
-        // Обновление максимального веса реакции пользователя на событие
+        // Update max user weight for event
         userWeightsRepo.setWeight(eventA, userId, newWeight);
         double diff = newWeight - oldWeight;
         totalWeightsRepo.addDiff(eventA, diff);
+        log.debug("Updated totalWeight for event {} by diff={}, new total={}",
+                eventA, diff, totalWeightsRepo.getTotalWeightByEventId(eventA));
 
-        // Если это первое взаимодействие пользователя с событием, запоминаем
         if (oldWeight == 0) {
             userEventsRepo.addEvent(userId, eventA);
+            log.debug("First interaction of user {} with event {}", userId, eventA);
         }
 
-        // Получаем все события, с которыми пользователь уже взаимодействовал (кроме текущего)
         Set<Long> otherEvents = userEventsRepo.getEventsByUser(userId);
+        log.debug("Other events for user {}: {}", userId, otherEvents);
+
         for (Long eventB : otherEvents) {
             if (eventB.equals(eventA)) continue;
 
-            double weightB = userWeightsRepo.getWeight(eventB, userId); // всегда > 0
+            double weightB = userWeightsRepo.getWeight(eventB, userId);
             double oldContribution = Math.min(oldWeight, weightB);
             double newContribution = Math.min(newWeight, weightB);
             double delta = newContribution - oldContribution;
 
-            if (delta != 0) {
-                // Обновляем S_min для пары (eventA, eventB)
-                minWeightsSumRepo.addToSum(eventA, eventB, delta);
+            log.debug("Pair ({}<->{}): weightB={}, oldContr={}, newContr={}, delta={}",
+                    eventA, eventB, weightB, oldContribution, newContribution, delta);
 
-                // Пересчитываем сходство
-                double totalWeightEventA = totalWeightsRepo.getTotalWeightByEventId(eventA);
-                double totalWeightEventB = totalWeightsRepo.getTotalWeightByEventId(eventB);
+            if (delta != 0) {
+                minWeightsSumRepo.addToSum(eventA, eventB, delta);
+                double totalA = totalWeightsRepo.getTotalWeightByEventId(eventA);
+                double totalB = totalWeightsRepo.getTotalWeightByEventId(eventB);
                 double sMin = minWeightsSumRepo.getSum(eventA, eventB);
 
-                double similarity = (totalWeightEventA > 0 && totalWeightEventB > 0) ? sMin / Math.sqrt(totalWeightEventA * totalWeightEventB) : 0.0;
+                log.debug("Before similarity: totalA={}, totalB={}, sMin={}", totalA, totalB, sMin);
 
-                // Отправляем в Kafka (упорядочиваем идентификаторы)
+                double similarity = (totalA > 0 && totalB > 0)
+                        ? sMin / Math.sqrt(totalA * totalB)
+                        : 0.0;
+
                 long first = Math.min(eventA, eventB);
                 long second = Math.max(eventA, eventB);
-                EventSimilarityAvro similarityMsg = EventSimilarityAvro.newBuilder().setEventA(first).setEventB(second).setScore((float) similarity).setTimestamp(timestamp).build();
+                log.info("SIMILARITY: ({},{}) = {}, sMin={}, sqrtProduct={}",
+                        first, second, similarity, sMin, Math.sqrt(totalA * totalB));
 
-                kafkaTemplate.send(kafkaProperties.getProducer().getTopic(), similarityMsg).whenComplete((result, ex) -> {
-                    if (ex == null) {
-                        log.debug("Отправлено сходство для ({}, {}): {}", first, second, similarity);
-                    } else {
-                        log.error("Ошибка отправки сходства для ({}, {})", first, second, ex);
-                    }
-                });
+                EventSimilarityAvro similarityMsg = EventSimilarityAvro.newBuilder()
+                        .setEventA(first)
+                        .setEventB(second)
+                        .setScore((float) similarity)
+                        .setTimestamp(timestamp)
+                        .build();
+
+                kafkaTemplate.send(kafkaProperties.getProducer().getTopic(), similarityMsg)
+                        .whenComplete((result, ex) -> {
+                            if (ex == null) {
+                                log.debug("Sent similarity for ({}, {}): {}", first, second, similarity);
+                            } else {
+                                log.error("Failed to send similarity for ({}, {})", first, second, ex);
+                            }
+                        });
+            } else {
+                log.debug("Delta=0 for pair ({},{}), skip sending", eventA, eventB);
             }
         }
     }
