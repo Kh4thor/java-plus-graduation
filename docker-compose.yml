@@ -85,6 +85,10 @@ services:
       - SERVER_PORT=8081
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - GRPC_CLIENT_USERACTIONCONTROLLERGRPCCLIENT_ADDRESS=static://collector:19336
+      - GRPC_CLIENT_USERACTIONCONTROLLERGRPCCLIENT_NEGOTIATION_TYPE=plaintext
+      - GRPC_CLIENT_ANALYZERGRPCCLIENT_ADDRESS=static://analyzer:19337
+      - GRPC_CLIENT_ANALYZERGRPCCLIENT_NEGOTIATION_TYPE=plaintext
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 10s

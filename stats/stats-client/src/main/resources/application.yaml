@@ -1,0 +1,14 @@
+grpc:
+  client:
+
+    userActionControllerGrpcClient:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+    analyzerGrpcClient:
+      address: 'discovery:///analyzer'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
