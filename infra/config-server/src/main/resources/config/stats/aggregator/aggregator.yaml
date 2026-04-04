@@ -3,11 +3,10 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
+      defaultZone: http://localhost:8761/eureka/
   instance:
     preferIpAddress: true
     hostname: localhost
-    instance-id: "${spring.application.name}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
 
 server:
@@ -15,7 +14,7 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: aggregator-group
       auto-offset-reset: earliest
@@ -25,10 +24,6 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: malyshev.egor.serialization.AvroSerializer
-  cloud:
-    inetutils:
-      preferred-networks:
-        - 172.
 
 kafka-aggregator:
   consumer:
@@ -42,4 +37,3 @@ logging:
     root: DEBUG
     org.springframework.boot: DEBUG
     org.springframework.context: DEBUG
-

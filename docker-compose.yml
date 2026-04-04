@@ -1,5 +1,6 @@
 networks:
   ewm-net:
+    name: ewm-net
 
 services:
   discovery-server:
@@ -16,17 +17,17 @@ services:
       retries: 12
 
   config-server:
-    ports:
-      - "8888:8888"
     build: infra/config-server
     container_name: infra-config
     depends_on:
-      discovery-server:
-        condition: service_healthy
+      - discovery-server
     networks:
       - ewm-net
     environment:
       - SERVER_PORT=8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    ports:
+      - "8888:8888"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://config-server:8888/actuator/health" ]
       timeout: 5s
@@ -39,11 +40,12 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      config-server:
-        condition: service_healthy
+      - config-server
     networks:
       - ewm-net
     environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
       - SERVER_PORT=8080
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
@@ -57,9 +59,99 @@ services:
     networks:
       - ewm-net
     environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-event
+      - POSTGRES_PASSWORD=event_password
+      - POSTGRES_USER=event_user
+      - POSTGRES_DB=event-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  request-db:
+    image: postgres:16.1
+    container_name: db-request
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=request_password
+      - POSTGRES_USER=request_user
+      - POSTGRES_DB=request-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  user-db:
+    image: postgres:16.1
+    container_name: db-user
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=user_password
+      - POSTGRES_USER=user_user
+      - POSTGRES_DB=user-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  compilation-db:
+    image: postgres:16.1
+    container_name: compilation-db
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=compilation_password
+      - POSTGRES_USER=compilation_user
+      - POSTGRES_DB=compilation-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  category-db:
+    image: postgres:16.1
+    container_name: db-category
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=category_password
+      - POSTGRES_USER=category_user
+      - POSTGRES_DB=category-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  comment-db:
+    image: postgres:16.1
+    container_name: db-comment
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=comment_password
+      - POSTGRES_USER=comment_user
+      - POSTGRES_DB=comment-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      timeout: 5s
+      interval: 10s
+      retries: 15
+
+  analyzer-db:
+    image: postgres:16.1
+    container_name: db-analyzer
+    networks:
+      - ewm-net
+    environment:
+      - POSTGRES_PASSWORD=analyzer_password
+      - POSTGRES_USER=analyzer_user
+      - POSTGRES_DB=analyzer-db
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       timeout: 5s
@@ -70,25 +162,20 @@ services:
     build: core/event-service
     container_name: core-event
     depends_on:
-      event-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
+      - event-db
+      - config-server
+      - discovery-server
     networks:
       - ewm-net
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://event-db:5432/ewm-event
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SERVER_PORT=8081
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - GRPC_CLIENT_USERACTIONCONTROLLERGRPCCLIENT_ADDRESS=static://collector:19336
-      - GRPC_CLIENT_USERACTIONCONTROLLERGRPCCLIENT_NEGOTIATION_TYPE=plaintext
-      - GRPC_CLIENT_ANALYZERGRPCCLIENT_ADDRESS=static://analyzer:19337
-      - GRPC_CLIENT_ANALYZERGRPCCLIENT_NEGOTIATION_TYPE=plaintext
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - DB_HOST=event-db
+      - DB_PORT=5432
+      - DB_NAME=event-db
+      - DB_USER=event_user
+      - DB_PASSWORD=event_password
+      - SERVER_PORT=8081
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 10s
@@ -96,40 +183,22 @@ services:
       retries: 5
       start_period: 60s
 
-  request-db:
-    image: postgres:16.1
-    container_name: db-request
-    networks:
-      - ewm-net
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-request
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
-      timeout: 5s
-      interval: 10s
-      retries: 15
-
   request-service:
     build: core/request-service
     container_name: core-request
     depends_on:
-      request-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
+      - request-db
+      - config-server
+      - discovery-server
     networks:
       - ewm-net
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://request-db:5432/ewm-request
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SERVER_PORT=8082
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://request-db:5432/request-db
+      - SPRING_DATASOURCE_USERNAME=request_user
+      - SPRING_DATASOURCE_PASSWORD=request_password
+      - SERVER_PORT=8082
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 10s
@@ -137,41 +206,96 @@ services:
       retries: 5
       start_period: 60s
 
-  user-db:
-    image: postgres:16.1
-    container_name: db-user
-    networks:
-      - ewm-net
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-user
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
-      timeout: 5s
-      interval: 10s
-      retries: 15
-
   user-service:
     build: core/user-service
     container_name: core-user
     depends_on:
-      user-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
+      - user-db
+      - config-server
+      - discovery-server
     networks:
       - ewm-net
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/ewm-user
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/user-db
+      - SPRING_DATASOURCE_USERNAME=user_user
+      - SPRING_DATASOURCE_PASSWORD=user_password
       - SERVER_PORT=8083
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  compilation-service:
+    build: core/compilation-service
+    container_name: core-compilation
+    depends_on:
+      - compilation-db
+      - config-server
+      - discovery-server
+    networks:
+      - ewm-net
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - SPRING_APPLICATION_NAME=compilation-service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://compilation-db:5432/compilation-db
+      - SPRING_DATASOURCE_USERNAME=compilation_user
+      - SPRING_DATASOURCE_PASSWORD=compilation_password
+      - SERVER_PORT=8084
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  category-service:
+    build: core/category-service
+    container_name: core-category
+    depends_on:
+      - category-db
+      - config-server
+      - discovery-server
+    networks:
+      - ewm-net
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - SPRING_APPLICATION_NAME=category-service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://category-db:5432/category-db
+      - SPRING_DATASOURCE_USERNAME=category_user
+      - SPRING_DATASOURCE_PASSWORD=category_password
+      - SERVER_PORT=8086
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8086/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  comment-service:
+    build: core/comment-service
+    container_name: core-comment
+    depends_on:
+      - comment-db
+      - config-server
+      - discovery-server
+    networks:
+      - ewm-net
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - SPRING_APPLICATION_NAME=comment-service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://comment-db:5432/comment-db
+      - SPRING_DATASOURCE_USERNAME=comment_user
+      - SPRING_DATASOURCE_PASSWORD=comment_password
+      - SERVER_PORT=8085
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -188,11 +312,11 @@ services:
     restart: unless-stopped
     environment:
       KAFKA_NODE_ID: 1
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
-      KAFKA_PROCESS_ROLES: 'broker, controller'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
-      CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      CLUSTER_ID: K0EA9p0yEe6MkAAAAkKsEg
 
   kafka-init-topics:
     image: confluentinc/confluent-local:7.4.3
@@ -205,24 +329,20 @@ services:
     init: true
 
   collector:
-    ports:
-      - "19336:19336"
     build: stats/collector
     container_name: stats-collector
     depends_on:
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-      kafka:
-        condition: service_started
+      - config-server
+      - discovery-server
+      - kafka
     networks:
       - ewm-net
     environment:
-      - SERVER_PORT=8087
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - GRPC_SERVER_PORT=19336
+      - SERVER_PORT=8087
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - EUREKA_CLIENT_ENABLED=true
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
       - EUREKA_CLIENT_FETCH_REGISTRY=true
@@ -237,21 +357,18 @@ services:
     build: stats/aggregator
     container_name: stats-aggregator
     depends_on:
-      kafka:
-        condition: service_started
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
+      - config-server
+      - discovery-server
+      - kafka
     networks:
       - ewm-net
     environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - EUREKA_CLIENT_ENABLED=true
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
       - EUREKA_CLIENT_FETCH_REGISTRY=true
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
       - EUREKA_INSTANCE_HOSTNAME=ewm-aggregator
       - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
@@ -264,179 +381,31 @@ services:
       retries: 5
       start_period: 60s
 
-  analyzer-db:
-    image: postgres:16.1
-    container_name: db-analyzer
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-analyzer
-    networks:
-      - ewm-net
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
-      timeout: 5s
-      interval: 10s
-      retries: 15
-
   analyzer:
-    ports:
-      - "19337:19337"
     build: stats/analyzer
     container_name: stats-analyzer
     depends_on:
-      analyzer-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
+      - analyzer-db
+      - config-server
+      - discovery-server
     networks:
       - ewm-net
     environment:
-      - SPRING_APPLICATION_NAME=stats.service.dashboard
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - GRPC_SERVER_PORT=19337
+      - SPRING_APPLICATION_NAME=stats.service.dashboard
       - EUREKA_CLIENT_ENABLED=true
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
       - EUREKA_CLIENT_FETCH_REGISTRY=true
       - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://analyzer-db:5432/ewm-analyzer
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://analyzer-db:5432/analyzer-db
+      - SPRING_DATASOURCE_USERNAME=analyzer_user
+      - SPRING_DATASOURCE_PASSWORD=analyzer_password
       - SERVER_PORT=8089
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8089/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-
-  compilation-db:
-    image: postgres:16.1
-    container_name: compilation-db
-    networks:
-      - ewm-net
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-compilation
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
-      timeout: 5s
-      interval: 10s
-      retries: 15
-
-  compilation-service:
-    build: core/compilation-service
-    container_name: core-compilation
-    depends_on:
-      compilation-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-    networks:
-      - ewm-net
-    environment:
-      - SPRING_APPLICATION_NAME=compilation-service
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://compilation-db:5432/ewm-compilation
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SERVER_PORT=8084
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-
-  category-db:
-    image: postgres:16.1
-    container_name: db-category
-    networks:
-      - ewm-net
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-category
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
-      timeout: 5s
-      interval: 10s
-      retries: 15
-
-  category-service:
-    build: core/category-service
-    container_name: core-category
-    depends_on:
-      category-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-    networks:
-      - ewm-net
-    environment:
-      - SPRING_APPLICATION_NAME=category-service
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://category-db:5432/ewm-category
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SERVER_PORT=8086
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8086/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-
-  comment-db:
-    image: postgres:16.1
-    container_name: db-comment
-    networks:
-      - ewm-net
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=ewm-comment
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
-      timeout: 5s
-      interval: 10s
-      retries: 15
-
-  comment-service:
-    build: core/comment-service
-    container_name: core-comment
-    depends_on:
-      comment-db:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-    networks:
-      - ewm-net
-    environment:
-      - SPRING_APPLICATION_NAME=comment-service
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://comment-db:5432/ewm-comment
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SERVER_PORT=8085
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
