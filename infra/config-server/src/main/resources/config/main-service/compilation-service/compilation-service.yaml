@@ -13,7 +13,6 @@ eureka:
 server:
   port: 0
 
-
 management:
   endpoints:
     web:
@@ -35,7 +34,3 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-
-stats:
-  baseUrl: http://stats-server

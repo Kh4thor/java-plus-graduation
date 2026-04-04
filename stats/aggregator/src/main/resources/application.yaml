@@ -10,21 +10,5 @@ spring:
         useRandomPolicy: true
         max-interval: 6000
       discovery:
-        enabled: false
+        enabled: true
         service-id: config-server
-
-  profiles:
-    active: default
-
-logging:
-  level:
-    com.netflix.discovery: DEBUG
-    org.springframework.cloud.netflix.eureka: DEBUG
----
-spring:
-  config:
-    activate:
-      on-profile: default
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
