@@ -32,3 +32,12 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+grpc:
+  client:
+    userActionControllerGrpcClient:
+      address: 'discovery:///collector'
+      negotiationType: plaintext
+    analyzerGrpcClient:
+      address: 'discovery:///analyzer'
+      negotiationType: plaintext

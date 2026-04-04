@@ -9,7 +9,7 @@ eureka:
     hostname: localhost
     leaseRenewalIntervalInSeconds: 10
     metadata-map:
-      grpc-port: 19337
+      grpc-port: ${grpc.server.port}
 
 server:
   port: 0
