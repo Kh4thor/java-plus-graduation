@@ -1,24 +1,22 @@
+server:
+  port: 8089
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discovery-server:8761/eureka/
   instance:
     preferIpAddress: true
-    hostname: localhost
+    hostname: analyzer
     leaseRenewalIntervalInSeconds: 10
     metadata-map:
       grpc-port: ${grpc.server.port}
-
-server:
-  port: 0
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/analyzer-db
-    username: root
-    password: root
+    url: jdbc:postgresql://analyzer-db:5432/analyzer-db
+    username: analyzer_user
+    password: analyzer_password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -34,11 +32,9 @@ spring:
       auto-offset-reset: earliest
       enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
 grpc:
   server:
     port: 19337
-
 kafka-analyzer:
   topics:
     user-actions-topic: stats.user-actions.v1

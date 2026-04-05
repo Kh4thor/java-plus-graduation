@@ -7,7 +7,10 @@ spring:
     config:
       server:
         native:
-          searchLocations: classpath:config/infra/{application},classpath:config/main-service/{application},classpath:config/stats/{application}
+          searchLocations:
+          - classpath:config/infra/{application}
+          - classpath:config/main-service/{application}
+          - classpath:config/stats/{application}
 server:
   port: 8888
 
@@ -15,6 +18,3 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka/
-  instance:
-    hostname: ${spring.application.name}
-    prefer-ip-address: true

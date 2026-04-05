@@ -1,26 +1,23 @@
+server:
+  port: 8086
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discovery-server:8761/eureka/
   instance:
     preferIpAddress: true
-    hostname: localhost
+    hostname: category-service
     leaseRenewalIntervalInSeconds: 10
-
-server:
-  port: 0
-
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/category
+    url: jdbc:postgresql://category-db:5432/category-db
     username: category_user
     password: category_password
     driver-class-name: org.postgresql.Driver
