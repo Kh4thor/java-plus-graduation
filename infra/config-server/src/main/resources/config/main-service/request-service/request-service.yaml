@@ -29,3 +29,16 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+grpc:
+  client:
+    analyzerGrpcClient:
+      address: 'discovery:///analyzer'
+      negotiationType: plaintext
+      metadata:
+        portKey: gRPC__port
+    userActionControllerGrpcClient:
+      address: 'discovery:///collector'
+      negotiationType: plaintext
+      metadata:
+        portKey: gRPC__port

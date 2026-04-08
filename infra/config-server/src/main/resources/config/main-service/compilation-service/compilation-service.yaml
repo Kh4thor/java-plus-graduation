@@ -29,3 +29,11 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+grpc:
+  client:
+    analyzerGrpcClient:
+      address: 'discovery:///analyzer'
+      negotiationType: PLAINTEXT
+      metadata:
+        portKey: gRPC__port
