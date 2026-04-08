@@ -27,14 +27,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AdminEventServiceImpl implements AdminEventService {
 
-    private final EventRepository eventRepository;
-    private final EventMapper eventMapper;
-    private final InteractionApiManager interactionApiManager;
-
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter F_T = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    private final InteractionApiManager interactionApiManager;
 
     @Override
     public List<EventFullDto> adminSearch(List<Long> users,
@@ -179,6 +177,6 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public boolean existsByCategoryId(Long categoryId) {
-       return eventRepository.existsByCategory(categoryId);
+        return eventRepository.existsByCategory(categoryId);
     }
 }

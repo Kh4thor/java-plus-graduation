@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 /**
@@ -52,8 +53,8 @@ public class PrivateEventsController {
      * @param dto    данные нового события (аннотация, категория, описание, дата, локация и т.д.)
      * @return созданное событие в расширенном представлении
      * @throws malyshev.egor.exception.NotFoundException если пользователь или категория не найдены
-     * @throws IllegalArgumentException если дата события раньше чем через 2 часа от текущего момента,
-     *                                  или participantLimit отрицательный
+     * @throws IllegalArgumentException                  если дата события раньше чем через 2 часа от текущего момента,
+     *                                                   или participantLimit отрицательный
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,7 +76,10 @@ public class PrivateEventsController {
      */
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(@PathVariable Long userId,
-                                     @PathVariable Long eventId) {
+                                     @PathVariable Long eventId,
+                                     @RequestHeader("X-EWM-USER-ID") Long headerUserId) throws AccessDeniedException {
+        if (!headerUserId.equals(userId))
+            throw new AccessDeniedException("Access to event " + eventId + " is denied for user " + userId);
         return privateEventService.getUserEvent(
                 userId,
                 eventId
@@ -90,9 +94,9 @@ public class PrivateEventsController {
      * @param dto     данные для обновления (аннотация, категория, описание, дата, локация и т.д.)
      * @return обновлённое событие в расширенном представлении
      * @throws malyshev.egor.exception.NotFoundException если событие или пользователь не найдены
-     * @throws IllegalStateException если событие уже опубликовано
-     * @throws IllegalArgumentException если новая дата события раньше чем через 2 часа от текущего момента,
-     *                                  или participantLimit отрицательный
+     * @throws IllegalStateException                     если событие уже опубликовано
+     * @throws IllegalArgumentException                  если новая дата события раньше чем через 2 часа от текущего момента,
+     *                                                   или participantLimit отрицательный
      */
     @PatchMapping("/{eventId}")
     public EventFullDto updateEventUser(@PathVariable Long userId,

@@ -11,7 +11,7 @@ eureka:
     hostname: analyzer
     leaseRenewalIntervalInSeconds: 10
     metadata-map:
-      "gRPC_port": ${grpc.server.port}
+      gRPC.port: ${grpc.server.port}
 spring:
   datasource:
     url: jdbc:postgresql://analyzer-db:5432/analyzer-db

@@ -48,7 +48,7 @@ public class InteractionApiManager {
 
     public EventFullDto getEventOfUserByPrivate(Long userId, Long eventId) {
         try {
-            return privateEventFeignClient.getUserEvent(userId, eventId);
+            return privateEventFeignClient.getUserEvent(userId, eventId, userId);
         } catch (feign.FeignException.NotFound e) {
             throw new NotFoundException("Event with id=" + eventId + " not found for user " + userId);
         }
@@ -58,9 +58,9 @@ public class InteractionApiManager {
         return privateRequestFeignClient.list(userId, eventId).getFirst();
     }
 
-    public EventFullDto getEventByPublic(Long eventId) {
+    public EventFullDto getEventByPublic(Long eventId,  Long userId) {
         try {
-            return publicEventFeignClient.getById(eventId);
+            return publicEventFeignClient.getById(eventId, userId);
         } catch (feign.FeignException.NotFound e) {
             throw new IllegalStateException("Event with id=" + eventId + " was not found");
         }

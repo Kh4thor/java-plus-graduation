@@ -65,9 +65,9 @@ public class PublicEventController {
         );
     }
 
-    @GetMapping("/{id}")
-    public EventFullDto getById(@PathVariable("id") Long id,
-                                @RequestHeader("X-EWM-USER-ID") Long userId) {
-        return service.publicGet(id, userId);
+    @GetMapping("/{eventId}")
+    public EventFullDto getById(@PathVariable("eventId") Long eventId,
+                                @RequestHeader("X-EWM-USER-ID") Long headerUserId) {
+        return service.publicGet(eventId, headerUserId);
     }
 }

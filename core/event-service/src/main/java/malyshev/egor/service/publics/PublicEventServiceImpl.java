@@ -30,16 +30,15 @@ import static malyshev.egor.dto.event.EventState.PUBLISHED;
 @Transactional(readOnly = true)
 public class PublicEventServiceImpl implements PublicEventService {
 
+    // форматтеры для строгого парсинга
+    private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter F_T = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     private final EventRepository eventRepository;
     private final GrpcCollectorClient collectorGrpcClient;
     private final GrpcAnalyzerClient analyzerGrpcClient;
     private final AdminEventService adminEventService;
     private final EventMapper eventMapper;
     private final InteractionApiManager interactionApiManager;
-
-    // форматтеры для строгого парсинга
-    private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final DateTimeFormatter F_T = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     // PUBLIC
     @Override
