@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 /**
@@ -76,10 +75,7 @@ public class PrivateEventsController {
      */
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(@PathVariable Long userId,
-                                     @PathVariable Long eventId,
-                                     @RequestHeader("X-EWM-USER-ID") Long headerUserId) throws AccessDeniedException {
-        if (!headerUserId.equals(userId))
-            throw new AccessDeniedException("Access to event " + eventId + " is denied for user " + userId);
+                                     @PathVariable Long eventId) {
         return privateEventService.getUserEvent(
                 userId,
                 eventId

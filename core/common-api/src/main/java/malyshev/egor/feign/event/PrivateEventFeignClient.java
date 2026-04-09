@@ -5,7 +5,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * Feign-клиент для взаимодействия с приватным API сервиса событий.
@@ -22,11 +21,10 @@ public interface PrivateEventFeignClient {
      * @param userId  идентификатор пользователя-инициатора события
      * @param eventId идентификатор события
      * @return полное DTO события
-     * @throws feign.FeignException.NotFound      если событие не найдено или пользователь не является его инициатором
-     * @throws feign.FeignException                при других ошибках взаимодействия (сервис недоступен и т.п.)
+     * @throws feign.FeignException.NotFound если событие не найдено или пользователь не является его инициатором
+     * @throws feign.FeignException          при других ошибках взаимодействия (сервис недоступен и т.п.)
      */
     @GetMapping("/users/{userId}/events/{eventId}")
     EventFullDto getUserEvent(@PathVariable("userId") Long userId,
-                              @PathVariable("eventId") Long eventId,
-                              @RequestHeader("X-EWM-USER-ID") Long headerUserId);
+                              @PathVariable("eventId") Long eventId);
 }

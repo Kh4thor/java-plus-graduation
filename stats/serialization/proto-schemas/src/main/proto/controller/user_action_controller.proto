@@ -3,7 +3,6 @@ syntax = "proto3";
 package stats.service.collector;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
 import "messages/user_action_message.proto";
 
 option java_multiple_files = true;
