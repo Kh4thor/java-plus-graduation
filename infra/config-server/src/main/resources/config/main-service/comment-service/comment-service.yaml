@@ -36,4 +36,4 @@ feign:
         loggerLevel: full
 
 gateway:
-  url: http://gateway-server:8080
+  url: http://infra-gateway:8080

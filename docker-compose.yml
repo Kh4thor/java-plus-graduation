@@ -58,12 +58,13 @@ services:
       interval: 15s
       retries: 10
 
-  # ---------- Базы данных ----------
   event-db:
     image: postgres:16.1
     container_name: db-event
     networks:
       - ewm-net
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=event_password
       - POSTGRES_USER=event_user
@@ -79,6 +80,8 @@ services:
     container_name: db-request
     networks:
       - ewm-net
+    ports:
+      - "5433:5432"
     environment:
       - POSTGRES_PASSWORD=request_password
       - POSTGRES_USER=request_user
@@ -94,6 +97,8 @@ services:
     container_name: db-user
     networks:
       - ewm-net
+    ports:
+      - "5434:5432"
     environment:
       - POSTGRES_PASSWORD=user_password
       - POSTGRES_USER=user_user
@@ -109,6 +114,8 @@ services:
     container_name: compilation-db
     networks:
       - ewm-net
+    ports:
+      - "5435:5432"
     environment:
       - POSTGRES_PASSWORD=compilation_password
       - POSTGRES_USER=compilation_user
@@ -124,6 +131,8 @@ services:
     container_name: db-category
     networks:
       - ewm-net
+    ports:
+      - "5436:5432"
     environment:
       - POSTGRES_PASSWORD=category_password
       - POSTGRES_USER=category_user
@@ -139,6 +148,8 @@ services:
     container_name: db-comment
     networks:
       - ewm-net
+    ports:
+      - "5437:5432"
     environment:
       - POSTGRES_PASSWORD=comment_password
       - POSTGRES_USER=comment_user
@@ -154,6 +165,8 @@ services:
     container_name: db-analyzer
     networks:
       - ewm-net
+    ports:
+      - "5438:5432"
     environment:
       - POSTGRES_PASSWORD=analyzer_password
       - POSTGRES_USER=analyzer_user
@@ -164,7 +177,6 @@ services:
       interval: 10s
       retries: 15
 
-  # ---------- Микросервисы ----------
   event-service:
     build: core/event-service
     container_name: core-event
@@ -200,6 +212,7 @@ services:
       - ewm-net
     environment:
       - CONFIG_SERVER_URL=http://config-server:8888
+      - GATEWAY_URL=http://infra-gateway:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
       interval: 10s
@@ -291,7 +304,6 @@ services:
       retries: 5
       start_period: 60s
 
-  # ---------- Kafka ----------
   kafka:
     image: confluentinc/confluent-local:7.4.3
     hostname: kafka
@@ -308,7 +320,6 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
       KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
       CLUSTER_ID: K0EA9p0yEe6MkAAAAkKsEg
-    # healthcheck удалён
 
   kafka-init-topics:
     image: confluentinc/confluent-local:7.4.3

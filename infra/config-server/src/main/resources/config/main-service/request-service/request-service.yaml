@@ -36,12 +36,12 @@ grpc:
       address: 'discovery:///analyzer'
       negotiationType: PLAINTEXT
       metadata:
-        portKey: gRPC__port
+        portKey: gRPC.port
     userActionControllerGrpcClient:
       address: 'discovery:///collector'
       negotiationType: PLAINTEXT
       metadata:
-        portKey: gRPC__port
+        portKey: gRPC.port
 
 gateway:
   url: http://gateway-server:8080

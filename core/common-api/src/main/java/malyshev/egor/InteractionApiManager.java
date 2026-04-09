@@ -58,7 +58,7 @@ public class InteractionApiManager {
         return privateRequestFeignClient.list(userId, eventId).getFirst();
     }
 
-    public EventFullDto getEventByPublic(Long eventId,  Long userId) {
+    public EventFullDto getEventByPublic(Long eventId, Long userId) {
         try {
             return publicEventFeignClient.getById(eventId, userId);
         } catch (feign.FeignException.NotFound e) {

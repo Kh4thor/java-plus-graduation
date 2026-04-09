@@ -31,4 +31,4 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 gateway:
-  url: http://gateway-server:8080
+  url: http://infra-gateway:8080
