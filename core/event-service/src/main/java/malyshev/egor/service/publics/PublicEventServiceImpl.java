@@ -107,7 +107,6 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         // получаем рейтинг от Analyzer
         double rating = analyzerGrpcClient.getEventRating(eventId);
-
         EventFullDto dto = eventMapper.toFullDto(e);
         dto.setRating(rating);
 

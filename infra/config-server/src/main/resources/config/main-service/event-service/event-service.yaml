@@ -29,16 +29,18 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
 grpc:
   client:
     userActionControllerGrpcClient:
       address: 'discovery:///collector'
-      negotiationType: plaintext
+      negotiationType: PLAINTEXT
       metadata:
         portKey: gRPC__port
     analyzerGrpcClient:
       address: 'discovery:///analyzer'
-      negotiationType: plaintext
+      negotiationType: PLAINTEXT
       metadata:
         portKey: gRPC__port
+
+gateway:
+  url: http://gateway-server:8080

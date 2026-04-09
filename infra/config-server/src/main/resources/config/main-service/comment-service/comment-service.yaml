@@ -34,3 +34,6 @@ feign:
     config:
       private-request-service:
         loggerLevel: full
+
+gateway:
+  url: http://gateway-server:8080

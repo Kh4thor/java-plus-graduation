@@ -37,3 +37,6 @@ grpc:
       negotiationType: PLAINTEXT
       metadata:
         portKey: gRPC__port
+
+gateway:
+  url: http://gateway-server:8080

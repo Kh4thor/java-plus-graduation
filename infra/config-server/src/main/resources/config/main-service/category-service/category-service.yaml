@@ -29,3 +29,6 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+gateway:
+  url: http://gateway-server:8080
