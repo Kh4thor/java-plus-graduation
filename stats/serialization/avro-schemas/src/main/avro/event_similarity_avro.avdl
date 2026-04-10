@@ -1,0 +1,10 @@
+@namespace("stats.avro")
+protocol EventSimilarityProtocol {
+
+	record EventSimilarityAvro {
+		long eventA;
+		long eventB;
+		double score;
+		long timestamp;
+	}
+}

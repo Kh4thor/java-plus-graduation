@@ -8,7 +8,6 @@ import malyshev.egor.dto.event.EventShortDto;
 import malyshev.egor.dto.event.LocationDto;
 import malyshev.egor.dto.user.UserDto;
 import malyshev.egor.dto.user.UserShortDto;
-import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.model.Event;
 import org.springframework.stereotype.Component;
 
@@ -17,17 +16,14 @@ import org.springframework.stereotype.Component;
 public class EventMapper {
 
     private final InteractionApiManager interactionApiManager;
-    private final StatsClient statsClient;
 
     public EventShortDto toShortDto(Event e) {
         if (e == null) {
             return null;
         }
         long confirmedRequests = 0;
-        long views = 0;
         if (e.getId() != null) {
             confirmedRequests = interactionApiManager.countConfirmedRequests(e.getId());
-            views = statsClient.viewsForEvent(e.getId());
         }
         CategoryDto category = null;
         if (e.getCategory() != null) {
@@ -51,7 +47,7 @@ public class EventMapper {
                 .initiator(initiator)
                 .paid(e.isPaid())
                 .title(e.getTitle())
-                .views(views)
+                .rating(0.0) // rating будет установлен в сервисном слое (из GrpcAnalyzerClient)
                 .build();
     }
 
@@ -60,10 +56,8 @@ public class EventMapper {
             return null;
         }
         long confirmedRequests = 0;
-        long views = 0;
         if (e.getId() != null) {
             confirmedRequests = interactionApiManager.countConfirmedRequests(e.getId());
-            views = statsClient.viewsForEvent(e.getId());
         }
         CategoryDto category = null;
         if (e.getCategory() != null) {
@@ -99,7 +93,7 @@ public class EventMapper {
                 .requestModeration(e.isRequestModeration())
                 .state(e.getState())
                 .title(e.getTitle())
-                .views(views)
+                .rating(0.0) // rating будет установлен в сервисном слое (из GrpcAnalyzerClient)
                 .build();
     }
 }

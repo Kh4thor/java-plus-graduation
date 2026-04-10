@@ -16,7 +16,6 @@ import java.util.List;
 @Validated
 @FeignClient(name = "event-service",
         contextId = "admin-event-service",
-        url = "${gateway.url:http://localhost:8080}",
         path = "/admin/events")
 public interface AdminEventFeignClient {
 

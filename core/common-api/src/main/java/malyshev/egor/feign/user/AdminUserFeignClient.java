@@ -13,7 +13,6 @@ import java.util.List;
  */
 @FeignClient(name = "user-service",
         contextId = "admin-request-service",
-        url = "${gateway.url:http://localhost:8080}",
         path = "/admin/users")
 public interface AdminUserFeignClient {
 

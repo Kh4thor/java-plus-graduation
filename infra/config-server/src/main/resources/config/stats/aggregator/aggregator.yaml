@@ -1,0 +1,35 @@
+server:
+  port: 8088
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: aggregator
+    leaseRenewalIntervalInSeconds: 10
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: aggregator-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: malyshev.egor.deserialization.UserActionAvroDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: malyshev.egor.serialization.AvroSerializer
+kafka-aggregator:
+  consumer:
+    topic: stats.user-actions.v1
+  producer:
+    topic: stats.events-similarity.v1
+debug: true
+logging:
+  level:
+    root: DEBUG
+    org.springframework.boot: DEBUG
+    org.springframework.context: DEBUG

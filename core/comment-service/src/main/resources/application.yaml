@@ -1,19 +1,17 @@
 spring:
   application:
-    name: comment-service #имя сервиса
+    name: comment-service
   config:
-    import: configserver:http://localhost:8888 # сервер конфигураций
+    import: "configserver:${CONFIG_SERVER_URL:http://localhost:8888}" # сервер конфигураций
   cloud:
     config:
       fail-fast: true # текущий сервис падает, если конфигурационный сервер недоступен
     retry:
       useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
-      max-interval: 6000 #максимально возможный интер
+      max-interval: 6000 #максимально возможный интевал
 
 logging:
   level:
-    feign: TRACE
-    feign.Contract: DEBUG
-    org.springframework.cloud.openfeign: TRACE
-    org.springframework.cloud.openfeign.support: DEBUG
-    org.springframework.cloud.openfeign.FeignClientFactoryBean: DEBUG
+    malyshev.egor.feign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    feign:

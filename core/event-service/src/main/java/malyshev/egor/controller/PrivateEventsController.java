@@ -52,8 +52,8 @@ public class PrivateEventsController {
      * @param dto    данные нового события (аннотация, категория, описание, дата, локация и т.д.)
      * @return созданное событие в расширенном представлении
      * @throws malyshev.egor.exception.NotFoundException если пользователь или категория не найдены
-     * @throws IllegalArgumentException если дата события раньше чем через 2 часа от текущего момента,
-     *                                  или participantLimit отрицательный
+     * @throws IllegalArgumentException                  если дата события раньше чем через 2 часа от текущего момента,
+     *                                                   или participantLimit отрицательный
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -90,9 +90,9 @@ public class PrivateEventsController {
      * @param dto     данные для обновления (аннотация, категория, описание, дата, локация и т.д.)
      * @return обновлённое событие в расширенном представлении
      * @throws malyshev.egor.exception.NotFoundException если событие или пользователь не найдены
-     * @throws IllegalStateException если событие уже опубликовано
-     * @throws IllegalArgumentException если новая дата события раньше чем через 2 часа от текущего момента,
-     *                                  или participantLimit отрицательный
+     * @throws IllegalStateException                     если событие уже опубликовано
+     * @throws IllegalArgumentException                  если новая дата события раньше чем через 2 часа от текущего момента,
+     *                                                   или participantLimit отрицательный
      */
     @PatchMapping("/{eventId}")
     public EventFullDto updateEventUser(@PathVariable Long userId,

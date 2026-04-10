@@ -3,9 +3,9 @@ package malyshev.egor.service.publics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import malyshev.egor.InteractionApiManager;
+import malyshev.egor.client.GrpcAnalyzerClient;
 import malyshev.egor.dto.compilation.CompilationDto;
 import malyshev.egor.dto.event.EventShortDto;
-import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.CompilationNotFoundException;
 import malyshev.egor.mapper.CompilationMapper;
 import malyshev.egor.model.Compilation;
@@ -25,9 +25,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
 
     private final CompilationRepository repository;
     private final InteractionApiManager interactionApiManager;
-
-    // добавили зависимости для счётчиков
-    private final StatsClient statsClient;
+    private final GrpcAnalyzerClient analyzerClient;
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
@@ -61,10 +59,10 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
                 .filter(e -> eventIds.contains(e.getId()))
                 .toList();
 
-        // Дополняем каждое DTO актуальными просмотрами из сервиса статистики
+        // Получаем рейтинг каждого события через gRPC-клиент Analyzer
         for (EventShortDto dto : filteredById) {
-            long views = statsClient.viewsForEvent(dto.getId());
-            dto.setViews(views);
+            double rating = analyzerClient.getEventRating(dto.getId());
+            dto.setRating(rating);
         }
         return CompilationMapper.toDto(compilation, filteredById);
     }

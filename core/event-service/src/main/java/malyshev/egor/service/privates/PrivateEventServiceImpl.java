@@ -2,10 +2,11 @@ package malyshev.egor.service.privates;
 
 import lombok.RequiredArgsConstructor;
 import malyshev.egor.InteractionApiManager;
+import malyshev.egor.client.GrpcAnalyzerClient;
+import malyshev.egor.client.GrpcCollectorClient;
 import malyshev.egor.dto.category.CategoryDto;
 import malyshev.egor.dto.event.*;
 import malyshev.egor.dto.user.UserDto;
-import malyshev.egor.ewm.stats.client.StatsClient;
 import malyshev.egor.exception.NotFoundException;
 import malyshev.egor.mapper.EventMapper;
 import malyshev.egor.mapper.LocationMapper;
@@ -22,21 +23,22 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PrivateEventServiceImpl implements PrivateEventService {
 
-    private final EventRepository eventRepository;
-    private final StatsClient statsClient;
-    private final AdminEventService adminEventService;
-    private final EventMapper eventMapper;
-    private final InteractionApiManager interactionApiManager;
-
     // форматтеры для строгого парсинга
     private static final DateTimeFormatter F_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter F_T = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private final EventRepository eventRepository;
+    private final GrpcCollectorClient collectorClient;
+    private final GrpcAnalyzerClient analyzerClient;
+    private final AdminEventService adminEventService;
+    private final EventMapper eventMapper;
+    private final InteractionApiManager interactionApiManager;
 
     // PRIVATE
     @Override
@@ -72,7 +74,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             throw new IllegalArgumentException("participantLimit must be >= 0");
         }
 
-        var e = Event.builder()
+        var event = Event.builder()
                 .annotation(dto.getAnnotation())
                 .category(category.getId())
                 .initiator(initiator.getId())
@@ -87,84 +89,128 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .title(dto.getTitle())
                 .build();
 
-        e = eventRepository.save(e);
-        return eventMapper.toFullDto(e);
+        event = eventRepository.save(event);
+        return eventMapper.toFullDto(event);
     }
 
     @Override
     public EventFullDto getUserEvent(Long userId, Long eventId) {
-        var e = eventRepository.findById(eventId).orElseThrow(
+        var event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found")
         );
 
-        if (!e.getInitiator().equals(userId)) {
+        if (!event.getInitiator().equals(userId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
-        return eventMapper.toFullDto(e);
+        // Отправляем просмотр в Collector
+        collectorClient.sendView(userId, eventId);
+
+        // Получаем рейтинг от Analyzer
+        double rating = analyzerClient.getEventRating(eventId);
+
+        EventFullDto dto = eventMapper.toFullDto(event);
+        dto.setRating(rating);
+        return dto;
     }
 
     // PRIVATE
     @Override
     @Transactional
     public EventFullDto updateEventUser(Long userId, Long eventId, UpdateEventUserRequest dto) {
-        var e = eventRepository.findById(eventId).orElseThrow(
+        var event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
 
-        if (!e.getInitiator().equals(userId)) {
+        if (!event.getInitiator().equals(userId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
 
-        if (e.getState() == EventState.PUBLISHED) {
+        if (event.getState() == EventState.PUBLISHED) {
             throw new IllegalStateException("Only pending or canceled events can be changed");
         }
 
         if (dto.getAnnotation() != null) {
-            e.setAnnotation(dto.getAnnotation());
+            event.setAnnotation(dto.getAnnotation());
         }
 
         if (dto.getCategory() != null) {
-            e.setCategory(dto.getCategory());
+            event.setCategory(dto.getCategory());
         }
 
         if (dto.getDescription() != null)
-            e.setDescription(dto.getDescription());
+            event.setDescription(dto.getDescription());
 
         if (dto.getEventDate() != null) {
             LocalDateTime newDate = dto.getEventDate();
             if (!newDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new IllegalArgumentException("Event date must be at least 2 hours in the future");
             }
-            e.setEventDate(newDate);
+            event.setEventDate(newDate);
         }
 
         if (dto.getLocation() != null) {
-            e.setLocation(LocationMapper.toLocation(dto.getLocation()));
+            event.setLocation(LocationMapper.toLocation(dto.getLocation()));
         }
 
         if (dto.getPaid() != null)
 
-            e.setPaid(dto.getPaid());
+            event.setPaid(dto.getPaid());
 
         if (dto.getParticipantLimit() != null) {
             if (dto.getParticipantLimit() < 0) {
                 throw new IllegalArgumentException("participantLimit must be >= 0");
             }
-            e.setParticipantLimit(dto.getParticipantLimit());
+            event.setParticipantLimit(dto.getParticipantLimit());
         }
-        if (dto.getRequestModeration() != null) e.setRequestModeration(dto.getRequestModeration());
-        if (dto.getTitle() != null) e.setTitle(dto.getTitle());
+        if (dto.getRequestModeration() != null) event.setRequestModeration(dto.getRequestModeration());
+        if (dto.getTitle() != null) event.setTitle(dto.getTitle());
 
         if ("SEND_TO_REVIEW".equalsIgnoreCase(dto.getStateAction())) {
-            e.setState(EventState.PENDING);
+            event.setState(EventState.PENDING);
         }
         if ("CANCEL_REVIEW".equalsIgnoreCase(dto.getStateAction())) {
-            e.setState(EventState.CANCELED);
+            event.setState(EventState.CANCELED);
         }
-        e = eventRepository.save(e);
+        event = eventRepository.save(event);
 
-        return eventMapper.toFullDto(e);
+        return eventMapper.toFullDto(event);
+    }
+
+    // Новый метод: лайк мероприятия
+    @Transactional
+    @Override
+    public void likeEvent(Long userId, Long eventId) {
+        // Проверка, что пользователь посещал мероприятие (например, есть ли заявка)
+        boolean attended = checkUserAttended(userId, eventId);
+        if (!attended) {
+            throw new IllegalArgumentException("User can only like events they have attended");
+        }
+        collectorClient.sendLike(userId, eventId);
+    }
+
+    // Новый метод: рекомендации для пользователя
+    @Override
+    public List<EventShortDto> getRecommendations(Long userId, int maxResults) {
+        List<Long> recommendedIds = analyzerClient.getRecommendations(userId, maxResults);
+        if (recommendedIds.isEmpty()) {
+            return List.of();
+        }
+
+        var events = eventRepository.findAllById(recommendedIds);
+        var eventMap = events.stream().collect(Collectors.toMap(Event::getId, e -> e));
+
+        return recommendedIds.stream()
+                .map(eventMap::get)
+                .filter(e -> e != null)
+                .map(eventMapper::toShortDto)
+                .toList();
+    }
+
+    // Вспомогательный метод для проверки посещения (заглушка, нужно реализовать)
+    private boolean checkUserAttended(Long userId, Long eventId) {
+        // TODO: реальная проверка через репозиторий заявок или вызов request-service
+        return true;
     }
 
     /**

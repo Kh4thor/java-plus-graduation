@@ -32,7 +32,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
-        EventFullDto event = interactionApiManager.getEventByPublic(eventId);
+        EventFullDto event = interactionApiManager.getEventByPublic(eventId, userId);
 
         if (!event.getInitiator().getId().equals(userId)) {
             // 409

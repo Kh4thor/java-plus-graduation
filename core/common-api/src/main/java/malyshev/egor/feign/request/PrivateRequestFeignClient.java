@@ -16,9 +16,7 @@ import java.util.List;
 @FeignClient(
         name = "request-service",
         contextId = "private-request-service-list",
-        url = "${gateway.url:http://localhost:8080}",
-        path = "/users/{userId}/events/{eventId}/requests"
-)
+        path = "/users/{userId}/events/{eventId}/requests")
 public interface PrivateRequestFeignClient {
 
     /**
@@ -28,7 +26,7 @@ public interface PrivateRequestFeignClient {
      * @param eventId идентификатор события
      * @return список заявок на участие (может быть пустым)
      * @throws feign.FeignException.NotFound если событие не найдено или пользователь не является его инициатором
-     * @throws feign.FeignException           при других ошибках взаимодействия (сервис недоступен, таймаут и т.п.)
+     * @throws feign.FeignException          при других ошибках взаимодействия (сервис недоступен, таймаут и т.п.)
      */
     @GetMapping
     List<ParticipationRequestDto> list(

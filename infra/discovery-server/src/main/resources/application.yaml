@@ -3,9 +3,8 @@ server:
 
 eureka:
   instance:
-    #    hostname: localhost
-    preferIpAddress: false
-    hostname: external.host
+    hostname: discovery-server
+    preferIpAddress: true
   client:
     registerWithEureka: false
     fetchRegistry: false

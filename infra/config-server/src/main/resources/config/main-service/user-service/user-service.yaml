@@ -1,16 +1,26 @@
+server:
+  port: 8083
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: user-service
+    leaseRenewalIntervalInSeconds: 10
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/user
+    url: jdbc:postgresql://user-db:5432/user-db
     username: user_user
     password: user_password
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -20,13 +30,5 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-server:
-  port: 0
-
-stats:
-  baseUrl: http://stats-server
+gateway:
+  url: http://infra-gateway:8080

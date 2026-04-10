@@ -1,11 +1,17 @@
 spring:
   application:
-    name: category-service #имя сервиса
+    name: category-service
   config:
-    import: configserver:http://localhost:8888 # сервер конфигураций
+    import: "configserver:${CONFIG_SERVER_URL:http://localhost:8888}" # сервер конфигураций
   cloud:
     config:
       fail-fast: true # текущий сервис падает, если конфигурационный сервер недоступен
     retry:
       useRandomPolicy: true #случайная экспоненциальная выдержка между ретраями
-      max-interval: 6000 #максимально возможный интервал, после которого fail
+      max-interval: 6000 #максимально возможный интевал
+
+logging:
+  level:
+    malyshev.egor.feign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    feign:

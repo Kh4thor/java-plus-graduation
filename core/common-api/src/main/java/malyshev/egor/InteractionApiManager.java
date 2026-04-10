@@ -58,9 +58,9 @@ public class InteractionApiManager {
         return privateRequestFeignClient.list(userId, eventId).getFirst();
     }
 
-    public EventFullDto getEventByPublic(Long eventId) {
+    public EventFullDto getEventByPublic(Long eventId, Long userId) {
         try {
-            return publicEventFeignClient.getById(eventId);
+            return publicEventFeignClient.getById(eventId, userId);
         } catch (feign.FeignException.NotFound e) {
             throw new IllegalStateException("Event with id=" + eventId + " was not found");
         }
@@ -76,7 +76,7 @@ public class InteractionApiManager {
 
     public Long countConfirmedRequests(Long eventId) {
         try {
-            // feign-client выносит голову, все динамические поля должны быть в path конкретного метода, а не класса
+            // все динамические поля feign-client должны быть в path конкретного метода, а не класса
             Long count = confirmedRequestsFeignClient.countConfirmedRequests(eventId);
             System.out.println(">>> countConfirmedRequests: eventId=" + eventId + ", count=" + count);
             return count == null ? 0L : count;

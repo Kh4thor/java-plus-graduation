@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * с целью получения статистики по подтверждённым заявкам для события.
  */
 @FeignClient(name = "request-service",
-        contextId = "request-stats",
-        url = "${gateway.url:http://localhost:8080}")
+        contextId = "request-stats")
 public interface ConfirmedRequestsFeignClient {
 
     /**
